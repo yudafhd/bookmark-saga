@@ -1,0 +1,78 @@
+body[data-theme="neobrutalism"] {
+    --bs-body-bg: linear-gradient(180deg, #faf5ca 0%, #f8eaa2 100%);
+    --bs-text-color: #2b2b2b;
+    --bs-muted-color: rgba(55, 65, 81, 0.75);
+    --bs-surface-bg: #fff8d6;
+    --bs-surface-border: rgba(17, 24, 39, 0.18);
+    --bs-surface-shadow: 0 24px 40px -24px rgba(17, 24, 39, 0.2);
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+    --bs-button-color: #fdf9d6;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, #facc15 0%, #fbbf24 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    --bs-btn-accent-color: #2b2b2b;
+    --bs-btn-shadow: 0 18px 36px -20px rgba(249, 115, 22, 0.35);
+
+    --bs-btn-primary-bg: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+    --bs-btn-primary-hover-bg: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    --bs-btn-primary-color: #f4f4f5;
+    --bs-btn-primary-shadow: 0 16px 30px -18px rgba(17, 24, 39, 0.4);
+
+    --bs-btn-success-bg: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    --bs-btn-success-hover-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --bs-btn-success-color: #083344;
+    --bs-btn-success-shadow: 0 18px 34px -22px rgba(16, 185, 129, 0.4);
+
+    --bs-btn-danger-bg: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
+    --bs-btn-danger-hover-bg: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    --bs-btn-danger-color: #fff7f8;
+    --bs-btn-danger-shadow: 0 18px 34px -22px rgba(244, 63, 94, 0.4);
+
+    --bs-btn-neutral-bg: rgba(17, 24, 39, 0.08);
+    --bs-btn-neutral-hover-bg: rgba(17, 24, 39, 0.14);
+    --bs-btn-neutral-color: #2b2b2b;
+    --bs-btn-neutral-shadow: 0 12px 28px -22px rgba(17, 24, 39, 0.25);
+
+    --bs-btn-ghost-bg: rgba(17, 24, 39, 0.05);
+    --bs-btn-ghost-hover-bg: rgba(17, 24, 39, 0.12);
+    --bs-btn-ghost-color: #2b2b2b;
+    --bs-btn-focus-ring: rgba(17, 24, 39, 0.35);
+}
+
+body[data-theme="neobrutalism"] .bs-surface,
+body[data-theme="neobrutalism"] .bs-surface-item {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(17, 24, 39);
+}
+
+body[data-theme="neobrutalism"] .mode-toggle {
+    background: rgba(250, 204, 21, 0.32);
+    color: #2b2b2b;
+    border: 2px solid rgba(17, 24, 39, 0.85);
+    box-shadow: 0 18px 36px -22px rgba(17, 24, 39, 0.35);
+}
+
+body[data-theme="neobrutalism"] .mode-toggle--active {
+    background: #18181b;
+    color: #fef08a;
+    box-shadow: 0 22px 42px -24px rgba(17, 24, 39, 0.4);
+}
+
+body[data-theme="neobrutalism"] .bs-surface {
+    box-shadow: 0 20px 48px -28px rgba(17, 24, 39, 0.28);
+}
+
+body[data-theme="neobrutalism"] .bs-surface-item {
+    background: rgba(255, 248, 214, 0.88);
+    box-shadow: 0 14px 28px -20px rgba(17, 24, 39, 0.25);
+}
+
+body[data-theme="neobrutalism"] .folder-option:hover {
+    background: rgba(250, 204, 21, 0.2);
+}
+
+body[data-theme="neobrutalism"] .folder-option input {
+    accent-color: #f59e0b;
+}

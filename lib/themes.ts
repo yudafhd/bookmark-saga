@@ -47,6 +47,11 @@ export const THEMES: ThemeOption[] = [
     description: 'Kontras tinggi dengan neon magenta dan cyan.',
   },
   {
+    id: 'sunset',
+    name: 'Sunset',
+    description: 'Kontras tinggi dengan neon magenta dan cyan.',
+  },
+  {
     id: 'paper',
     name: 'Paper',
     description: 'Minimal putih krem seperti lembaran kertas.',

@@ -10,7 +10,7 @@ Bookmark Saga is a browser extension that replaces the New Tab page with a visit
 - `pnpm build` – produce a production build in `dist/`
 - `pnpm zip` – create a distributable ZIP archive
 
-The project is built with [WXT](https://wxt.dev), React, and TypeScript. Tailwind CSS powers the styling while legacy theme styles are preserved in `src/styles/themes.css`.
+The project is built with [WXT](https://wxt.dev), React, and TypeScript. Tailwind CSS powers the styling while legacy theme styles are preserved in `styles/themes.css`.
 
 ## Features
 

@@ -1,0 +1,63 @@
+body[data-theme="sunset"] {
+    --bs-body-bg: linear-gradient(160deg, #f97316 0%, #ef4444 40%, #8b5cf6 100%);
+    --bs-text-color: #0f172a;
+    --bs-muted-color: rgba(15, 23, 42, 0.65);
+    --bs-surface-bg: rgba(255, 255, 255, 0.88);
+    --bs-surface-border: rgba(251, 146, 60, 0.35);
+    --bs-surface-shadow: 0 35px 70px -40px rgba(249, 115, 22, 0.55);
+    --bs-surface-blur: blur(12px);
+    --bs-button-bg: linear-gradient(135deg, rgba(251, 191, 36, 0.95) 0%, rgba(244, 114, 182, 0.95) 100%);
+    --bs-button-color: #0f172a;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(251, 191, 36, 0.95) 0%, rgba(244, 114, 182, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(249, 115, 22, 1) 0%, rgba(236, 72, 153, 1) 100%);
+    --bs-btn-accent-color: #0f172a;
+    --bs-btn-shadow: 0 28px 60px -34px rgba(249, 115, 22, 0.5);
+
+    --bs-btn-primary-bg: #f97316;
+    --bs-btn-primary-hover-bg: #ea580c;
+    --bs-btn-primary-color: #0f172a;
+    --bs-btn-primary-shadow: 0 26px 58px -34px rgba(234, 88, 12, 0.55);
+
+    --bs-btn-success-bg: #22c55e;
+    --bs-btn-success-hover-bg: #16a34a;
+    --bs-btn-success-color: #052e16;
+    --bs-btn-success-shadow: 0 26px 58px -34px rgba(34, 197, 94, 0.45);
+
+    --bs-btn-danger-bg: #ef4444;
+    --bs-btn-danger-hover-bg: #dc2626;
+    --bs-btn-danger-color: #fee2e2;
+    --bs-btn-danger-shadow: 0 26px 58px -34px rgba(220, 38, 38, 0.45);
+
+    --bs-btn-neutral-bg: rgba(255, 255, 255, 0.76);
+    --bs-btn-neutral-hover-bg: rgba(255, 255, 255, 0.88);
+    --bs-btn-neutral-color: #0f172a;
+    --bs-btn-neutral-shadow: 0 24px 52px -32px rgba(249, 115, 22, 0.35);
+
+    --bs-btn-ghost-bg: rgba(255, 255, 255, 0.25);
+    --bs-btn-ghost-hover-bg: rgba(255, 255, 255, 0.35);
+    --bs-btn-ghost-color: #0f172a;
+    --bs-btn-focus-ring: rgba(249, 115, 22, 0.45);
+}
+
+body[data-theme="sunset"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(249, 115, 22, 0.25);
+}
+
+body[data-theme="sunset"] .mode-toggle {
+    color: rgba(15, 23, 42, 0.7);
+}
+
+body[data-theme="sunset"] .mode-toggle--active {
+    background: rgba(254, 215, 170, 0.72);
+    color: #0f172a;
+}
+
+body[data-theme="sunset"] .folder-option:hover {
+    background: rgba(254, 215, 170, 0.55);
+}
+
+body[data-theme="sunset"] .folder-option input {
+    accent-color: #fb923c;
+}

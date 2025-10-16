@@ -1,0 +1,20 @@
+body[data-theme="default"] .mode-toggle {
+    color: rgba(15, 23, 42, 0.68);
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 20px 40px -28px rgba(15, 23, 42, 0.28);
+}
+
+body[data-theme="default"] .mode-toggle--active {
+    background: rgba(37, 99, 235, 0.14);
+    color: #1d4ed8;
+    box-shadow: 0 22px 48px -30px rgba(37, 99, 235, 0.45);
+}
+
+body[data-theme="default"] .folder-option:hover {
+    background: rgba(226, 232, 240, 0.6);
+}
+
+body[data-theme="default"] .folder-option input {
+    accent-color: #2563eb;
+}

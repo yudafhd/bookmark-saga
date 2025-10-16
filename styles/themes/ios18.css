@@ -1,0 +1,68 @@
+body[data-theme="ios18"] {
+    --bs-body-bg: radial-gradient(120% 140% at 20% 0%, rgba(134, 239, 172, 0.82) 0%, rgba(59, 130, 246, 0.62) 42%, rgba(147, 51, 234, 0.58) 70%) fixed;
+    --bs-text-color: #0f172a;
+    --bs-muted-color: #334155;
+    --bs-surface-bg: rgba(255, 255, 255, 0.85);
+    --bs-surface-border: rgba(99, 102, 241, 0.35);
+    --bs-surface-shadow: 0 25px 55px -32px rgba(99, 102, 241, 0.65);
+    --bs-surface-blur: blur(18px);
+    --bs-button-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(6, 182, 212, 0.95) 100%);
+    --bs-button-color: #f8fafc;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(6, 182, 212, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(79, 70, 229, 1) 0%, rgba(14, 165, 233, 1) 100%);
+    --bs-btn-accent-color: #f8fafc;
+
+    --bs-btn-shadow: 0 26px 56px -30px rgba(99, 102, 241, 0.55);
+
+    --bs-btn-primary-bg: #2563eb;
+    --bs-btn-primary-hover-bg: #1d4ed8;
+    --bs-btn-primary-color: #f8fafc;
+    --bs-btn-primary-shadow: 0 22px 48px -28px rgba(37, 99, 235, 0.45);
+
+    --bs-btn-success-bg: #10b981;
+    --bs-btn-success-hover-bg: #059669;
+    --bs-btn-success-color: #f8fafc;
+    --bs-btn-success-shadow: 0 22px 48px -30px rgba(16, 185, 129, 0.45);
+
+    --bs-btn-danger-bg: #ef4444;
+    --bs-btn-danger-hover-bg: #dc2626;
+    --bs-btn-danger-color: #fef2f2;
+    --bs-btn-danger-shadow: 0 22px 48px -30px rgba(220, 38, 38, 0.45);
+
+    --bs-btn-neutral-bg: rgba(255, 255, 255, 0.72);
+    --bs-btn-neutral-hover-bg: rgba(255, 255, 255, 0.85);
+    --bs-btn-neutral-color: #0f172a;
+    --bs-btn-neutral-shadow: 0 20px 45px -28px rgba(99, 102, 241, 0.3);
+
+    --bs-btn-ghost-bg: rgba(255, 255, 255, 0.18);
+    --bs-btn-ghost-hover-bg: rgba(255, 255, 255, 0.28);
+    --bs-btn-ghost-color: #0f172a;
+
+    --bs-btn-focus-ring: rgba(99, 102, 241, 0.45);
+}
+
+body[data-theme="ios18"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(99, 102, 241, 0.35);
+}
+
+body[data-theme="ios18"] .mode-toggle {
+    color: rgba(15, 23, 42, 0.72);
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 18px 40px -28px rgba(99, 102, 241, 0.35);
+}
+
+body[data-theme="ios18"] .mode-toggle--active {
+    background: rgba(255, 255, 255, 0.72);
+    color: #0f172a;
+    box-shadow: 0 24px 52px -30px rgba(99, 102, 241, 0.45);
+}
+
+body[data-theme="ios18"] .folder-option:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+body[data-theme="ios18"] .folder-option input {
+    accent-color: #6366f1;
+}

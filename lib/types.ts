@@ -31,6 +31,7 @@ export type ThemeId =
   | 'windows95'
   | 'windows11'
   | 'cyberpunk'
+  | 'sunset'
   | 'paper';
 
 export interface ThemeOption {

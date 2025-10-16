@@ -1,0 +1,81 @@
+body[data-theme="glass"] {
+    --bs-body-bg: linear-gradient(155deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 64, 175, 0.85) 45%, rgba(49, 46, 129, 0.92) 100%) fixed;
+    --bs-text-color: #efefef;
+    --bs-muted-color: rgba(226, 232, 240, 0.72);
+    --bs-surface-bg: rgba(15, 23, 42, 0.38);
+    --bs-surface-border: rgba(148, 163, 184, 0.28);
+    --bs-surface-shadow: 0 40px 90px -60px rgba(12, 25, 64, 0.95);
+    --bs-surface-blur: blur(24px);
+    --bs-button-bg: linear-gradient(135deg, rgba(147, 197, 253, 0.95) 0%, rgba(165, 180, 252, 0.95) 100%);
+    --bs-button-color: #0f172a;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(147, 197, 253, 0.95) 0%, rgba(165, 180, 252, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(191, 219, 254, 0.95) 0%, rgba(199, 210, 254, 0.95) 100%);
+    --bs-btn-accent-color: #0f172a;
+
+    --bs-btn-shadow: 0 28px 64px -32px rgba(147, 197, 253, 0.65);
+
+    --bs-btn-primary-bg: rgba(129, 140, 248, 0.95);
+    --bs-btn-primary-hover-bg: rgba(99, 102, 241, 0.95);
+    --bs-btn-primary-color: #0f172a;
+    --bs-btn-primary-shadow: 0 26px 62px -34px rgba(99, 102, 241, 0.6);
+
+    --bs-btn-success-bg: rgba(74, 222, 128, 0.92);
+    --bs-btn-success-hover-bg: rgba(34, 197, 94, 0.95);
+    --bs-btn-success-color: #052e16;
+    --bs-btn-success-shadow: 0 26px 60px -34px rgba(34, 197, 94, 0.5);
+
+    --bs-btn-danger-bg: rgba(248, 113, 113, 0.9);
+    --bs-btn-danger-hover-bg: rgba(239, 68, 68, 0.95);
+    --bs-btn-danger-color: #450a0a;
+    --bs-btn-danger-shadow: 0 26px 60px -34px rgba(248, 113, 113, 0.5);
+
+    --bs-btn-neutral-bg: rgba(15, 23, 42, 0.55);
+    --bs-btn-neutral-hover-bg: rgba(15, 23, 42, 0.68);
+    --bs-btn-neutral-color: rgba(226, 232, 240, 0.92);
+    --bs-btn-neutral-shadow: 0 24px 55px -32px rgba(12, 17, 40, 0.7);
+
+    --bs-btn-ghost-bg: rgba(15, 23, 42, 0.2);
+    --bs-btn-ghost-hover-bg: rgba(15, 23, 42, 0.32);
+    --bs-btn-ghost-color: rgba(226, 232, 240, 0.9);
+    --bs-btn-focus-ring: rgba(147, 197, 253, 0.55);
+}
+
+body[data-theme="glass"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+body[data-theme="glass"] .theme-button {
+    box-shadow: 0 24px 64px -28px rgba(147, 197, 253, 0.8);
+}
+
+body[data-theme="glass"] .mode-toggle {
+    color: rgba(226, 232, 240, 0.65);
+}
+
+body[data-theme="glass"] .mode-toggle--active {
+    background: rgba(255, 255, 255, 0.18);
+    color: #f8fafc;
+    box-shadow: 0 24px 55px -32px rgba(148, 163, 184, 0.85);
+}
+
+body[data-theme="glass"] a {
+    color: rgba(191, 219, 254, 0.92);
+}
+
+body[data-theme="glass"] a:hover {
+    color: rgba(224, 231, 255, 1);
+}
+
+body[data-theme="glass"] .folder-option:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+body[data-theme="glass"] .folder-option input {
+    accent-color: #a5b4fc;
+}
+
+body[data-theme="glass"] .theme-option-desc {
+    color: rgba(226, 232, 240, 0.78);
+}

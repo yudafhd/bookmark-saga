@@ -8,7 +8,7 @@ import {
   writeFolders,
   writeTheme,
   writeVisits,
-} from '../../src/lib/storage';
+} from '@/lib/storage';
 import {
   buildBreadcrumb,
   collectDescendantIds,
@@ -17,10 +17,11 @@ import {
   getFolderChildren,
   getItemsForFolder,
   normalizeHierarchy,
-} from '../../src/lib/folder-utils';
-import { THEMES, getThemeById } from '../../src/lib/themes';
-import type { Folder, FolderItemsMap, ThemeId, VisitEntry } from '../../src/lib/types';
-import { formatRelativeTime, getHost, resolveFavicon } from '../../src/lib/utils';
+} from '@/lib/folder-utils';
+import { THEMES, getThemeById } from '@/lib/themes';
+import type { Folder, FolderItemsMap, ThemeId, VisitEntry } from '@/lib/types';
+import { formatRelativeTime, getHost, resolveFavicon } from '@/lib/utils';
+import { EditIcon, FolderClosed, Plus, PlusCircle, RefreshCw, Star, StarSolid, TrashIcon, XCircle, XIcon } from '@/shared/icons';
 
 type Mode = 'history' | 'saved';
 
@@ -31,7 +32,7 @@ interface PendingSaveVisit {
   visitTime: number | null;
 }
 
-const DEFAULT_THEME: ThemeId = 'default';
+const DEFAULT_THEME: ThemeId = 'windows95';
 
 function generateFolderId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -424,9 +425,8 @@ const App: React.FC = () => {
           <div className="flex gap-2">
             <button
               type="button"
-              className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${
-                mode === 'history' ? 'mode-toggle--active' : ''
-              }`}
+              className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'history' ? 'mode-toggle--active' : ''
+                }`}
               onClick={() => setMode('history')}
               aria-pressed={mode === 'history'}
             >
@@ -434,9 +434,8 @@ const App: React.FC = () => {
             </button>
             <button
               type="button"
-              className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${
-                mode === 'saved' ? 'mode-toggle--active' : ''
-              }`}
+              className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'saved' ? 'mode-toggle--active' : ''
+                }`}
               onClick={() => setMode('saved')}
               aria-pressed={mode === 'saved'}
             >
@@ -454,26 +453,28 @@ const App: React.FC = () => {
           <div className="flex gap-2">
             <button
               type="button"
-              className="theme-button px-4 py-2 rounded-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="bs-btn bs-btn--accent px-4 py-2 rounded-sm font-medium"
               onClick={() => setThemeModalOpen(true)}
               aria-expanded={isThemeModalOpen}
             >
-              Tema · {currentTheme?.name ?? 'Default'}
+              Tema · {currentTheme?.name ?? 'Windows 95'}
             </button>
             <button
               type="button"
-              className="px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="bs-btn bs-btn--primary px-4 py-2"
               onClick={refreshVisits}
             >
+              <RefreshCw className='w-4' />
               Refresh
             </button>
             {visits.length > 0 && (
               <button
                 type="button"
-                className="px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                className="bs-btn bs-btn--danger px-4 py-2"
                 onClick={clearVisits}
               >
-                Clear
+                <TrashIcon className='w-4' />
+                Clear History
               </button>
             )}
           </div>
@@ -495,8 +496,14 @@ const App: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid">
               {filteredVisits.map((visit) => (
                 <article key={visit.url} className="bs-card transition p-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 space-y-1">
+                  <div className="space-y-4">
+                    <div className='flex items-center gap-2'>
+                      <img
+                        src={visit.faviconUrl}
+                        alt=""
+                        className="w-8 h-8 rounded"
+                        loading="lazy"
+                      />
                       <a
                         href={visit.url}
                         target="_blank"
@@ -505,35 +512,25 @@ const App: React.FC = () => {
                       >
                         {visit.title}
                       </a>
+                    </div>
+                    <div className='flex gap-3'>
                       <p className="text-xs opacity-70 truncate">
                         {getHost(visit.url)}
                       </p>
                       <span className="inline-block text-xs opacity-75">
                         viewed {formatRelativeTime(visit.visitTime)}
                       </span>
+                      <button
+                        type="button"
+                        className={`bs-btn ${savedUrlSet.has(visit.url) ? 'bs-btn--success' : 'bs-btn--primary'} px-2 py-1 text-xs font-medium`}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          openFolderModal(visit);
+                        }}
+                      >
+                        {savedUrlSet.has(visit.url) ? <StarSolid className='w-3' /> : 'Save'}
+                      </button>
                     </div>
-                    <img
-                      src={visit.faviconUrl}
-                      alt=""
-                      className="w-8 h-8 rounded"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="mt-3 flex justify-end">
-                    <button
-                      type="button"
-                      className={`px-3 py-1 text-xs font-medium rounded transition ${
-                        savedUrlSet.has(visit.url)
-                          ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
-                      }`}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        openFolderModal(visit);
-                      }}
-                    >
-                      {savedUrlSet.has(visit.url) ? 'Manage Folders' : 'Save'}
-                    </button>
                   </div>
                 </article>
               ))}
@@ -542,13 +539,13 @@ const App: React.FC = () => {
         </section>
       ) : (
         <section className="space-y-6" id="savedView">
-          <div className="flex flex-col lg:flex-row gap-6">
-            <aside className="bs-surface lg:w-64 xl:w-72 rounded-sm p-4 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+            <aside className="p-4 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-semibold uppercase tracking-wide">Folders</h2>
                 <button
                   type="button"
-                  className="text-xs px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="bs-btn bs-btn--neutral text-xs px-2 py-1"
                   onClick={() => {
                     const name = prompt('Nama folder baru:');
                     if (name) {
@@ -556,12 +553,12 @@ const App: React.FC = () => {
                     }
                   }}
                 >
-                  New Folder
+                  <Plus className='w-4' />
                 </button>
               </div>
               <nav className="space-y-1 text-sm">{sidebarNodes}</nav>
             </aside>
-            <div className="flex-1 space-y-4">
+            <div className="col-span-4 space-y-4">
               {folders.length === 0 && totalSavedCount === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-lg opacity-90">No saved items yet.</p>
@@ -573,9 +570,12 @@ const App: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
-                      <h2 className="text-xl font-semibold">
-                        {currentFolder ? currentFolder.name : 'All saved pages'}
-                      </h2>
+                      <div className='flex gap-2'>
+                        <FolderClosed className='w-4' />
+                        <h2 className="text-xl font-semibold">
+                          {currentFolder ? currentFolder.name : 'All saved pages'}
+                        </h2>
+                      </div>
                       <p className="text-sm opacity-70">
                         {currentFolder
                           ? buildBreadcrumb(folders, currentSavedFolderId)
@@ -585,7 +585,7 @@ const App: React.FC = () => {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        className="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                        className="bs-btn bs-btn--success px-3 py-1 text-sm"
                         onClick={() => {
                           if (!currentSavedFolderId) return;
                           const name = prompt('Nama subfolder baru:');
@@ -595,11 +595,11 @@ const App: React.FC = () => {
                         }}
                         disabled={!currentSavedFolderId}
                       >
-                        Subfolder
+                        <Plus className='w-4' />
                       </button>
                       <button
                         type="button"
-                        className="px-3 py-1 text-sm rounded bg-gray-700 text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                        className="bs-btn bs-btn--neutral px-3 py-1 text-sm"
                         onClick={() => {
                           if (!currentSavedFolderId) return;
                           const folder = folders.find((f) => f.id === currentSavedFolderId);
@@ -611,22 +611,22 @@ const App: React.FC = () => {
                         }}
                         disabled={!currentSavedFolderId}
                       >
-                        Rename
+                        <EditIcon className='w-4' />
                       </button>
                       <button
                         type="button"
-                        className="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                        className="bs-btn bs-btn--danger px-3 py-1 text-sm"
                         onClick={() => {
                           if (!currentSavedFolderId) return;
                           void handleDeleteFolder(currentSavedFolderId);
                         }}
                         disabled={!currentSavedFolderId}
                       >
-                        Delete
+                        <TrashIcon className='w-4' />
                       </button>
                     </div>
                   </div>
-                  <div className="bs-surface divide-y divide-gray-200/70 dark:divide-gray-700/60 rounded-sm border border-transparent shadow-sm">
+                  <div className="bs-surface max-w-[80vw] rounded-sm border border-transparent shadow-sm">
                     {savedItems.length === 0 ? (
                       <p className="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
                         {currentSavedFolderId
@@ -650,7 +650,7 @@ const App: React.FC = () => {
                               href={item.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline line-clamp-2"
+                              className="text-sm truncate font-medium text-blue-600 dark:text-blue-400 hover:underline line-clamp-2"
                             >
                               {item.title}
                             </a>
@@ -673,13 +673,13 @@ const App: React.FC = () => {
                           <div className="shrink-0">
                             <button
                               type="button"
-                              className="text-xs font-semibold text-red-600 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 px-2 py-1 rounded"
+                              className="bs-btn bs-btn--danger text-xs font-semibold px-2 py-1"
                               onClick={(event) => {
                                 event.preventDefault();
                                 void handleRemoveSavedItem(item.folderId, item.url);
                               }}
                             >
-                              Remove
+                              <StarSolid className='w-4' />
                             </button>
                           </div>
                         </div>
@@ -714,10 +714,10 @@ const App: React.FC = () => {
               </div>
               <button
                 type="button"
-                className="theme-button text-sm px-3 py-1.5 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                className="bs-btn bs-btn--ghost text-sm px-3 py-1.5"
                 onClick={() => setThemeModalOpen(false)}
               >
-                Close
+                <XIcon className='w-4' />
               </button>
             </div>
             <div className="space-y-3">
@@ -746,7 +746,7 @@ const App: React.FC = () => {
               <p className="text-xs opacity-60">Theme changes apply immediately.</p>
               <button
                 type="button"
-                className="px-3 py-1.5 rounded-sm text-sm font-medium bg-gray-900/80 text-white hover:bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                className="bs-btn bs-btn--neutral px-3 py-1.5 text-sm font-medium"
                 onClick={() => handleThemeChange(DEFAULT_THEME)}
               >
                 Reset to Default
@@ -767,7 +767,7 @@ const App: React.FC = () => {
             }
           }}
         >
-          <div className="bs-surface max-w-md w-full p-6 rounded-2xl border border-white/30 space-y-4">
+          <div className="bs-surface max-w-md w-full p-6 rounded-2xl border border-white/30 space-y-7">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-lg font-semibold">{themeModalTitle}</h2>
@@ -777,10 +777,10 @@ const App: React.FC = () => {
               </div>
               <button
                 type="button"
-                className="px-3 py-1.5 rounded-sm bg-gray-500/30 text-sm hover:bg-gray-500/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                className="bs-btn bs-btn--neutral text-sm px-3 py-1.5"
                 onClick={closeFolderModal}
               >
-                Close
+                <XIcon className='w-4' />
               </button>
             </div>
             <div className="max-h-48 overflow-y-auto space-y-1">
@@ -800,27 +800,27 @@ const App: React.FC = () => {
               />
               <button
                 type="button"
-                className="px-4 py-2 rounded-sm bg-green-600 text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+                className="bs-btn bs-btn--success px-4 py-2"
                 onClick={() => {
                   if (!folderModalNewName.trim()) return;
                   void handleCreateFolder(folderModalNewName, selectedFolderId);
                   setFolderModalNewName('');
                 }}
               >
-                Create
+                <Plus className='w-4' />
               </button>
             </div>
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                className="px-4 py-2 rounded-sm bg-gray-500/30 text-sm font-medium hover:bg-gray-500/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                className="bs-btn bs-btn--danger px-4 py-2 text-sm font-medium"
                 onClick={closeFolderModal}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                className="bs-btn bs-btn--primary px-4 py-2"
                 onClick={() => void handleSavePendingVisit()}
               >
                 Save
@@ -847,22 +847,19 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, acti
       type="button"
       onClick={onClick}
       className={[
-        'w-full flex items-center justify-between gap-2 rounded px-3 py-2 transition',
+        'w-full flex items-center justify-between gap-2 px-3 py-2 transition',
         active
-          ? 'bg-blue-600 text-white shadow-sm'
-          : 'bg-transparent text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/60',
+          ? 'font-bold'
+          : '',
       ].join(' ')}
       style={{ paddingLeft: `${Math.max(0, depth - 1) * 16 + 12}px` }}
       aria-current={active ? 'page' : undefined}
     >
-      <span className="truncate">{label}</span>
-      <span
-        className={
-          active
-            ? 'text-xs font-medium bg-white/20 text-white px-2 py-0.5 rounded'
-            : 'text-xs text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded bg-gray-200/70 dark:bg-gray-700/70'
-        }
-      >
+      <div className='flex gap-2'>
+        <FolderClosed className='w-4' />
+        <span className="truncate">{label}</span>
+      </div>
+      <span className="text-xs">
         {count}
       </span>
     </button>

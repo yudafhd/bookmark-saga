@@ -1,0 +1,67 @@
+body[data-theme="windows95"] {
+    --bs-body-bg: linear-gradient(180deg, #c0c0c0 0%, #dcdcdc 100%);
+    --bs-text-color: #000000;
+    --bs-muted-color: #333333;
+    --bs-surface-bg: #d4d0c8;
+    --bs-surface-border: #808080;
+    --bs-surface-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080, 0 2px 0 #000000;
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(180deg, #0a64ad 0%, #084d86 100%);
+    --bs-button-color: #ffffff;
+
+    --bs-btn-accent-bg: linear-gradient(180deg, #0a64ad 0%, #084d86 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(180deg, #095c9e 0%, #073d6a 100%);
+    --bs-btn-accent-color: #f8fafc;
+    --bs-btn-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #185c9a, 0 4px 0 #000000;
+
+    --bs-btn-primary-bg: #0f6ccf;
+    --bs-btn-primary-hover-bg: #0c5cb5;
+    --bs-btn-primary-color: #f8fafc;
+    --bs-btn-primary-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #0a4d94, 0 4px 0 #123f74;
+
+    --bs-btn-success-bg: #2e8b57;
+    --bs-btn-success-hover-bg: #256b45;
+    --bs-btn-success-color: #f0fff4;
+    --bs-btn-success-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #1f5134, 0 4px 0 #1c3e2a;
+
+    --bs-btn-danger-bg: #b91c1c;
+    --bs-btn-danger-hover-bg: #991b1b;
+    --bs-btn-danger-color: #fde2e2;
+    --bs-btn-danger-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #7f1d1d, 0 4px 0 #561414;
+
+    --bs-btn-neutral-bg: #e5e5e5;
+    --bs-btn-neutral-hover-bg: #d4d4d4;
+    --bs-btn-neutral-color: #111111;
+    --bs-btn-neutral-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080, 0 4px 0 #000000;
+
+    --bs-btn-ghost-bg: #cbd5f5;
+    --bs-btn-ghost-hover-bg: #b3c8f1;
+    --bs-btn-ghost-color: #1f2937;
+    --bs-btn-focus-ring: rgba(8, 77, 134, 0.6);
+}
+
+body[data-theme="windows95"] .bs-surface-item {
+    background: #dfdbd2;
+    border-color: #808080;
+}
+
+body[data-theme="windows95"] .mode-toggle {
+    background: #d4d0c8;
+    color: #111111;
+    border: 1px solid #808080;
+    box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080, 0 4px 0 #000000;
+}
+
+body[data-theme="windows95"] .mode-toggle--active {
+    background: linear-gradient(180deg, #0a64ad 0%, #084d86 100%);
+    color: #f8fafc;
+    box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #0a4d94, 0 4px 0 #123f74;
+}
+
+body[data-theme="windows95"] .folder-option:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="windows95"] .folder-option input {
+    accent-color: #0a64ad;
+}

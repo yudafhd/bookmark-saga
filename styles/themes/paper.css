@@ -1,0 +1,67 @@
+body[data-theme="paper"] {
+    --bs-body-bg: linear-gradient(180deg, #faf7f2 0%, #fffefd 100%);
+    --bs-text-color: #1f2937;
+    --bs-muted-color: #6b7280;
+    --bs-surface-bg: #ffffff;
+    --bs-surface-border: #e5e7eb;
+    --bs-surface-shadow: 0 12px 32px -20px rgba(0, 0, 0, 0.25);
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(135deg, #e9d8a6 0%, #fcd34d 100%);
+    --bs-button-color: #1f2937;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, #e9d8a6 0%, #fcd34d 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, #facc15 0%, #f97316 100%);
+    --bs-btn-accent-color: #1f2937;
+    --bs-btn-shadow: 0 18px 44px -24px rgba(217, 119, 6, 0.35);
+
+    --bs-btn-primary-bg: #f59e0b;
+    --bs-btn-primary-hover-bg: #d97706;
+    --bs-btn-primary-color: #1f2937;
+    --bs-btn-primary-shadow: 0 18px 40px -24px rgba(217, 119, 6, 0.4);
+
+    --bs-btn-success-bg: #65a30d;
+    --bs-btn-success-hover-bg: #4d7c0f;
+    --bs-btn-success-color: #f7fee7;
+    --bs-btn-success-shadow: 0 18px 38px -24px rgba(101, 163, 13, 0.35);
+
+    --bs-btn-danger-bg: #dc2626;
+    --bs-btn-danger-hover-bg: #b91c1c;
+    --bs-btn-danger-color: #fef2f2;
+    --bs-btn-danger-shadow: 0 18px 38px -24px rgba(220, 38, 38, 0.35);
+
+    --bs-btn-neutral-bg: rgba(31, 41, 55, 0.08);
+    --bs-btn-neutral-hover-bg: rgba(31, 41, 55, 0.14);
+    --bs-btn-neutral-color: #1f2937;
+    --bs-btn-neutral-shadow: 0 14px 32px -22px rgba(15, 23, 42, 0.25);
+
+    --bs-btn-ghost-bg: transparent;
+    --bs-btn-ghost-hover-bg: rgba(31, 41, 55, 0.08);
+    --bs-btn-ghost-color: #1f2937;
+    --bs-btn-focus-ring: rgba(217, 119, 6, 0.4);
+}
+
+body[data-theme="paper"] .bs-surface-item {
+    background: #ffffff;
+    border-color: #e5e7eb;
+}
+
+body[data-theme="paper"] .mode-toggle {
+    background: rgba(249, 250, 251, 0.92);
+    color: #1f2937;
+    border: 1px solid rgba(31, 41, 55, 0.12);
+    box-shadow: 0 16px 36px -24px rgba(17, 24, 39, 0.18);
+}
+
+body[data-theme="paper"] .mode-toggle--active {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    box-shadow: 0 20px 44px -26px rgba(217, 119, 6, 0.32);
+}
+
+body[data-theme="paper"] .folder-option:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+body[data-theme="paper"] .folder-option input {
+    accent-color: #f59e0b;
+}

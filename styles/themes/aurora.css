@@ -1,0 +1,67 @@
+body[data-theme="aurora"] {
+    --bs-body-bg: linear-gradient(145deg, #0f172a 0%, #1e3a8a 40%, #22d3ee 100%);
+    --bs-text-color: #f1f5f9;
+    --bs-muted-color: rgba(226, 232, 240, 0.75);
+    --bs-surface-bg: rgba(15, 23, 42, 0.55);
+    --bs-surface-border: rgba(45, 212, 191, 0.35);
+    --bs-surface-shadow: 0 35px 70px -40px rgba(14, 165, 233, 0.65);
+    --bs-surface-blur: blur(28px);
+    --bs-button-bg: linear-gradient(135deg, rgba(45, 212, 191, 0.9) 0%, rgba(56, 189, 248, 0.9) 100%);
+    --bs-button-color: #0f172a;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(45, 212, 191, 0.95) 0%, rgba(56, 189, 248, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(34, 197, 213, 1) 0%, rgba(14, 165, 233, 1) 100%);
+    --bs-btn-accent-color: #04121a;
+    --bs-btn-shadow: 0 30px 68px -36px rgba(56, 189, 248, 0.6);
+
+    --bs-btn-primary-bg: rgba(56, 189, 248, 0.95);
+    --bs-btn-primary-hover-bg: rgba(14, 165, 233, 0.98);
+    --bs-btn-primary-color: #04121a;
+    --bs-btn-primary-shadow: 0 28px 65px -36px rgba(14, 165, 233, 0.55);
+
+    --bs-btn-success-bg: rgba(52, 211, 153, 0.95);
+    --bs-btn-success-hover-bg: rgba(22, 163, 74, 0.95);
+    --bs-btn-success-color: #041512;
+    --bs-btn-success-shadow: 0 28px 64px -36px rgba(16, 185, 129, 0.5);
+
+    --bs-btn-danger-bg: rgba(249, 115, 22, 0.95);
+    --bs-btn-danger-hover-bg: rgba(234, 88, 12, 0.95);
+    --bs-btn-danger-color: #0f172a;
+    --bs-btn-danger-shadow: 0 28px 64px -36px rgba(249, 115, 22, 0.5);
+
+    --bs-btn-neutral-bg: rgba(15, 23, 42, 0.58);
+    --bs-btn-neutral-hover-bg: rgba(15, 23, 42, 0.7);
+    --bs-btn-neutral-color: rgba(226, 232, 240, 0.88);
+    --bs-btn-neutral-shadow: 0 24px 55px -32px rgba(13, 148, 136, 0.45);
+
+    --bs-btn-ghost-bg: rgba(15, 23, 42, 0.26);
+    --bs-btn-ghost-hover-bg: rgba(15, 23, 42, 0.36);
+    --bs-btn-ghost-color: rgba(226, 232, 240, 0.9);
+    --bs-btn-focus-ring: rgba(45, 212, 191, 0.45);
+}
+
+body[data-theme="aurora"] .bs-surface-item {
+    background: rgba(15, 23, 42, 0.45);
+    border-color: rgba(34, 211, 238, 0.28);
+}
+
+body[data-theme="aurora"] .mode-toggle {
+    color: rgba(148, 163, 184, 0.7);
+}
+
+body[data-theme="aurora"] .mode-toggle--active {
+    background: rgba(13, 148, 136, 0.32);
+    color: #f8fafc;
+}
+
+body[data-theme="aurora"] .theme-option-desc {
+    color: rgba(226, 232, 240, 0.78);
+}
+
+body[data-theme="aurora"] .folder-option:hover {
+    background: rgba(13, 148, 136, 0.35);
+}
+
+body[data-theme="aurora"] .folder-option input {
+    accent-color: #2dd4bf;
+}

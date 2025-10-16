@@ -1,0 +1,12 @@
+@import './_base-theme.css';
+@import './themes/defaults.css';
+@import './themes/ios18.css';
+@import './themes/glass.css';
+@import './themes/aurora.css';
+@import './themes/midnight.css';
+@import './themes/sunset.css';
+@import './themes/neobrutalism.css';
+@import './themes/windows95.css';
+@import './themes/windows11.css';
+@import './themes/cyberpunk.css';
+@import './themes/paper.css';

@@ -1,6 +1,6 @@
-import { readMaxItems, readVisits, writeMaxItems, writeVisits } from '../src/lib/storage';
-import { resolveFavicon, isValidVisitUrl } from '../src/lib/utils';
-import type { VisitEntry } from '../src/lib/types';
+import { readMaxItems, readVisits, writeMaxItems, writeVisits } from '@/lib/storage';
+import { resolveFavicon, isValidVisitUrl } from '@/lib/utils';
+import type { VisitEntry } from '@/lib/types';
 
 function normalizeTitle(url: string, rawTitle?: string | null): string {
   const cleaned = (rawTitle ?? '').trim();
