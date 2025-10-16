@@ -615,7 +615,7 @@ export const ExternalLink: BookmarkSagaIcon = (props) => (
 // Bookmark (outline)
 export const Bookmark: BookmarkSagaIcon = (props) => (
     <IconBase {...props}>
-        {/* badan bookmark */}
+        {/* bookmark body */}
         <path d="M8.5 4h7a2.5 2.5 0 0 1 2.5 2.5V20l-6-3.5L6 20V6.5A2.5 2.5 0 0 1 8.5 4Z" />
     </IconBase>
 );
@@ -623,7 +623,7 @@ export const Bookmark: BookmarkSagaIcon = (props) => (
 // BookmarkSolid (isi penuh)
 export const BookmarkSolid: BookmarkSagaIcon = (props) => (
     <IconBase {...props}>
-        {/* gunakan fill agar solid; IconBase biasanya set stroke default */}
+        {/* use fill to render solid; IconBase sets stroke by default */}
         <path
             d="M8.5 4h7A2.5 2.5 0 0 1 18 6.5V20l-6-3.5L6 20V6.5A2.5 2.5 0 0 1 8.5 4Z"
             fill="currentColor"
@@ -637,7 +637,7 @@ export const BookmarkCheck: BookmarkSagaIcon = (props) => (
     <IconBase {...props}>
         {/* badan bookmark */}
         <path d="M8.5 4h7a2.5 2.5 0 0 1 2.5 2.5V20l-6-3.5L6 20V6.5A2.5 2.5 0 0 1 8.5 4Z" />
-        {/* tanda centang di dalam */}
+        {/* check mark inside */}
         <path d="M9.5 10.5l2.2 2.2 4-4" />
     </IconBase>
 );

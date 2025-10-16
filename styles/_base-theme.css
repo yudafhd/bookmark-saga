@@ -251,12 +251,20 @@ body {
     background: linear-gradient(135deg, #c7d2fe 0%, #93c5fd 100%);
 }
 
+.theme-option-chip--macos {
+    background: linear-gradient(135deg, #0a84ff 0%, #5ac8fa 100%);
+}
+
 .theme-option-chip--cyberpunk {
     background: linear-gradient(135deg, #06b6d4 0%, #ec4899 100%);
 }
 
 .theme-option-chip--paper {
     background: linear-gradient(135deg, #fff7ed 0%, #fde68a 100%);
+}
+
+.theme-option-chip--linux {
+    background: linear-gradient(135deg, #16a34a 0%, #0f766e 100%);
 }
 
 .mode-toggle {

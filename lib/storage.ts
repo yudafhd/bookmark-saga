@@ -122,10 +122,10 @@ export async function writeFolderItems(items: FolderItemsMap): Promise<void> {
 
 export async function readTheme(): Promise<ThemeId> {
   const result = await chrome.storage.local.get({
-    [THEME_KEY]: 'windows95' satisfies ThemeId,
+    [THEME_KEY]: 'linux' satisfies ThemeId,
   });
   const candidate = result[THEME_KEY];
-  return (typeof candidate === 'string' ? candidate : 'windows95') as ThemeId;
+  return (typeof candidate === 'string' ? candidate : 'linux') as ThemeId;
 }
 
 export async function writeTheme(theme: ThemeId): Promise<void> {

@@ -21,7 +21,12 @@ import {
 import { THEMES, getThemeById } from '@/lib/themes';
 import type { Folder, FolderItemsMap, ThemeId, VisitEntry } from '@/lib/types';
 import { formatRelativeTime, getHost, resolveFavicon } from '@/lib/utils';
-import { EditIcon, FolderClosed, Plus, PlusCircle, RefreshCw, Star, StarSolid, TrashIcon, XCircle, XIcon } from '@/shared/icons';
+import { EditIcon, FolderClosed, Plus, RefreshCw, StarSolid, TrashIcon, XIcon } from '@/shared/icons';
+import SidebarButton from '@/shared/components/SidebarButton';
+import HistorySection from './components/HistorySection';
+import SavedSection from './components/SavedSection';
+import ThemeModal from './components/ThemeModal';
+import FolderModal from './components/FolderModal';
 
 type Mode = 'history' | 'saved';
 
@@ -32,7 +37,7 @@ interface PendingSaveVisit {
   visitTime: number | null;
 }
 
-const DEFAULT_THEME: ThemeId = 'windows95';
+const DEFAULT_THEME: ThemeId = 'linux';
 
 function generateFolderId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -72,6 +77,13 @@ const App: React.FC = () => {
   const [pendingSaveVisit, setPendingSaveVisit] = useState<PendingSaveVisit | null>(null);
   const [themeId, setThemeId] = useState<ThemeId>(DEFAULT_THEME);
   const [folderModalNewName, setFolderModalNewName] = useState('');
+
+  const headerIconSrc = useMemo(() => {
+    if (typeof chrome !== 'undefined' && chrome.runtime?.getURL) {
+      return chrome.runtime.getURL('icons/icon48.png');
+    }
+    return '/icons/icon48.png';
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -126,6 +138,18 @@ const App: React.FC = () => {
   const savedItems = useMemo(
     () => getItemsForFolder(folders, folderItems, currentSavedFolderId),
     [folders, folderItems, currentSavedFolderId],
+  );
+
+  // Normalize saved items for the SavedSection component shape
+  const processedSavedItems = useMemo(
+    () =>
+      savedItems.map((item) => ({
+        ...item,
+        host: getHost(item.url),
+        savedLabel: item.savedAt ? `Saved ${formatRelativeTime(item.savedAt)}` : null,
+        visitLabel: item.visitTime ? `Visited ${formatRelativeTime(item.visitTime)}` : null,
+      })),
+    [savedItems],
   );
 
   const totalSavedCount = useMemo(
@@ -206,7 +230,7 @@ const App: React.FC = () => {
       const trimmed = name.trim();
       if (!trimmed) return;
       if (isDuplicateName(folders, trimmed, parentId)) {
-        alert('Nama folder sudah digunakan pada level tersebut.');
+        alert('Folder name is already used at this level.');
         return;
       }
       const folder: Folder = {
@@ -232,7 +256,7 @@ const App: React.FC = () => {
       const trimmed = newName.trim();
       if (!trimmed || trimmed === folder.name) return;
       if (isDuplicateName(folders, trimmed, folder.parentId, folder.id)) {
-        alert('Nama folder lain sudah digunakan pada level yang sama.');
+        alert('Another folder already uses that name at this level.');
         return;
       }
       const nextFolders = folders.map((item) =>
@@ -257,9 +281,9 @@ const App: React.FC = () => {
       const parts: string[] = [];
       if (subfolderCount > 0) parts.push(`${subfolderCount} subfolder`);
       if (itemCount > 0) parts.push(`${itemCount} item`);
-      const suffix = parts.length ? ` (termasuk ${parts.join(' dan ')})` : '';
+      const suffix = parts.length ? ` (including ${parts.join(' and ')})` : '';
       const confirmed = confirm(
-        `Hapus folder "${folder.name}"${suffix}? Tindakan ini tidak dapat dibatalkan.`,
+        `Delete folder "${folder.name}"${suffix}? This action cannot be undone.`,
       );
       if (!confirmed) return;
 
@@ -309,12 +333,12 @@ const App: React.FC = () => {
       return;
     }
     if (!selectedFolderId) {
-      alert('Buat atau pilih folder terlebih dahulu.');
+      alert('Create or select a folder first.');
       return;
     }
     const existing = folderItems[selectedFolderId] ?? [];
     if (existing.some((item) => item.url === pendingSaveVisit.url)) {
-      alert('Item ini sudah tersimpan di folder yang dipilih.');
+      alert('This item is already saved in the selected folder.');
       return;
     }
     const entry = {
@@ -349,8 +373,8 @@ const App: React.FC = () => {
   );
 
   const themeModalTitle = pendingSaveVisit
-    ? `Simpan ke Folder — ${getHost(pendingSaveVisit.url)}`
-    : 'Simpan ke Folder';
+    ? `Save to Folder — ${getHost(pendingSaveVisit.url)}`
+    : 'Save to Folder';
 
   const folderTree = useMemo(() => {
     const build = (parentId: string | null, depth = 0): React.ReactElement[] => {
@@ -410,16 +434,24 @@ const App: React.FC = () => {
   }, [folders, folderItems, totalSavedCount, currentSavedFolderId]);
 
   const historyHeaderSubtitle =
-    mode === 'history' ? 'Riwayat kunjungan terbaru' : 'Halaman yang kamu simpan';
+    mode === 'history' ? 'Latest visit history' : 'Pages you saved';
 
   return (
     <div className="w-full p-4 md:p-6 space-y-6">
       <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Bookmark Saga</h1>
-          <p className="opacity-70" id="headerSubtitle">
-            {historyHeaderSubtitle}
-          </p>
+        <div className="flex items-start gap-3">
+          <img
+            src={headerIconSrc}
+            alt="Bookmark Saga logo"
+            className="h-12 w-12 rounded-sm shadow-sm"
+            loading="lazy"
+          />
+          <div>
+            <h1 className="text-2xl font-bold">Bookmark Saga</h1>
+            <p className="opacity-70" id="headerSubtitle">
+              {historyHeaderSubtitle}
+            </p>
+          </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
           <div className="flex gap-2">
@@ -457,7 +489,7 @@ const App: React.FC = () => {
               onClick={() => setThemeModalOpen(true)}
               aria-expanded={isThemeModalOpen}
             >
-              Tema · {currentTheme?.name ?? 'Windows 95'}
+              Theme · {currentTheme?.name ?? 'Windows 95'}
             </button>
             <button
               type="button"
@@ -482,387 +514,73 @@ const App: React.FC = () => {
       </header>
 
       {mode === 'history' ? (
-        <section className="space-y-6">
-          {loading ? (
-            <p className="text-sm opacity-70">Loading visits…</p>
-          ) : filteredVisits.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-lg opacity-90">No visits recorded yet.</p>
-              <p className="mt-2 text-sm opacity-70">
-                Visit some websites and come back here.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid">
-              {filteredVisits.map((visit) => (
-                <article key={visit.url} className="bs-card transition p-3">
-                  <div className="space-y-4">
-                    <div className='flex items-center gap-2'>
-                      <img
-                        src={visit.faviconUrl}
-                        alt=""
-                        className="w-8 h-8 rounded"
-                        loading="lazy"
-                      />
-                      <a
-                        href={visit.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-lg font-medium hover:underline line-clamp-2"
-                      >
-                        {visit.title}
-                      </a>
-                    </div>
-                    <div className='flex gap-3'>
-                      <p className="text-xs opacity-70 truncate">
-                        {getHost(visit.url)}
-                      </p>
-                      <span className="inline-block text-xs opacity-75">
-                        viewed {formatRelativeTime(visit.visitTime)}
-                      </span>
-                      <button
-                        type="button"
-                        className={`bs-btn ${savedUrlSet.has(visit.url) ? 'bs-btn--success' : 'bs-btn--primary'} px-2 py-1 text-xs font-medium`}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          openFolderModal(visit);
-                        }}
-                      >
-                        {savedUrlSet.has(visit.url) ? <StarSolid className='w-3' /> : 'Save'}
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
+        <>
+          <HistorySection
+            loading={loading}
+            filteredVisits={filteredVisits}
+            hasVisits={filteredVisits.length !== 0}
+            savedUrlSet={savedUrlSet}
+            onSaveClick={(visit) => {
+              openFolderModal(visit);
+            }}
+          />
+        </>
       ) : (
-        <section className="space-y-6" id="savedView">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <aside className="p-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold uppercase tracking-wide">Folders</h2>
-                <button
-                  type="button"
-                  className="bs-btn bs-btn--neutral text-xs px-2 py-1"
-                  onClick={() => {
-                    const name = prompt('Nama folder baru:');
-                    if (name) {
-                      void handleCreateFolder(name, null);
-                    }
-                  }}
-                >
-                  <Plus className='w-4' />
-                </button>
-              </div>
-              <nav className="space-y-1 text-sm">{sidebarNodes}</nav>
-            </aside>
-            <div className="col-span-4 space-y-4">
-              {folders.length === 0 && totalSavedCount === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-lg opacity-90">No saved items yet.</p>
-                  <p className="mt-2 text-sm opacity-70">
-                    Save pages from the history list to see them here.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div>
-                      <div className='flex gap-2'>
-                        <FolderClosed className='w-4' />
-                        <h2 className="text-xl font-semibold">
-                          {currentFolder ? currentFolder.name : 'All saved pages'}
-                        </h2>
-                      </div>
-                      <p className="text-sm opacity-70">
-                        {currentFolder
-                          ? buildBreadcrumb(folders, currentSavedFolderId)
-                          : 'Combined from all folders'}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        className="bs-btn bs-btn--success px-3 py-1 text-sm"
-                        onClick={() => {
-                          if (!currentSavedFolderId) return;
-                          const name = prompt('Nama subfolder baru:');
-                          if (name) {
-                            void handleCreateFolder(name, currentSavedFolderId);
-                          }
-                        }}
-                        disabled={!currentSavedFolderId}
-                      >
-                        <Plus className='w-4' />
-                      </button>
-                      <button
-                        type="button"
-                        className="bs-btn bs-btn--neutral px-3 py-1 text-sm"
-                        onClick={() => {
-                          if (!currentSavedFolderId) return;
-                          const folder = folders.find((f) => f.id === currentSavedFolderId);
-                          if (!folder) return;
-                          const name = prompt('Nama folder baru:', folder.name);
-                          if (name) {
-                            void handleRenameFolder(folder.id, name);
-                          }
-                        }}
-                        disabled={!currentSavedFolderId}
-                      >
-                        <EditIcon className='w-4' />
-                      </button>
-                      <button
-                        type="button"
-                        className="bs-btn bs-btn--danger px-3 py-1 text-sm"
-                        onClick={() => {
-                          if (!currentSavedFolderId) return;
-                          void handleDeleteFolder(currentSavedFolderId);
-                        }}
-                        disabled={!currentSavedFolderId}
-                      >
-                        <TrashIcon className='w-4' />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="bs-surface max-w-[80vw] rounded-sm border border-transparent shadow-sm">
-                    {savedItems.length === 0 ? (
-                      <p className="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
-                        {currentSavedFolderId
-                          ? 'No items in this folder yet.'
-                          : 'No items saved yet.'}
-                      </p>
-                    ) : (
-                      savedItems.map((item) => (
-                        <div
-                          key={`${item.folderId}-${item.url}`}
-                          className="bs-surface-item px-4 py-3 flex items-start gap-3 transition"
-                        >
-                          <img
-                            src={item.faviconUrl}
-                            alt=""
-                            className="w-6 h-6 rounded mt-1"
-                            loading="lazy"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm truncate font-medium text-blue-600 dark:text-blue-400 hover:underline line-clamp-2"
-                            >
-                              {item.title}
-                            </a>
-                            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs opacity-70">
-                              <span>{getHost(item.url)}</span>
-                              {item.savedAt ? (
-                                <span>Saved {formatRelativeTime(item.savedAt)}</span>
-                              ) : null}
-                              {item.visitTime ? (
-                                <span>Visited {formatRelativeTime(item.visitTime)}</span>
-                              ) : null}
-                              {!currentSavedFolderId && (
-                                <span className="px-2 py-0.5 rounded-sm bg-gray-200/70 dark:bg-gray-700/70 text-gray-600 dark:text-gray-300">
-                                  {folders.find((folder) => folder.id === item.folderId)?.name ??
-                                    'Folder'}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="shrink-0">
-                            <button
-                              type="button"
-                              className="bs-btn bs-btn--danger text-xs font-semibold px-2 py-1"
-                              onClick={(event) => {
-                                event.preventDefault();
-                                void handleRemoveSavedItem(item.folderId, item.url);
-                              }}
-                            >
-                              <StarSolid className='w-4' />
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
+        <SavedSection
+          sidebarNodes={sidebarNodes}
+          isEmpty={folders.length === 0 && totalSavedCount === 0}
+          currentFolderName={currentFolder ? currentFolder.name : 'All saved pages'}
+          breadcrumb={currentFolder ? buildBreadcrumb(folders, currentSavedFolderId) : 'Combined from all folders'}
+          savedItems={processedSavedItems}
+          currentSavedFolderId={currentSavedFolderId}
+          resolveFolderName={(id) => folders.find((f) => f.id === id)?.name ?? 'Folder'}
+          onCreateRootFolder={() => {
+            const name = prompt('New folder name:');
+            if (name) void handleCreateFolder(name, null);
+          }}
+          onCreateSubfolder={() => {
+            if (!currentSavedFolderId) return;
+            const name = prompt('New subfolder name:');
+            if (name) void handleCreateFolder(name, currentSavedFolderId);
+          }}
+          onRenameFolder={() => {
+            if (!currentSavedFolderId) return;
+            const folder = folders.find((f) => f.id === currentSavedFolderId);
+            if (!folder) return;
+            const name = prompt('Rename folder:', folder.name);
+            if (name) void handleRenameFolder(folder.id, name);
+          }}
+          onDeleteFolder={() => {
+            if (!currentSavedFolderId) return;
+            void handleDeleteFolder(currentSavedFolderId);
+          }}
+          onRemoveSavedItem={(folderId, url) => void handleRemoveSavedItem(folderId, url)}
+        />
       )}
 
-      {isThemeModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4"
-          role="dialog"
-          aria-modal="true"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setThemeModalOpen(false);
-            }
-          }}
-        >
-          <div className="max-h-[80vh] overflow-y-auto bs-surface max-w-md w-full p-6 rounded-2xl border border-white/40 space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold">Choose Theme</h2>
-                <p className="text-sm opacity-70">
-                  Customize Bookmark Saga’s look to your preferred style.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="bs-btn bs-btn--ghost text-sm px-3 py-1.5"
-                onClick={() => setThemeModalOpen(false)}
-              >
-                <XIcon className='w-4' />
-              </button>
-            </div>
-            <div className="space-y-3">
-              {THEMES.map((theme) => {
-                const active = theme.id === themeId;
-                return (
-                  <button
-                    key={theme.id}
-                    type="button"
-                    className={`theme-option${active ? ' theme-option--active' : ''}`}
-                    onClick={() => handleThemeChange(theme.id)}
-                    aria-pressed={active}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="text-left">
-                        <p className="theme-option-title">{theme.name}</p>
-                        <p className="theme-option-desc">{theme.description}</p>
-                      </div>
-                      <span className={`theme-option-chip theme-option-chip--${theme.id}`} />
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="flex items-center justify-between">
-              <p className="text-xs opacity-60">Theme changes apply immediately.</p>
-              <button
-                type="button"
-                className="bs-btn bs-btn--neutral px-3 py-1.5 text-sm font-medium"
-                onClick={() => handleThemeChange(DEFAULT_THEME)}
-              >
-                Reset to Default
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {isThemeModalOpen ? (
+        <ThemeModal
+          open={isThemeModalOpen}
+          currentThemeId={themeId}
+          onClose={() => setThemeModalOpen(false)}
+          onChangeTheme={(id) => handleThemeChange(id)}
+        />
+      ) : null}
 
-      {isFolderModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4"
-          role="dialog"
-          aria-modal="true"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              closeFolderModal();
-            }
-          }}
-        >
-          <div className="bs-surface max-w-md w-full p-6 rounded-2xl border border-white/30 space-y-7">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-lg font-semibold">{themeModalTitle}</h2>
-                <p className="text-sm opacity-70">
-                  Pilih folder tujuan atau buat yang baru.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="bs-btn bs-btn--neutral text-sm px-3 py-1.5"
-                onClick={closeFolderModal}
-              >
-                <XIcon className='w-4' />
-              </button>
-            </div>
-            <div className="max-h-48 overflow-y-auto space-y-1">
-              {folders.length === 0 ? (
-                <p className="text-sm text-gray-500">No folders yet.</p>
-              ) : (
-                folderTree
-              )}
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={folderModalNewName}
-                onChange={(event) => setFolderModalNewName(event.target.value)}
-                placeholder="New folder name"
-                className="flex-1 px-3 py-2 rounded border border-transparent bg-white/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-              />
-              <button
-                type="button"
-                className="bs-btn bs-btn--success px-4 py-2"
-                onClick={() => {
-                  if (!folderModalNewName.trim()) return;
-                  void handleCreateFolder(folderModalNewName, selectedFolderId);
-                  setFolderModalNewName('');
-                }}
-              >
-                <Plus className='w-4' />
-              </button>
-            </div>
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                className="bs-btn bs-btn--danger px-4 py-2 text-sm font-medium"
-                onClick={closeFolderModal}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="bs-btn bs-btn--primary px-4 py-2"
-                onClick={() => void handleSavePendingVisit()}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {isFolderModalOpen ? (
+        <FolderModal
+          open={isFolderModalOpen}
+          title={themeModalTitle}
+          foldersEmpty={folders.length === 0}
+          folderTree={folderTree}
+          newName={folderModalNewName}
+          onChangeNewName={(v: string) => setFolderModalNewName(v)}
+          onCreateFolder={(name: string, parentId: string | null = null) => void handleCreateFolder(name, parentId)}
+          onClose={closeFolderModal}
+          onSave={() => void handleSavePendingVisit()}
+        />
+      ) : null}
     </div>
-  );
-};
-
-interface SidebarButtonProps {
-  label: string;
-  depth: number;
-  count: number;
-  active: boolean;
-  onClick: () => void;
-}
-
-const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, active, onClick }) => {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        'w-full flex items-center justify-between gap-2 px-3 py-2 transition',
-        active
-          ? 'font-bold'
-          : '',
-      ].join(' ')}
-      style={{ paddingLeft: `${Math.max(0, depth - 1) * 16 + 12}px` }}
-      aria-current={active ? 'page' : undefined}
-    >
-      <div className='flex gap-2'>
-        <FolderClosed className='w-4' />
-        <span className="truncate">{label}</span>
-      </div>
-      <span className="text-xs">
-        {count}
-      </span>
-    </button>
   );
 };
 

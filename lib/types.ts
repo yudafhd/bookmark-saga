@@ -32,10 +32,11 @@ export type ThemeId =
   | 'windows11'
   | 'cyberpunk'
   | 'sunset'
-  | 'paper';
+  | 'paper'
+  | 'macos'
+  | 'linux';
 
 export interface ThemeOption {
   id: ThemeId;
   name: string;
-  description: string;
 }

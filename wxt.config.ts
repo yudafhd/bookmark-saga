@@ -4,14 +4,16 @@ export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   manifest: {
     name: 'Bookmark Saga',
-    description: 'New Tab yang menampilkan riwayat kunjungan terbaru.',
+    description: 'New Tab showcasing your latest browsing history.',
     version: '1.0.0',
     permissions: ['history', 'storage', 'tabs'],
     icons: {
-      16: 'icons/icon-16.png',
-      48: 'icons/icon-48.png',
-      128: 'icons/icon-128.png',
+      16: "icons/icon16.png",
+      32: "icons/icon32.png",
+      48: "icons/icon48.png",
+      128: "icons/icon128.png"
     },
+
     chrome_url_overrides: {
       newtab: 'newtab.html',
     },

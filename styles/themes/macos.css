@@ -1,0 +1,67 @@
+body[data-theme="macos"] {
+    --bs-body-bg: radial-gradient(140% 160% at 50% -20%, rgba(255, 255, 255, 0.95) 0%, rgba(226, 232, 240, 0.9) 45%, rgba(148, 163, 184, 0.82) 100%);
+    --bs-text-color: #111827;
+    --bs-muted-color: rgba(55, 65, 81, 0.7);
+    --bs-surface-bg: rgba(255, 255, 255, 0.72);
+    --bs-surface-border: rgba(148, 163, 184, 0.28);
+    --bs-surface-shadow: 0 30px 80px -48px rgba(15, 23, 42, 0.35);
+    --bs-surface-blur: blur(22px);
+    --bs-button-bg: linear-gradient(135deg, rgba(10, 132, 255, 0.98) 0%, rgba(90, 200, 250, 0.98) 100%);
+    --bs-button-color: #ffffff;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(10, 132, 255, 0.98) 0%, rgba(64, 156, 255, 0.98) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(0, 122, 255, 1) 0%, rgba(64, 156, 255, 1) 100%);
+    --bs-btn-accent-color: #ffffff;
+    --bs-btn-shadow: 0 26px 58px -34px rgba(10, 132, 255, 0.45);
+
+    --bs-btn-primary-bg: #0a84ff;
+    --bs-btn-primary-hover-bg: #0066cc;
+    --bs-btn-primary-color: #ffffff;
+    --bs-btn-primary-shadow: 0 24px 54px -32px rgba(10, 132, 255, 0.5);
+
+    --bs-btn-success-bg: #34c759;
+    --bs-btn-success-hover-bg: #248a3d;
+    --bs-btn-success-color: #042f14;
+    --bs-btn-success-shadow: 0 24px 52px -32px rgba(52, 199, 89, 0.45);
+
+    --bs-btn-danger-bg: #ff375f;
+    --bs-btn-danger-hover-bg: #d70040;
+    --bs-btn-danger-color: #fff7fb;
+    --bs-btn-danger-shadow: 0 24px 52px -32px rgba(255, 55, 95, 0.5);
+
+    --bs-btn-neutral-bg: rgba(255, 255, 255, 0.7);
+    --bs-btn-neutral-hover-bg: rgba(255, 255, 255, 0.82);
+    --bs-btn-neutral-color: #111827;
+    --bs-btn-neutral-shadow: 0 20px 48px -30px rgba(15, 23, 42, 0.28);
+
+    --bs-btn-ghost-bg: rgba(255, 255, 255, 0.22);
+    --bs-btn-ghost-hover-bg: rgba(255, 255, 255, 0.32);
+    --bs-btn-ghost-color: #0a84ff;
+    --bs-btn-focus-ring: rgba(10, 132, 255, 0.45);
+}
+
+body[data-theme="macos"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(148, 163, 184, 0.32);
+}
+
+body[data-theme="macos"] .mode-toggle {
+    color: rgba(17, 24, 39, 0.75);
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 22px 48px -30px rgba(15, 23, 42, 0.28);
+}
+
+body[data-theme="macos"] .mode-toggle--active {
+    background: linear-gradient(135deg, #0a84ff 0%, #5ac8fa 100%);
+    color: #ffffff;
+    box-shadow: 0 28px 60px -34px rgba(10, 132, 255, 0.45);
+}
+
+body[data-theme="macos"] .folder-option:hover {
+    background: rgba(10, 132, 255, 0.18);
+}
+
+body[data-theme="macos"] .folder-option input {
+    accent-color: #0a84ff;
+}
