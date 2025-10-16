@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans min-h-screen transition-colors duration-300;
+}
+
+.bs-surface {
+  backdrop-filter: var(--bs-surface-blur);
+}

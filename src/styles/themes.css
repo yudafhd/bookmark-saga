@@ -1,0 +1,471 @@
+:root {
+    --bs-body-bg: linear-gradient(180deg, #f4f6ff 0%, #ffffff 100%);
+    --bs-text-color: #0f172a;
+    --bs-muted-color: #64748b;
+    --bs-surface-bg: rgba(255, 255, 255, 0.92);
+    --bs-surface-border: rgba(15, 23, 42, 0.08);
+    --bs-surface-shadow: 0 18px 40px -28px rgba(15, 23, 42, 0.55);
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+    --bs-button-color: #ffffff;
+}
+
+body {
+    background: var(--bs-body-bg);
+    color: var(--bs-text-color);
+    transition: background 0.6s ease, color 0.4s ease;
+}
+
+body[data-theme="ios18"] {
+    --bs-body-bg: radial-gradient(120% 140% at 20% 0%, rgba(134, 239, 172, 0.82) 0%, rgba(59, 130, 246, 0.62) 42%, rgba(147, 51, 234, 0.58) 70%) fixed;
+    --bs-text-color: #0f172a;
+    --bs-muted-color: #334155;
+    --bs-surface-bg: rgba(255, 255, 255, 0.85);
+    --bs-surface-border: rgba(99, 102, 241, 0.35);
+    --bs-surface-shadow: 0 25px 55px -32px rgba(99, 102, 241, 0.65);
+    --bs-surface-blur: blur(18px);
+    --bs-button-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(6, 182, 212, 0.95) 100%);
+    --bs-button-color: #f8fafc;
+}
+
+body[data-theme="glass"] {
+    --bs-body-bg: linear-gradient(155deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 64, 175, 0.85) 45%, rgba(49, 46, 129, 0.92) 100%) fixed;
+    --bs-text-color: #efefef;
+    --bs-muted-color: rgba(226, 232, 240, 0.72);
+    --bs-surface-bg: rgba(15, 23, 42, 0.38);
+    --bs-surface-border: rgba(148, 163, 184, 0.28);
+    --bs-surface-shadow: 0 40px 90px -60px rgba(12, 25, 64, 0.95);
+    --bs-surface-blur: blur(24px);
+    --bs-button-bg: linear-gradient(135deg, rgba(147, 197, 253, 0.95) 0%, rgba(165, 180, 252, 0.95) 100%);
+    --bs-button-color: #0f172a;
+}
+
+body[data-theme="aurora"] {
+    --bs-body-bg: linear-gradient(145deg, #0f172a 0%, #1e3a8a 40%, #22d3ee 100%);
+    --bs-text-color: #f1f5f9;
+    --bs-muted-color: rgba(226, 232, 240, 0.75);
+    --bs-surface-bg: rgba(15, 23, 42, 0.55);
+    --bs-surface-border: rgba(45, 212, 191, 0.35);
+    --bs-surface-shadow: 0 35px 70px -40px rgba(14, 165, 233, 0.65);
+    --bs-surface-blur: blur(28px);
+    --bs-button-bg: linear-gradient(135deg, rgba(45, 212, 191, 0.9) 0%, rgba(56, 189, 248, 0.9) 100%);
+    --bs-button-color: #0f172a;
+}
+
+body[data-theme="midnight"] {
+    --bs-body-bg: radial-gradient(circle at 20% 20%, #1f2937 0%, #111827 55%, #020617 100%);
+    --bs-text-color: #e2e8f0;
+    --bs-muted-color: rgba(148, 163, 184, 0.75);
+    --bs-surface-bg: rgba(15, 23, 42, 0.78);
+    --bs-surface-border: rgba(59, 130, 246, 0.25);
+    --bs-surface-shadow: 0 38px 80px -48px rgba(30, 64, 175, 0.65);
+    --bs-surface-blur: blur(14px);
+    --bs-button-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(15, 118, 110, 0.9) 100%);
+    --bs-button-color: #f8fafc;
+}
+
+body[data-theme="sunset"] {
+    --bs-body-bg: linear-gradient(160deg, #f97316 0%, #ef4444 40%, #8b5cf6 100%);
+    --bs-text-color: #0f172a;
+    --bs-muted-color: rgba(15, 23, 42, 0.65);
+    --bs-surface-bg: rgba(255, 255, 255, 0.88);
+    --bs-surface-border: rgba(251, 146, 60, 0.35);
+    --bs-surface-shadow: 0 35px 70px -40px rgba(249, 115, 22, 0.55);
+    --bs-surface-blur: blur(12px);
+    --bs-button-bg: linear-gradient(135deg, rgba(251, 191, 36, 0.95) 0%, rgba(244, 114, 182, 0.95) 100%);
+    --bs-button-color: #0f172a;
+}
+
+body[data-theme="neobrutalism"] {
+    --bs-body-bg: linear-gradient(0deg, #ffef5c 0%, #ffe34d 100%);
+    --bs-text-color: #111111;
+    --bs-muted-color: #374151;
+    --bs-surface-bg: #fffbe6;
+    --bs-surface-border: #111111;
+    --bs-surface-shadow: 8px 8px 0 #111111;
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(0deg, #111111 0%, #111111 100%);
+    --bs-button-color: #ffffff;
+}
+
+body[data-theme="windows95"] {
+    --bs-body-bg: linear-gradient(180deg, #c0c0c0 0%, #dcdcdc 100%);
+    --bs-text-color: #000000;
+    --bs-muted-color: #333333;
+    --bs-surface-bg: #d4d0c8;
+    --bs-surface-border: #808080;
+    --bs-surface-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080, 0 2px 0 #000000;
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(180deg, #0a64ad 0%, #084d86 100%);
+    --bs-button-color: #ffffff;
+}
+
+body[data-theme="windows11"] {
+    --bs-body-bg: radial-gradient(120% 140% at 20% -10%, rgba(255,255,255,0.6) 0%, rgba(230,240,255,0.8) 40%, rgba(210,220,240,0.9) 70%) fixed;
+    --bs-text-color: #0f172a;
+    --bs-muted-color: #334155;
+    --bs-surface-bg: rgba(255, 255, 255, 0.65);
+    --bs-surface-border: rgba(15, 23, 42, 0.08);
+    --bs-surface-shadow: 0 30px 80px -48px rgba(15, 23, 42, 0.45);
+    --bs-surface-blur: blur(18px);
+    --bs-button-bg: linear-gradient(135deg, #2b6ef5 0%, #1e63e9 100%);
+    --bs-button-color: #ffffff;
+}
+
+body[data-theme="cyberpunk"] {
+    --bs-body-bg: linear-gradient(135deg, #0a0a0f 0%, #12061a 55%, #001f2b 100%);
+    --bs-text-color: #e6f1ff;
+    --bs-muted-color: rgba(199, 210, 254, 0.8);
+    --bs-surface-bg: rgba(10, 10, 16, 0.72);
+    --bs-surface-border: rgba(236, 72, 153, 0.45);
+    --bs-surface-shadow: 0 40px 90px -50px rgba(6, 182, 212, 0.45);
+    --bs-surface-blur: blur(12px);
+    --bs-button-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.95) 0%, rgba(236, 72, 153, 0.95) 100%);
+    --bs-button-color: #0a0f0f;
+}
+
+body[data-theme="paper"] {
+    --bs-body-bg: linear-gradient(180deg, #faf7f2 0%, #fffefd 100%);
+    --bs-text-color: #1f2937;
+    --bs-muted-color: #6b7280;
+    --bs-surface-bg: #ffffff;
+    --bs-surface-border: #e5e7eb;
+    --bs-surface-shadow: 0 12px 32px -20px rgba(0, 0, 0, 0.25);
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(135deg, #e9d8a6 0%, #fcd34d 100%);
+    --bs-button-color: #1f2937;
+}
+
+.bs-surface {
+    background: var(--bs-surface-bg);
+    border: 1px solid var(--bs-surface-border);
+    box-shadow: var(--bs-surface-shadow);
+    backdrop-filter: var(--bs-surface-blur);
+    transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.bs-surface-item {
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid var(--bs-surface-border);
+    backdrop-filter: var(--bs-surface-blur);
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+body[data-theme="ios18"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(99, 102, 241, 0.35);
+}
+
+body[data-theme="glass"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+body[data-theme="aurora"] .bs-surface-item {
+    background: rgba(15, 23, 42, 0.45);
+    border-color: rgba(34, 211, 238, 0.28);
+}
+
+body[data-theme="midnight"] .bs-surface-item {
+    background: rgba(15, 23, 42, 0.62);
+    border-color: rgba(59, 130, 246, 0.22);
+}
+
+body[data-theme="sunset"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(249, 115, 22, 0.25);
+}
+
+body[data-theme="neobrutalism"] .bs-surface-item {
+    background: #fffbe6;
+    border-color: #111111;
+}
+
+body[data-theme="windows95"] .bs-surface-item {
+    background: #dfdbd2;
+    border-color: #808080;
+}
+
+body[data-theme="windows11"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(15, 23, 42, 0.1);
+}
+
+body[data-theme="cyberpunk"] .bs-surface-item {
+    background: rgba(16, 16, 24, 0.82);
+    border-color: rgba(236, 72, 153, 0.4);
+}
+
+body[data-theme="paper"] .bs-surface-item {
+    background: #ffffff;
+    border-color: #e5e7eb;
+}
+
+.bs-card {
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.theme-button {
+    background: var(--bs-button-bg);
+    color: var(--bs-button-color);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 18px 40px -22px rgba(37, 99, 235, 0.65);
+}
+
+.theme-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 24px 50px -26px rgba(37, 99, 235, 0.7);
+}
+
+body[data-theme="glass"] .theme-button {
+    box-shadow: 0 24px 64px -28px rgba(147, 197, 253, 0.8);
+}
+
+.theme-option {
+    width: 100%;
+    border-radius: 18px;
+    padding: 16px 18px;
+    border: 1px solid transparent;
+    background: var(--bs-surface-bg);
+    box-shadow: var(--bs-surface-shadow);
+    backdrop-filter: var(--bs-surface-blur);
+    text-align: left;
+    transition: transform 0.25s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-option:hover {
+    transform: translateY(-3px);
+}
+
+.theme-option--active {
+    border-color: rgba(59, 130, 246, 0.55);
+    box-shadow: 0 20px 45px -32px rgba(59, 130, 246, 0.65);
+}
+
+.theme-option-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.theme-option-desc {
+    font-size: 0.85rem;
+    color: var(--bs-muted-color);
+}
+
+body[data-theme="glass"] .theme-option-desc,
+body[data-theme="aurora"] .theme-option-desc,
+body[data-theme="midnight"] .theme-option-desc {
+    color: rgba(226, 232, 240, 0.78);
+}
+
+.theme-option-chip {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.35), 0 10px 25px -18px rgba(15, 23, 42, 0.35);
+}
+
+.theme-option-chip--default {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+}
+
+.theme-option-chip--ios18 {
+    background: linear-gradient(145deg, #2dd4bf 0%, #60a5fa 45%, #a855f7 100%);
+}
+
+.theme-option-chip--glass {
+    background: linear-gradient(160deg, rgba(71, 85, 105, 0.75) 0%, rgba(129, 140, 248, 0.65) 100%);
+}
+
+.theme-option-chip--aurora {
+    background: linear-gradient(140deg, rgba(56, 189, 248, 0.95) 0%, rgba(45, 212, 191, 0.9) 55%, rgba(14, 165, 233, 0.9) 100%);
+}
+
+.theme-option-chip--midnight {
+    background: linear-gradient(160deg, rgba(59, 130, 246, 0.9) 0%, rgba(15, 118, 110, 0.85) 100%);
+}
+
+.theme-option-chip--sunset {
+    background: linear-gradient(145deg, rgba(251, 146, 60, 0.95) 0%, rgba(244, 114, 182, 0.95) 55%, rgba(129, 140, 248, 0.85) 100%);
+}
+
+.theme-option-chip--neobrutalism {
+    background: linear-gradient(135deg, #111111 0%, #ffef5c 100%);
+}
+
+.theme-option-chip--windows95 {
+    background: linear-gradient(135deg, #c0c0c0 0%, #d4d0c8 100%);
+}
+
+.theme-option-chip--windows11 {
+    background: linear-gradient(135deg, #c7d2fe 0%, #93c5fd 100%);
+}
+
+.theme-option-chip--cyberpunk {
+    background: linear-gradient(135deg, #06b6d4 0%, #ec4899 100%);
+}
+
+.theme-option-chip--paper {
+    background: linear-gradient(135deg, #fff7ed 0%, #fde68a 100%);
+}
+
+.mode-toggle {
+    color: rgba(15, 23, 42, 0.65);
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    padding: 6px 14px;
+}
+
+.mode-toggle--active {
+    background: rgba(255, 255, 255, 0.92);
+    color: #0f172a;
+    box-shadow: 0 20px 35px -25px rgba(15, 23, 42, 0.55);
+}
+
+body[data-theme="glass"] .mode-toggle {
+    color: rgba(226, 232, 240, 0.65);
+}
+
+body[data-theme="glass"] .mode-toggle--active {
+    background: rgba(255, 255, 255, 0.18);
+    color: #f8fafc;
+    box-shadow: 0 24px 55px -32px rgba(148, 163, 184, 0.85);
+}
+
+body[data-theme="aurora"] .mode-toggle {
+    color: rgba(148, 163, 184, 0.7);
+}
+
+body[data-theme="aurora"] .mode-toggle--active {
+    background: rgba(13, 148, 136, 0.32);
+    color: #f8fafc;
+}
+
+body[data-theme="midnight"] .mode-toggle {
+    color: rgba(148, 163, 184, 0.7);
+}
+
+body[data-theme="midnight"] .mode-toggle--active {
+    background: rgba(30, 64, 175, 0.32);
+    color: #e2e8f0;
+}
+
+body[data-theme="sunset"] .mode-toggle {
+    color: rgba(15, 23, 42, 0.7);
+}
+
+body[data-theme="sunset"] .mode-toggle--active {
+    background: rgba(254, 215, 170, 0.72);
+    color: #0f172a;
+}
+
+body[data-theme="glass"] a {
+    color: rgba(191, 219, 254, 0.92);
+}
+
+body[data-theme="glass"] a:hover {
+    color: rgba(224, 231, 255, 1);
+}
+
+.folder-option {
+    background: transparent;
+}
+
+body[data-theme="default"] .folder-option:hover {
+    background: rgba(226, 232, 240, 0.6);
+}
+
+body[data-theme="ios18"] .folder-option:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+body[data-theme="glass"] .folder-option:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+body[data-theme="aurora"] .folder-option:hover {
+    background: rgba(13, 148, 136, 0.35);
+}
+
+body[data-theme="midnight"] .folder-option:hover {
+    background: rgba(37, 99, 235, 0.25);
+}
+
+body[data-theme="sunset"] .folder-option:hover {
+    background: rgba(254, 215, 170, 0.55);
+}
+
+body[data-theme="neobrutalism"] .folder-option:hover {
+    background: rgba(255, 239, 92, 0.35);
+}
+
+body[data-theme="windows95"] .folder-option:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="windows11"] .folder-option:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+body[data-theme="cyberpunk"] .folder-option:hover {
+    background: rgba(236, 72, 153, 0.25);
+}
+
+body[data-theme="paper"] .folder-option:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.folder-option input {
+    accent-color: #2563eb;
+}
+
+body[data-theme="ios18"] .folder-option input {
+    accent-color: #6366f1;
+}
+
+body[data-theme="glass"] .folder-option input {
+    accent-color: #a5b4fc;
+}
+
+body[data-theme="aurora"] .folder-option input {
+    accent-color: #2dd4bf;
+}
+
+body[data-theme="midnight"] .folder-option input {
+    accent-color: #60a5fa;
+}
+
+body[data-theme="sunset"] .folder-option input {
+    accent-color: #fb923c;
+}
+
+body[data-theme="neobrutalism"] .folder-option input {
+    accent-color: #111111;
+}
+
+body[data-theme="windows95"] .folder-option input {
+    accent-color: #0a64ad;
+}
+
+body[data-theme="windows11"] .folder-option input {
+    accent-color: #2563eb;
+}
+
+body[data-theme="cyberpunk"] .folder-option input {
+    accent-color: #ec4899;
+}
+
+body[data-theme="paper"] .folder-option input {
+    accent-color: #f59e0b;
+}
+
+.bs-surface a {
+    color: currentColor;
+}
+
+.bs-surface a:hover {
+    opacity: 0.85;
+}
