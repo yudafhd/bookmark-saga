@@ -2,6 +2,11 @@
 
 Bookmark Saga is a browser extension that replaces the New Tab page with a visit dashboard and a lightweight bookmark system.
 
+## Preview
+
+![Bookmark Saga preview 1](docs/assets/bookmark-saga-prev1.png)
+![Bookmark Saga preview 2](docs/assets/bookmark-saga-prev2.png)
+
 ## Development
 
 - `pnpm install` – install dependencies (runs `wxt prepare` automatically)
