@@ -18,11 +18,11 @@ import {
   getItemsForFolder,
   normalizeHierarchy,
 } from '@/lib/folder-utils';
-import { THEMES, getThemeById } from '@/lib/themes';
+import { getThemeById } from '@/lib/themes';
 import type { Folder, FolderItemsMap, ThemeId, VisitEntry } from '@/lib/types';
 import { formatRelativeTime, getHost, resolveFavicon } from '@/lib/utils';
-import { EditIcon, FolderClosed, Plus, RefreshCw, StarSolid, TrashIcon, XIcon } from '@/shared/icons';
 import SidebarButton from '@/shared/components/SidebarButton';
+import NewTabHeader from './components/NewTabHeader';
 import HistorySection from './components/HistorySection';
 import SavedSection from './components/SavedSection';
 import ThemeModal from './components/ThemeModal';
@@ -44,14 +44,6 @@ function generateFolderId(): string {
     return crypto.randomUUID();
   }
   return `folder_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-}
-
-function openUrl(url: string) {
-  try {
-    chrome.tabs.update({ url });
-  } catch {
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
 }
 
 function isDuplicateName(folders: Folder[], name: string, parentId: string | null, excludeId?: string) {
@@ -77,13 +69,6 @@ const App: React.FC = () => {
   const [pendingSaveVisit, setPendingSaveVisit] = useState<PendingSaveVisit | null>(null);
   const [themeId, setThemeId] = useState<ThemeId>(DEFAULT_THEME);
   const [folderModalNewName, setFolderModalNewName] = useState('');
-
-  const headerIconSrc = useMemo(() => {
-    if (typeof chrome !== 'undefined' && chrome.runtime?.getURL) {
-      return chrome.runtime.getURL('icons/icon48.png');
-    }
-    return '/icons/icon48.png';
-  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -160,6 +145,60 @@ const App: React.FC = () => {
   const currentFolder = useMemo(
     () => folders.find((folder) => folder.id === currentSavedFolderId) ?? null,
     [folders, currentSavedFolderId],
+  );
+
+  const uniqueVisitHosts = useMemo(() => {
+    const hosts = new Set<string>();
+    for (const visit of visits) {
+      hosts.add(getHost(visit.url));
+    }
+    return hosts.size;
+  }, [visits]);
+
+  const latestVisitTime = useMemo(() => {
+    if (visits.length === 0) return null;
+    let latest = visits[0].visitTime;
+    for (let index = 1; index < visits.length; index += 1) {
+      const value = visits[index].visitTime;
+      if (value > latest) {
+        latest = value;
+      }
+    }
+    return latest;
+  }, [visits]);
+
+  const capturedVisits = visits.length;
+  const totalFolders = folders.length;
+
+  const overviewCards = useMemo(
+    () => [
+      {
+        label: 'Active mode',
+        value: mode === 'history' ? 'History' : 'Saved',
+        hint: mode === 'history'
+          ? 'Review and collect new visits'
+          : currentFolder
+            ? `Viewing "${currentFolder.name}"`
+            : 'All collections',
+        emphasis: true,
+      },
+      {
+        label: 'Captured visits',
+        value: capturedVisits.toLocaleString(),
+        hint: latestVisitTime ? `Latest ${formatRelativeTime(latestVisitTime)}` : 'Waiting for your first visit',
+      },
+      {
+        label: 'Unique sites',
+        value: uniqueVisitHosts.toLocaleString(),
+        hint: mode === 'history' ? 'Based on current view' : 'From your full history',
+      },
+      {
+        label: 'Saved pages',
+        value: totalSavedCount.toLocaleString(),
+        hint: `${totalFolders} ${totalFolders === 1 ? 'folder' : 'folders'} tracked`,
+      },
+    ],
+    [capturedVisits, latestVisitTime, uniqueVisitHosts, mode, totalSavedCount, totalFolders, currentFolder],
   );
 
   const openFolderModal = useCallback(
@@ -414,6 +453,7 @@ const App: React.FC = () => {
         onClick={() => setCurrentSavedFolderId(null)}
       />,
     ];
+
     const build = (parentId: string | null, depth = 1) => {
       for (const folder of getFolderChildren(folders, parentId)) {
         nodes.push(
@@ -433,130 +473,77 @@ const App: React.FC = () => {
     return nodes;
   }, [folders, folderItems, totalSavedCount, currentSavedFolderId]);
 
-  const historyHeaderSubtitle =
-    mode === 'history' ? 'Latest visit history' : 'Pages you saved';
+  const historyHeaderSubtitle = useMemo(() => {
+    if (mode === 'history') {
+      const trimmed = searchQuery.trim();
+      return trimmed ? `Showing visits matching "${trimmed}"` : 'Latest visit history';
+    }
+    if (currentFolder) {
+      return `Viewing "${currentFolder.name}" saved pages`;
+    }
+    return 'Pages you saved';
+  }, [mode, searchQuery, currentFolder]);
 
   return (
-    <div className="w-full p-4 md:p-6 space-y-6">
-      <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="flex items-start gap-3">
-          <img
-            src={headerIconSrc}
-            alt="Bookmark Saga logo"
-            className="h-12 w-12 rounded-sm shadow-sm"
-            loading="lazy"
-          />
-          <div>
-            <h1 className="text-2xl font-bold">Bookmark Saga</h1>
-            <p className="opacity-70" id="headerSubtitle">
-              {historyHeaderSubtitle}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'history' ? 'mode-toggle--active' : ''
-                }`}
-              onClick={() => setMode('history')}
-              aria-pressed={mode === 'history'}
-            >
-              History
-            </button>
-            <button
-              type="button"
-              className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'saved' ? 'mode-toggle--active' : ''
-                }`}
-              onClick={() => setMode('saved')}
-              aria-pressed={mode === 'saved'}
-            >
-              Saved
-            </button>
-          </div>
-          <input
-            id="search"
-            type="search"
-            placeholder="Search by title or URL..."
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            className="w-full sm:w-60 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white/90 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          />
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="bs-btn bs-btn--accent px-4 py-2 rounded-sm font-medium"
-              onClick={() => setThemeModalOpen(true)}
-              aria-expanded={isThemeModalOpen}
-            >
-              Theme · {currentTheme?.name ?? 'Windows 95'}
-            </button>
-            <button
-              type="button"
-              className="bs-btn bs-btn--primary px-4 py-2"
-              onClick={refreshVisits}
-            >
-              <RefreshCw className='w-4' />
-              Refresh
-            </button>
-            {visits.length > 0 && (
-              <button
-                type="button"
-                className="bs-btn bs-btn--danger px-4 py-2"
-                onClick={clearVisits}
-              >
-                <TrashIcon className='w-4' />
-                Clear History
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
+    <div className="w-full space-y-8 px-4 pb-10 pt-6 md:px-8 lg:px-12">
+      <NewTabHeader
+        subtitle={historyHeaderSubtitle}
+        mode={mode}
+        onModeChange={setMode}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        currentThemeName={currentTheme?.name ?? DEFAULT_THEME}
+        onOpenThemeModal={() => setThemeModalOpen(true)}
+        isThemeModalOpen={isThemeModalOpen}
+        onRefresh={refreshVisits}
+        onClearHistory={clearVisits}
+        hasHistory={visits.length !== 0}
+      />
 
-      {mode === 'history' ? (
-        <>
+      <main className="space-y-8">
+        {mode === 'history' ? (
           <HistorySection
             loading={loading}
             filteredVisits={filteredVisits}
-            hasVisits={filteredVisits.length !== 0}
+            hasVisits={visits.length !== 0}
             savedUrlSet={savedUrlSet}
             onSaveClick={(visit) => {
               openFolderModal(visit);
             }}
           />
-        </>
-      ) : (
-        <SavedSection
-          sidebarNodes={sidebarNodes}
-          isEmpty={folders.length === 0 && totalSavedCount === 0}
-          currentFolderName={currentFolder ? currentFolder.name : 'All saved pages'}
-          breadcrumb={currentFolder ? buildBreadcrumb(folders, currentSavedFolderId) : 'Combined from all folders'}
-          savedItems={processedSavedItems}
-          currentSavedFolderId={currentSavedFolderId}
-          resolveFolderName={(id) => folders.find((f) => f.id === id)?.name ?? 'Folder'}
-          onCreateRootFolder={() => {
-            const name = prompt('New folder name:');
-            if (name) void handleCreateFolder(name, null);
-          }}
-          onCreateSubfolder={() => {
-            if (!currentSavedFolderId) return;
-            const name = prompt('New subfolder name:');
-            if (name) void handleCreateFolder(name, currentSavedFolderId);
-          }}
-          onRenameFolder={() => {
-            if (!currentSavedFolderId) return;
-            const folder = folders.find((f) => f.id === currentSavedFolderId);
-            if (!folder) return;
-            const name = prompt('Rename folder:', folder.name);
-            if (name) void handleRenameFolder(folder.id, name);
-          }}
-          onDeleteFolder={() => {
-            if (!currentSavedFolderId) return;
-            void handleDeleteFolder(currentSavedFolderId);
-          }}
-          onRemoveSavedItem={(folderId, url) => void handleRemoveSavedItem(folderId, url)}
-        />
-      )}
+        ) : (
+          <SavedSection
+            sidebarNodes={sidebarNodes}
+            isEmpty={folders.length === 0 && totalSavedCount === 0}
+            currentFolderName={currentFolder ? currentFolder.name : 'All saved pages'}
+            breadcrumb={currentFolder ? buildBreadcrumb(folders, currentSavedFolderId) : 'Combined from all folders'}
+            savedItems={processedSavedItems}
+            currentSavedFolderId={currentSavedFolderId}
+            resolveFolderName={(id) => folders.find((f) => f.id === id)?.name ?? 'Folder'}
+            onCreateRootFolder={() => {
+              const name = prompt('New folder name:');
+              if (name) void handleCreateFolder(name, null);
+            }}
+            onCreateSubfolder={() => {
+              if (!currentSavedFolderId) return;
+              const name = prompt('New subfolder name:');
+              if (name) void handleCreateFolder(name, currentSavedFolderId);
+            }}
+            onRenameFolder={() => {
+              if (!currentSavedFolderId) return;
+              const folder = folders.find((f) => f.id === currentSavedFolderId);
+              if (!folder) return;
+              const name = prompt('Rename folder:', folder.name);
+              if (name) void handleRenameFolder(folder.id, name);
+            }}
+            onDeleteFolder={() => {
+              if (!currentSavedFolderId) return;
+              void handleDeleteFolder(currentSavedFolderId);
+            }}
+            onRemoveSavedItem={(folderId, url) => void handleRemoveSavedItem(folderId, url)}
+          />
+        )}
+      </main>
 
       {isThemeModalOpen ? (
         <ThemeModal

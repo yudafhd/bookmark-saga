@@ -1,12 +1,10 @@
-import React from 'react';
-import type { Mode } from '@/entrypoints/newtab/types';
+import React, { useMemo } from 'react';
 import { RefreshCw, TrashIcon } from '@/shared/icons';
 
 interface NewTabHeaderProps {
-    iconSrc: string;
     subtitle: string;
-    mode: Mode;
-    onModeChange: (mode: Mode) => void;
+    mode: 'history' | 'saved';
+    onModeChange: (mode: 'history' | 'saved') => void;
     searchQuery: string;
     onSearchQueryChange: (value: string) => void;
     currentThemeName: string;
@@ -18,7 +16,6 @@ interface NewTabHeaderProps {
 }
 
 const NewTabHeader: React.FC<NewTabHeaderProps> = ({
-    iconSrc,
     subtitle,
     mode,
     onModeChange,
@@ -31,6 +28,12 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
     onClearHistory,
     hasHistory,
 }) => {
+    const iconSrc = useMemo(() => {
+        if (typeof chrome !== 'undefined' && chrome.runtime?.getURL) {
+            return chrome.runtime.getURL('icons/icon48.png');
+        }
+        return '/icons/icon48.png';
+    }, []);
     return (
         <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="flex items-start gap-3">
@@ -72,7 +75,7 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                     placeholder="Search by title or URL..."
                     value={searchQuery}
                     onChange={(event) => onSearchQueryChange(event.target.value)}
-                    className="w-full sm:w-60 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white/90 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    className="w-full sm:w-60 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white/90 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 />
                 <div className="flex gap-2">
                     <button

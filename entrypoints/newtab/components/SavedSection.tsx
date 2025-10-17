@@ -1,6 +1,6 @@
 import React from 'react';
 import type { FolderItem } from '@/lib/types';
-import { FolderClosed, Plus, EditIcon, TrashIcon, StarSolid } from '@/shared/icons';
+import { FolderClosed, Plus, EditIcon, TrashIcon, StarSolid, XIcon } from '@/shared/icons';
 
 interface SavedItemSection extends FolderItem {
     folderId: string;
@@ -38,125 +38,147 @@ const SavedSection: React.FC<SavedSectionProps> = ({
     onDeleteFolder,
     onRemoveSavedItem,
 }) => {
+    const visibleCount = savedItems.length;
+    const emptyFolderMessage = currentSavedFolderId
+        ? 'This folder is waiting for its first saved page.'
+        : 'Save pages from the history timeline to start building your collection.';
+
     return (
-        <section className="space-y-6" id="savedSection">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                <aside className="p-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-sm font-semibold uppercase tracking-wide">Folders</h2>
+        <section className="space-y-8" id="savedSection">
+            <div className="grid gap-6 lg:grid-cols-[280px,1fr]">
+                <aside className="bs-surface rounded-md p-4 space-y-4">
+                    <div className="flex items-center justify-between gap-3">
+                        <h2 className="text-sm font-semibold uppercase tracking-wide">Collections</h2>
                         <button
                             type="button"
-                            className="bs-btn bs-btn--neutral text-xs px-2 py-1"
+                            className="bs-btn bs-btn--neutral px-2 py-1 text-xs"
                             onClick={onCreateRootFolder}
                         >
                             <Plus className="w-4" />
+                            <span className="sr-only">Create root folder</span>
                         </button>
                     </div>
-                    <nav className="space-y-1 text-sm">{sidebarNodes}</nav>
+                    <p className="mt-2 text-xs opacity-70">
+                        Organize saved pages by creating folders and nested collections.
+                    </p>
+                    <nav className="mt-4 max-h-[360px] space-y-1 overflow-y-auto pr-1 text-sm">
+                        {sidebarNodes}
+                    </nav>
                 </aside>
-                <div className="col-span-4 space-y-4">
+                <div className="space-y-3">
+                    <header className="rounded-lg">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <FolderClosed className="w-5" />
+                                    <h2 className="text-xl font-semibold">
+                                        {currentFolderName || 'All saved pages'}
+                                    </h2>
+                                </div>
+                                <p className="mt-2 text-sm opacity-70">
+                                    {currentFolderName ? breadcrumb : 'Combined from every folder and subfolder.'}
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                <button
+                                    type="button"
+                                    className="bs-btn bs-btn--success flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                    onClick={onCreateSubfolder}
+                                    disabled={!currentSavedFolderId}
+                                >
+                                    <Plus className="w-4" />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="bs-btn bs-btn--neutral flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                    onClick={onRenameFolder}
+                                    disabled={!currentSavedFolderId}
+                                >
+                                    <EditIcon className="w-4" />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="bs-btn bs-btn--danger flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                    onClick={onDeleteFolder}
+                                    disabled={!currentSavedFolderId}
+                                >
+                                    <TrashIcon className="w-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </header>
                     {isEmpty ? (
-                        <div className="text-center py-12">
-                            <p className="text-lg opacity-90">No saved items yet.</p>
+                        <div className="rounded-lg p-12 text-center shadow-sm">
+                            <p className="text-lg font-semibold">Nothing saved yet</p>
                             <p className="mt-2 text-sm opacity-70">
-                                Save pages from the history list to see them here.
+                                Pin your favorite pages from the history timeline to build your first collection.
                             </p>
                         </div>
+                    ) : visibleCount === 0 ? (
+                        <div className="p-10 text-center">
+                            <p className="text-lg font-semibold">This folder is empty</p>
+                            <p className="mt-2 text-sm opacity-70">{emptyFolderMessage}</p>
+                        </div>
                     ) : (
-                        <div className="space-y-4">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                <div>
-                                    <div className="flex gap-2">
-                                        <FolderClosed className="w-4" />
-                                        <h2 className="text-xl font-semibold">
-                                            {currentFolderName || 'All saved pages'}
-                                        </h2>
-                                    </div>
-                                    <p className="text-sm opacity-70">
-                                        {currentFolderName ? breadcrumb : 'Combined from all folders'}
-                                    </p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button
-                                        type="button"
-                                        className="bs-btn bs-btn--success px-3 py-1 text-sm"
-                                        onClick={onCreateSubfolder}
-                                        disabled={!currentSavedFolderId}
-                                    >
-                                        <Plus className="w-4" />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="bs-btn bs-btn--neutral px-3 py-1 text-sm"
-                                        onClick={onRenameFolder}
-                                        disabled={!currentSavedFolderId}
-                                    >
-                                        <EditIcon className="w-4" />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="bs-btn bs-btn--danger px-3 py-1 text-sm"
-                                        onClick={onDeleteFolder}
-                                        disabled={!currentSavedFolderId}
-                                    >
-                                        <TrashIcon className="w-4" />
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="bs-surface max-w-[80vw] rounded-sm border border-transparent shadow-sm">
-                                {savedItems.length === 0 ? (
-                                    <p className="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
-                                        {currentSavedFolderId ? 'No items in this folder yet.' : 'No items saved yet.'}
-                                    </p>
-                                ) : (
-                                    savedItems.map((item) => (
-                                        <div
-                                            key={`${item.folderId}-${item.url}`}
-                                            className="bs-surface-item px-4 py-3 flex items-start gap-3 transition"
-                                        >
-                                            <img
-                                                src={item.faviconUrl}
-                                                alt=""
-                                                className="w-6 h-6 rounded mt-1"
-                                                loading="lazy"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <a
-                                                    href={item.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-sm truncate font-medium text-blue-600 dark:text-blue-400 hover:underline line-clamp-2"
-                                                >
-                                                    {item.title}
-                                                </a>
-                                                <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs opacity-70">
-                                                    <span>{new URL(item.url).host}</span>
-                                                    {item.savedAt ? <span>Saved {item.savedAt}</span> : null}
-                                                    {item.visitTime ? <span>Visited {item.visitTime}</span> : null}
-                                                    {!currentSavedFolderId && (
-                                                        <span className="px-2 py-0.5 rounded-sm bg-gray-200/70 dark:bg-gray-700/70 text-gray-600 dark:text-gray-300">
-                                                            {resolveFolderName(item.folderId)}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="shrink-0">
-                                                <button
-                                                    type="button"
-                                                    className="bs-btn bs-btn--danger text-xs font-semibold px-2 py-1"
-                                                    onClick={(event) => {
-                                                        event.preventDefault();
-                                                        onRemoveSavedItem(item.folderId, item.url);
-                                                    }}
-                                                >
-                                                    <StarSolid className="w-4" />
-                                                </button>
+                        <ul className="grid grid-cols-1 gap-1">
+                            {savedItems.map((item) => (
+                                <li
+                                    key={`${item.folderId}-${item.url}`}
+                                    className="rounded-lg bs-surface px-3 py-2"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <img
+                                            src={item.faviconUrl}
+                                            alt=""
+                                            className="h-7 w-7 rounded"
+                                            loading="lazy"
+                                        />
+                                        <div className="min-w-0 flex-1 space-y-2">
+                                            <a
+                                                href={item.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="line-clamp-2 text-sm font-semibold text-blue-600 transition hover:underline dark:text-blue-400"
+                                            >
+                                                {item.title || item.host}
+                                            </a>
+                                            <div className="flex flex-wrap gap-2 text-xs opacity-[0.5]">
+                                                <span className="truncate rounded-full px-2 py-0.5">
+                                                    {item.host}
+                                                </span>
+                                                {item.savedLabel ? (
+                                                    <span className="px-2 py-0.5">
+                                                        {item.savedLabel}
+                                                    </span>
+                                                ) : null}
+                                                {item.visitLabel ? (
+                                                    <span className="px-2 py-0.5">
+                                                        {item.visitLabel}
+                                                    </span>
+                                                ) : null}
+                                                {!currentSavedFolderId ? (
+                                                    <span className="px-2 py-0.5">
+                                                        {resolveFolderName(item.folderId)}
+                                                    </span>
+                                                ) : null}
                                             </div>
                                         </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
+                                        <div>
+                                            <button
+                                                type="button"
+                                                className="px-2"
+                                                onClick={(event) => {
+                                                    event.preventDefault();
+                                                    onRemoveSavedItem(item.folderId, item.url);
+                                                }}
+                                            >
+                                                <XIcon className="w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
                     )}
                 </div>
             </div>

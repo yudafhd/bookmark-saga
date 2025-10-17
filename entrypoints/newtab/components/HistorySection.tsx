@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { VisitEntry } from '@/lib/types';
 import { formatRelativeTime, getHost } from '@/lib/utils';
 import { StarSolid } from '@/shared/icons';
 
+interface OverviewCards {
+    label: string, value: string, hint: string, emphasis?: boolean
+}
 interface HistorySectionProps {
     loading: boolean;
     filteredVisits: VisitEntry[];
@@ -18,60 +21,202 @@ const HistorySection: React.FC<HistorySectionProps> = ({
     savedUrlSet,
     onSaveClick,
 }) => {
+    const { summary, groupedVisits } = useMemo(() => {
+        if (filteredVisits.length === 0) {
+            return {
+                summary: {
+                    total: 0,
+                    uniqueSites: 0,
+                    latestVisit: null as number | null,
+                },
+                groupedVisits: [] as Array<{ label: string; items: VisitEntry[] }>,
+            };
+        }
+
+        const sorted = [...filteredVisits].sort((a, b) => b.visitTime - a.visitTime);
+        const hosts = new Set<string>();
+        const now = new Date();
+        const startOfDay = (date: Date) => {
+            const copy = new Date(date);
+            copy.setHours(0, 0, 0, 0);
+            return copy;
+        };
+        const nowStartOfDay = startOfDay(now).getTime();
+        const dayGroups = new Map<number, VisitEntry[]>();
+        const dateFormatter = new Intl.DateTimeFormat(undefined, {
+            weekday: 'long',
+            month: 'short',
+            day: 'numeric',
+        });
+
+        for (const visit of sorted) {
+            hosts.add(getHost(visit.url));
+            const visitDate = new Date(visit.visitTime);
+            const visitDay = startOfDay(visitDate).getTime();
+            if (!dayGroups.has(visitDay)) {
+                dayGroups.set(visitDay, []);
+            }
+            dayGroups.get(visitDay)!.push(visit);
+        }
+
+        const groupedVisits = Array.from(dayGroups.entries())
+            .sort(([a], [b]) => b - a)
+            .map(([dayKey, items]) => {
+                const daysDifference = Math.round((nowStartOfDay - dayKey) / (1000 * 60 * 60 * 24));
+                let label: string;
+                if (daysDifference === 0) {
+                    label = 'Today';
+                } else if (daysDifference === 1) {
+                    label = 'Yesterday';
+                } else {
+                    label = dateFormatter.format(new Date(dayKey));
+                }
+                return { label, items };
+            });
+
+        return {
+            summary: {
+                total: sorted.length,
+                uniqueSites: hosts.size,
+                latestVisit: sorted[0]?.visitTime ?? null,
+            },
+            groupedVisits,
+        };
+    }, [filteredVisits]);
+
+    const timeFormatter = useMemo(
+        () =>
+            new Intl.DateTimeFormat(undefined, {
+                hour: 'numeric',
+                minute: '2-digit',
+            }),
+        [],
+    );
+
     if (loading) {
         return (
-            <section className="space-y-6">
-                <p className="text-sm opacity-70">Loading visits…</p>
+            <section className="space-y-8" aria-busy="true">
+                <header className="grid gap-3 sm:grid-cols-3">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                        <div key={index} className="bs-card p-4 animate-pulse space-y-2">
+                            <div className="h-3 w-24 rounded bg-gray-200/70 dark:bg-gray-700/70" />
+                            <div className="h-6 w-16 rounded bg-gray-200/70 dark:bg-gray-700/70" />
+                        </div>
+                    ))}
+                </header>
+                <div className="rounded-lg border border-gray-200/70 shadow-sm dark:border-gray-700/60">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                        <div key={index} className="flex items-center gap-4 px-4 py-4 sm:px-6 animate-pulse">
+                            <div className="h-10 w-10 rounded bg-gray-200/70 dark:bg-gray-700/70" />
+                            <div className="flex-1 space-y-2">
+                                <div className="h-4 w-3/5 rounded bg-gray-200/70 dark:bg-gray-700/70" />
+                                <div className="h-3 w-1/2 rounded bg-gray-200/50 dark:bg-gray-700/50" />
+                            </div>
+                            <div className="h-7 w-20 rounded bg-gray-200/70 dark:bg-gray-700/70" />
+                        </div>
+                    ))}
+                </div>
             </section>
         );
     }
 
-    if (!hasVisits || filteredVisits.length === 0) {
+    if (!hasVisits) {
         return (
             <section className="space-y-6">
-                <div className="text-center py-12">
-                    <p className="text-lg opacity-90">No visits recorded yet.</p>
-                    <p className="mt-2 text-sm opacity-70">Visit some websites and come back here.</p>
+                <div className="rounded-lg border border-dashed border-gray-300 p-10 text-center shadow-sm dark:border-gray-600">
+                    <p className="text-lg font-semibold">No visits captured yet</p>
+                    <p className="mt-2 text-sm opacity-70">
+                        Keep browsing and your recent pages will automatically appear here.
+                    </p>
+                </div>
+            </section>
+        );
+    }
+
+    if (filteredVisits.length === 0) {
+        return (
+            <section className="space-y-6">
+                <div className="rounded-lg border border-dashed border-gray-300 p-10 text-center shadow-sm dark:border-gray-600 ">
+                    <p className="text-lg font-semibold">No visits match your search</p>
+                    <p className="mt-2 text-sm opacity-70">
+                        Try different keywords or clear the search box to review all recent activity.
+                    </p>
                 </div>
             </section>
         );
     }
 
     return (
-        <section className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid">
-                {filteredVisits.map((visit) => (
-                    <article key={visit.url} className="bs-card transition p-3">
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-2">
-                                <img src={visit.faviconUrl} alt="" className="w-8 h-8 rounded" loading="lazy" />
-                                <a
-                                    href={visit.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-lg font-medium hover:underline line-clamp-2"
-                                >
-                                    {visit.title}
-                                </a>
-                            </div>
-                            <div className="flex gap-3">
-                                <p className="text-xs opacity-70 truncate">{getHost(visit.url)}</p>
-                                <span className="inline-block text-xs opacity-75">
-                                    viewed {formatRelativeTime(visit.visitTime)}
-                                </span>
-                                <button
-                                    type="button"
-                                    className={`bs-btn ${savedUrlSet.has(visit.url) ? 'bs-btn--success' : 'bs-btn--primary'} px-2 py-1 text-xs font-medium`}
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        onSaveClick(visit);
-                                    }}
-                                >
-                                    {savedUrlSet.has(visit.url) ? <StarSolid className="w-3" /> : 'Save'}
-                                </button>
-                            </div>
+        <section className="space-y-8" id="historySection">
+            <div className="space-y-10">
+                {groupedVisits.map((group) => (
+                    <section
+                        key={group.label}
+                        className="transition"
+                    >
+                        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200/80 pb-3 dark:border-gray-700/50">
+                            <h2 className="text-sm font-semibold uppercase tracking-wide opacity-70">
+                                {group.label}
+                            </h2>
+                            <span className="inline-flex items-center rounded-full bg-gray-200/70 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-700/60 dark:text-gray-200">
+                                {group.items.length} {group.items.length === 1 ? 'visit' : 'visits'}
+                            </span>
                         </div>
-                    </article>
+                        <div className="mt-4 space-y-4">
+                            {group.items.map((visit, index) => {
+                                const host = getHost(visit.url);
+                                const isSaved = savedUrlSet.has(visit.url);
+                                const key = `${visit.url}-${visit.visitTime}`;
+                                const visitDate = new Date(visit.visitTime);
+                                return (
+                                    <div key={key} className="grid grid-cols-1 gap-4">
+                                        <article className="group">
+                                            <div className="flex flex-row items-start justify-between gap-4">
+                                                <div className="flex items-start min-w-0 gap-3">
+                                                    <img
+                                                        src={visit.faviconUrl}
+                                                        alt=""
+                                                        className="h-5 w-5"
+                                                        loading="lazy"
+                                                    />
+                                                    <div className="min-w-0 space-y-2">
+                                                        <a
+                                                            href={visit.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="line-clamp-2 text-base font-semibold hover:underline"
+                                                        >
+                                                            {visit.title || host}
+                                                        </a>
+                                                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                                                            <span className="opacity-[0.5]">
+                                                                {host}
+                                                            </span>
+                                                            <span className='opacity-[0.5]'>{formatRelativeTime(visit.visitTime)}</span>
+                                                            <span className='opacity-[0.5]'>{timeFormatter.format(visitDate)}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        type="button"
+                                                        className={`bs-btn ${isSaved ? 'bs-btn--success' : 'bs-btn--primary'} p-1 text-xs font-semibold flex items-center gap-2`}
+                                                        onClick={(event) => {
+                                                            event.preventDefault();
+                                                            onSaveClick(visit);
+                                                        }}
+                                                        aria-pressed={isSaved}
+                                                    >
+                                                        {isSaved ? <StarSolid className="w-4" /> : 'Save'}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
                 ))}
             </div>
         </section>
