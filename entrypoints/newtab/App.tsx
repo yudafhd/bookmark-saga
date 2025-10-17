@@ -27,6 +27,7 @@ import HistorySection from './components/HistorySection';
 import SavedSection from './components/SavedSection';
 import ThemeModal from './components/ThemeModal';
 import FolderModal from './components/FolderModal';
+import { makeTwentyGroupMock } from './mock-history';
 
 type Mode = 'history' | 'saved';
 
@@ -74,12 +75,14 @@ const App: React.FC = () => {
     const load = async () => {
       setLoading(true);
       try {
-        const [visitData, folderData, folderItemData, storedTheme] = await Promise.all([
-          readVisits(),
+        const [folderData, folderItemData, storedTheme] = await Promise.all([
           readFolders(),
           readFolderItems(),
           readTheme(),
         ]);
+        // mock for testing
+        // const visitData = makeTwentyGroupMock();
+        const visitData = await readVisits();
         const normalizedFolders = normalizeHierarchy(folderData);
         const ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
         setVisits(visitData);
