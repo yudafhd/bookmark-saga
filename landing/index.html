@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Bookmark Saga · Privacy & Project Info</title>
+    <meta name="description"
+        content="Bookmark Saga – a minimal, local‑first New Tab extension. Read the privacy policy, permissions, data handling, license, and support." />
+    <meta property="og:title" content="Bookmark Saga · Privacy & Project Info" />
+    <meta property="og:description"
+        content="Local‑first New Tab. No analytics. Learn how your data is handled and what permissions are used." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://yudafhd.github.io/bookmark-saga" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <style>
+        /* =========================
+       THEME TOKENS
+       ========================= */
+        :root {
+            /* Midnight theme tokens */
+            --bg: #060914;
+            /* near-black navy */
+            --surface: #0b1020;
+            /* deep space */
+            --surface-2: #0e1528;
+            /* subtle elevation */
+            --text: #e6ecff;
+            /* icy white-blue */
+            --muted: #97a3c2;
+            /* slate blue gray */
+            --primary: #5b8cff;
+            /* electric indigo */
+            --primary-ink: #071018;
+            /* ink on primary */
+            --border: #1a2340;
+            /* midnight border */
+            --ring: #8ab4ff;
+            /* focus ring */
+            --accent-cyan: #29d3f8;
+            /* aurora cyan */
+            --accent-purple: #a78bfa;
+            /* aurora violet */
+            --radius: 14px;
+            --shadow-xl: 0 50px 140px -70px rgba(6, 9, 20, .85);
+            --shadow: 0 28px 84px -52px rgba(6, 9, 20, .6);
+            --blur: 12px;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                /* "Midnight Light" — a cool, airy variant */
+                --bg: #eef3ff;
+                --surface: #ffffff;
+                --surface-2: #f5f7ff;
+                --text: #0b1220;
+                --muted: #4d5b78;
+                --primary: #335dff;
+                --primary-ink: #ffffff;
+                --border: #dbe2ff;
+                --ring: #88a8ff;
+                --shadow-xl: 0 50px 140px -70px rgba(15, 23, 42, .20);
+                --shadow: 0 28px 84px -52px rgba(15, 23, 42, .18);
+            }
+        }
+
+        /* =========================
+       BASE / RESET
+       ========================= */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            color: var(--text);
+            /* MIDNIGHT AURORA BACKDROP — no tiling */
+            background:
+                radial-gradient(120% 160% at 20% -10%, rgba(88, 124, 255, .16) 0%, rgba(88, 124, 255, 0) 46%),
+                radial-gradient(100% 140% at 110% 0%, rgba(41, 211, 248, .12) 0%, rgba(41, 211, 248, 0) 40%),
+                radial-gradient(80% 120% at -10% 110%, rgba(167, 139, 250, .10) 0%, rgba(167, 139, 250, 0) 45%),
+                var(--bg);
+            background-repeat: no-repeat;
+            background-size: 140% 160%, 120% 140%, 100% 120%, cover;
+            background-attachment: fixed, fixed, fixed, scroll;
+            font: 400 16px/1.65 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        body {
+            margin: 0;
+            color: var(--text);
+            background:
+                radial-gradient(120% 160% at 20% -10%, rgba(96, 165, 250, .10) 0%, rgba(96, 165, 250, 0) 40%),
+                radial-gradient(90% 120% at 110% 10%, rgba(236, 72, 153, .08) 0%, rgba(236, 72, 153, 0) 38%),
+                var(--bg);
+            font: 400 16px/1.65 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        a {
+            color: var(--primary);
+            text-underline-offset: 2px;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--ring);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        code,
+        kbd {
+            background: color-mix(in oklab, var(--surface) 92%, transparent);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: .1em .4em;
+        }
+
+        /* =========================
+       LAYOUT
+       ========================= */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        header.nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(var(--blur));
+            background: color-mix(in oklab, var(--bg) 78%, transparent);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+        }
+
+        .brand {
+            display: grid;
+            grid-auto-flow: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: .2px;
+        }
+
+        .nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .nav a:hover {
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            text-decoration: none;
+            background: color-mix(in oklab, var(--surface) 92%, transparent);
+        }
+
+        .cta.primary {
+            border-color: color-mix(in oklab, var(--primary) 50%, var(--border));
+            color: var(--primary-ink);
+            background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 78%, #000) 0%, color-mix(in oklab, var(--primary) 55%, #000) 100%);
+            box-shadow: var(--shadow);
+        }
+
+        /* Hero */
+        .hero {
+            display: grid;
+            gap: 14px;
+            padding: 36px 0 28px 0;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: color-mix(in oklab, var(--surface) 85%, transparent);
+        }
+
+        .page-title {
+            font-size: clamp(22px, 3.2vw, 34px);
+            line-height: 1.2;
+            margin: 6px 0 0;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            max-width: 60ch;
+        }
+
+        /* Two‑column content with sticky ToC */
+        .layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 920px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .toc {
+            position: sticky;
+            top: 72px;
+            align-self: start;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: color-mix(in oklab, var(--surface) 92%, transparent);
+            padding: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .toc h3 {
+            margin: 4px 0 8px;
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: .2px;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 4px;
+        }
+
+        .toc a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .toc a:hover {
+            color: var(--text);
+            border-color: var(--border);
+            background: color-mix(in oklab, var(--surface) 86%, transparent);
+        }
+
+        .section {
+            scroll-margin-top: 90px;
+        }
+
+        .section h2 {
+            margin: 28px 0 10px;
+            font-size: 20px;
+        }
+
+        .card {
+            background: color-mix(in oklab, var(--surface) 94%, transparent);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 920px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .kpi {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .kpi .item {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            background: color-mix(in oklab, var(--surface) 90%, transparent);
+        }
+
+        .kpi .label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .kpi .value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .callout {
+            border-left: 3px solid var(--ok);
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: color-mix(in oklab, var(--surface) 90%, transparent);
+        }
+
+        ul.inline {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        ul.inline li {
+            list-style: none;
+        }
+
+        .list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        /* Accordion */
+        details {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            background: color-mix(in oklab, var(--surface) 92%, transparent);
+        }
+
+        details+details {
+            margin-top: 10px;
+        }
+
+        details summary {
+            cursor: pointer;
+            list-style: none;
+            font-weight: 600;
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        footer {
+            margin-top: 48px;
+            padding: 18px 0;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Motion safety */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Extend tokens with warm neutrals */
+        :root {
+            --warm-1: #b9b1a6;
+            --warm-2: #e5dfd7;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --warm-1: #d5cec6;
+                --warm-2: #f2ede7;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="nav">
+        <div class="container nav-inner">
+            <div class="brand">
+                <img alt="Bookmark Saga"
+                    src="https://raw.githubusercontent.com/yudafhd/bookmark-saga/main/public/icons/icon128.png"
+                    onerror="this.src='https://www.google.com/s2/favicons?sz=128&domain=github.com'">
+                <h1>Bookmark Saga</h1>
+            </div>
+            <nav class="nav" aria-label="Primary">
+                <a href="#about">About</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#permissions">Permissions</a>
+                <a href="#data">Data</a>
+                <a href="#open-source">Open Source</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="actions">
+                <a class="cta" href="https://github.com/yudafhd/bookmark-saga#readme" target="_blank"
+                    rel="noopener">Docs</a>
+                <a class="cta primary" href="https://github.com/yudafhd/bookmark-saga" target="_blank"
+                    rel="noopener">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- HERO -->
+        <section class="hero" id="about">
+            <span class="chip">Minimal · Local‑first · Privacy‑respecting</span>
+            <h2 class="page-title">Privacy Policy & Project Info</h2>
+            <p class="subtitle">A lightweight New Tab that helps you review recent visits and save pages into folders —
+                without accounts, analytics, or external databases.</p>
+            <div class="kpi" role="list" aria-label="Data practices at a glance">
+                <div class="item">
+                    <div class="label">Telemetry</div>
+                    <div class="value">None</div>
+                </div>
+                <div class="item">
+                    <div class="label">Data residency</div>
+                    <div class="value">Your browser only</div>
+                </div>
+                <div class="item">
+                    <div class="label">Last updated</div>
+                    <div class="value" id="updated">—</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="layout">
+            <!-- Sticky ToC -->
+            <aside class="toc" aria-label="Secondary">
+                <h3>On this page</h3>
+                <ul>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#permissions">Permissions</a></li>
+                    <li><a href="#data">Data & Storage</a></li>
+                    <li><a href="#open-source">Open Source</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </aside>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <section id="privacy" class="section">
+                    <h2>Privacy Policy</h2>
+                    <div class="card">
+                        <p>Bookmark Saga is designed to keep your data on your machine. We do not collect or transmit
+                            personal data to remote servers. No analytics, tracking pixels, or third‑party cookies.</p>
+                        <div class="grid-2" style="margin-top:10px">
+                            <div>
+                                <h3>What we store</h3>
+                                <ul class="list">
+                                    <li>Your folder structure and saved items via the browser <code>storage</code> API.
+                                    </li>
+                                    <li>Your theme preference (no remote sync by the extension).</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3>What we access</h3>
+                                <ul class="list">
+                                    <li>Recent history entries (read‑only) to render the New Tab history view.</li>
+                                    <li>Tab navigation to open links or update the active tab when you click a result.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="callout" style="margin-top:12px">
+                            <strong>We do not:</strong> collect telemetry, use external databases, run background sync,
+                            or make hidden network calls. Favicons are fetched by your browser from the target site.
+                        </div>
+
+                        <h3 style="margin-top:14px">Additional data categories (opt‑in)</h3>
+                        <div class="grid-2">
+                            <div>
+                                <h4>Personal Identifiable Information (PII)</h4>
+                                <ul class="list">
+                                    <li><strong>What:</strong> Name, address, email, age.</li>
+                                    <li><strong>How:</strong> Collected only if you voluntarily submit it (e.g., via
+                                        contact/support forms or feedback surveys).</li>
+                                    <li><strong>Why:</strong> To respond to support requests, provide updates you asked
+                                        for, or deliver product communications you opted into.</li>
+                                    <li><strong>Where stored:</strong> By default, data stays on your device. If you
+                                        explicitly submit a form to us, it is transmitted for the stated purpose and not
+                                        shared with third parties.</li>
+                                    <li><strong>Retention:</strong> Kept only as long as needed for the stated purpose.
+                                        You can request deletion at any time (see <a href="#contact">Contact</a>).</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>Location (region only)</h4>
+                                <ul class="list">
+                                    <li><strong>What:</strong> Approximate region (e.g., country/province/city level),
+                                        not precise coordinates.</li>
+                                    <li><strong>How:</strong> Derived from your selection or coarse signals (e.g.,
+                                        locale/region settings) when features require localization.</li>
+                                    <li><strong>Why:</strong> To localize UI/content (language, date formats) and
+                                        improve relevance.</li>
+                                    <li><strong>Where stored:</strong> On-device; not sent remotely unless you submit it
+                                        as part of a support message.</li>
+                                </ul>
+                                <h4 style="margin-top:10px">Web History</h4>
+                                <ul class="list">
+                                    <li><strong>What:</strong> A local list of pages you visited (URL/title/timestamp)
+                                        to power the History view.</li>
+                                    <li><strong>Scope:</strong> Read‑only access enabled by the <code>history</code>
+                                        permission; data is processed and displayed locally.</li>
+                                    <li><strong>Export:</strong> If you choose to export, the data is saved to a file on
+                                        your device (no uploads by the extension).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3 style="margin-top:14px">Deletion</h3>
+                        <p>You can delete saved items and folders at any time from the UI. Uninstalling the extension
+                            removes its local storage. For complete removal, clear the extension’s storage via your
+                            browser’s site‑data tools.</p>
+                        <p class="muted">If your region mandates DPA/DSAR processes, you retain full control since all
+                            data is local only.</p>
+                    </div>
+                </section>
+
+                <section id="permissions" class="section">
+                    <h2>Permissions</h2>
+                    <div class="card">
+                        <details open>
+                            <summary><code>history</code> — show your recent visits on New Tab</summary>
+                            <p>Read‑only access to titles, URLs, and visit timestamps to render the history grid.
+                                Nothing is uploaded.</p>
+                        </details>
+                        <details>
+                            <summary><code>storage</code> — save folders & preferences</summary>
+                            <p>Used to persist saved items, folder structure, and theme settings in your browser.</p>
+                        </details>
+                        <details>
+                            <summary><code>tabs</code> — open or update the active tab</summary>
+                            <p>Allows opening a saved page in the current tab or a new tab when you click results.</p>
+                        </details>
+                    </div>
+                </section>
+
+                <section id="data" class="section">
+                    <h2>Data & Storage</h2>
+                    <div class="card">
+                        <ul class="list">
+                            <li><strong>Local‑first:</strong> All extension data remains in your browser storage.</li>
+                            <li><strong>Backups:</strong> You can export your saved items by copying the JSON from
+                                browser storage (a UI export may be added).</li>
+                            <li><strong>Favicons:</strong> Resolved via the site’s standard endpoints or your browser;
+                                no third‑party proxying.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="open-source" class="section">
+                    <h2>Open Source</h2>
+                    <div class="card">
+                        <p>Contributions, issues, and feature requests are welcome:</p>
+                        <ul class="list">
+                            <li>Repository: <a href="https://github.com/yudafhd/bookmark-saga" target="_blank"
+                                    rel="noopener">github.com/yudafhd/bookmark-saga</a></li>
+                            <li>Issues: <a href="https://github.com/yudafhd/bookmark-saga/issues" target="_blank"
+                                    rel="noopener">Report a bug / request a feature</a></li>
+                            <li>License: See the <code>LICENSE</code> file in the repository.</li>
+                        </ul>
+                        <ul class="inline" aria-label="Quick links" style="margin-top:10px">
+                            <li><a class="cta" href="https://github.com/yudafhd/bookmark-saga#readme" target="_blank"
+                                    rel="noopener">Documentation</a></li>
+                            <li><a class="cta primary" href="https://github.com/yudafhd/bookmark-saga" target="_blank"
+                                    rel="noopener">GitHub Repo</a></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="faq" class="section">
+                    <h2>FAQ</h2>
+                    <div class="card">
+                        <details open>
+                            <summary>Does the extension upload my data?</summary>
+                            <p>No. Your folders, saved items, and preferences are local. Nothing is sent to our servers.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Can I use this without enabling <code>history</code>?</summary>
+                            <p>Yes. You can still use Saved folders; the History view requires <code>history</code>
+                                permission.</p>
+                        </details>
+                        <details>
+                            <summary>How do I reset my data?</summary>
+                            <p>Use the UI to delete items/folders. You can also clear the extension’s storage via
+                                browser site‑data settings or uninstall the extension.</p>
+                        </details>
+                    </div>
+                </section>
+
+                <section id="contact" class="section">
+                    <h2>Contact</h2>
+                    <div class="card">
+                        <p>Have questions or feedback?</p>
+                        <ul class="list">
+                            <li>Open an issue: <a href="https://github.com/yudafhd/bookmark-saga/issues" target="_blank"
+                                    rel="noopener">GitHub Issues</a></li>
+                            <li>Project page: <a href="https://github.com/yudafhd/bookmark-saga" target="_blank"
+                                    rel="noopener">Repository</a></li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container" style="padding:0">
+                <p>&copy; <span id="year"></span> Bookmark Saga · Local‑first · No analytics.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // Year & updated helpers
+        const now = new Date();
+        document.getElementById('year').textContent = String(now.getFullYear());
+        document.getElementById('updated').textContent = now.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+
+        // Light/Dark toggle (optional): respects system by default; uncomment to add a quick toggle
+        // const toggle = document.createElement('button');
+        // toggle.textContent = 'Toggle theme';
+        // toggle.className = 'cta';
+        // toggle.style.marginLeft = '8px';
+        // document.querySelector('.actions')?.appendChild(toggle);
+        // toggle.addEventListener('click', () => {
+        //   const html = document.documentElement;
+        //   html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+        // });
+    </script>
+</body>
+
+</html>
