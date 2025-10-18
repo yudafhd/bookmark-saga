@@ -6,7 +6,8 @@ export default defineConfig({
     name: 'Bookmark Saga',
     description: 'New Tab showcasing your latest browsing history.',
     version: '1.0.0',
-    permissions: ['history', 'storage', 'tabs'],
+    permissions: ['history', 'storage', 'tabs', 'bookmarks'],
+
     icons: {
       16: "icons/icon16.png",
       32: "icons/icon32.png",

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { RefreshCw, TrashIcon } from '@/shared/icons';
+import { RefreshCw, TrashIcon, Search, GithubIcon, MailIcon } from '@/shared/icons';
 
 interface NewTabHeaderProps {
     subtitle: string;
@@ -13,6 +13,8 @@ interface NewTabHeaderProps {
     onRefresh: () => void;
     onClearHistory: () => void;
     hasHistory: boolean;
+    onOpenGithubModal: () => void;
+    onOpenContactModal: () => void;
 }
 
 const NewTabHeader: React.FC<NewTabHeaderProps> = ({
@@ -27,6 +29,8 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
     onRefresh,
     onClearHistory,
     hasHistory,
+    onOpenGithubModal,
+    onOpenContactModal,
 }) => {
     const iconSrc = useMemo(() => {
         if (typeof chrome !== 'undefined' && chrome.runtime?.getURL) {
@@ -35,75 +39,100 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
         return '/icons/icon48.png';
     }, []);
     return (
-        <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="flex items-start gap-3">
-                <img
-                    src={iconSrc}
-                    alt="Bookmark Saga logo"
-                    className="h-12 w-12 rounded-sm shadow-sm"
-                    loading="lazy"
-                />
-                <div>
-                    <h1 className="text-2xl font-bold">Bookmark Saga</h1>
-                    <p className="opacity-70" id="headerSubtitle">
-                        {subtitle}
-                    </p>
+        <header className="space-y-2">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="flex items-start gap-3">
+                    <img
+                        src={iconSrc}
+                        alt="Bookmark Saga logo"
+                        className="h-12 w-12 rounded-sm shadow-sm"
+                        loading="lazy"
+                    />
+                    <div className="space-y-1">
+                        <h1 className="text-2xl font-bold">Bookmark Saga</h1>
+                        <p className="text-sm opacity-70" id="headerSubtitle">
+                            {subtitle}
+                        </p>
+                    </div>
+                    <div className="flex gap-1 ml-10">
+                        <button
+                            type="button"
+                            className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'history' ? 'mode-toggle--active' : ''}`}
+                            onClick={() => onModeChange('history')}
+                            aria-pressed={mode === 'history'}
+                        >
+                            History
+                        </button>
+                        <button
+                            type="button"
+                            className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'saved' ? 'mode-toggle--active' : ''}`}
+                            onClick={() => onModeChange('saved')}
+                            aria-pressed={mode === 'saved'}
+                        >
+                            Bookmarks
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                <div className="flex gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <button
                         type="button"
-                        className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'history' ? 'mode-toggle--active' : ''}`}
-                        onClick={() => onModeChange('history')}
-                        aria-pressed={mode === 'history'}
-                    >
-                        History
-                    </button>
-                    <button
-                        type="button"
-                        className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'saved' ? 'mode-toggle--active' : ''}`}
-                        onClick={() => onModeChange('saved')}
-                        aria-pressed={mode === 'saved'}
-                    >
-                        Saved
-                    </button>
-                </div>
-                <input
-                    id="search"
-                    type="search"
-                    placeholder="Search by title or URL..."
-                    value={searchQuery}
-                    onChange={(event) => onSearchQueryChange(event.target.value)}
-                    className="w-full sm:w-60 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white/90 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                />
-                <div className="flex gap-2">
-                    <button
-                        type="button"
-                        className="bs-btn bs-btn--accent px-4 py-2 rounded-sm font-medium"
+                        className="bs-btn bs-btn--accent px-3 py-2 text-xs"
                         onClick={onOpenThemeModal}
                         aria-expanded={isThemeModalOpen}
                     >
-                        Theme · {currentThemeName}
+                        <span className="hidden sm:inline">{currentThemeName}</span>
+                        <span className="sm:hidden">{currentThemeName.slice(0, 3)}</span>
+                    </button>
+                    {mode === 'history' && <div className="relative flex-1 lg:max-w-md">
+
+                        <input
+                            id="search"
+                            type="search"
+                            placeholder="Search visit history…"
+                            value={searchQuery}
+                            onChange={(event) => onSearchQueryChange(event.target.value)}
+                            className="w-full rounded-md border border-gray-300/80 bg-white/90  p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                        />
+                    </div>}
+
+                    {mode === 'history' ? (
+                        <>
+                            <button
+                                type="button"
+                                className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 font-semibold"
+                                onClick={onRefresh}
+                                title="Refresh view"
+                            >
+                                <RefreshCw className="h-3 w-3" />
+                            </button>
+                            {hasHistory ? (
+                                <button
+                                    type="button"
+                                    className="bs-btn bs-btn--danger inline-flex items-center gap-2 px-3 py-2 font-semibold"
+                                    onClick={onClearHistory}
+                                    title="Clear saved history"
+                                >
+                                    <TrashIcon className="h-3 w-3" />
+                                </button>
+                            ) : null}
+                        </>
+                    ) : null}
+                    <button
+                        type="button"
+                        className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold"
+                        onClick={onOpenGithubModal}
+                        title="View project on GitHub"
+                    >
+                        <GithubIcon className="h-3 w-3" />
                     </button>
                     <button
                         type="button"
-                        className="bs-btn bs-btn--primary px-4 py-2"
-                        onClick={onRefresh}
+                        className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold"
+                        onClick={onOpenContactModal}
+                        title="Contact the author"
                     >
-                        <RefreshCw className="w-4" />
-                        Refresh
+                        <MailIcon className="h-3 w-3" />
                     </button>
-                    {hasHistory && (
-                        <button
-                            type="button"
-                            className="bs-btn bs-btn--danger px-4 py-2"
-                            onClick={onClearHistory}
-                        >
-                            <TrashIcon className="w-4" />
-                            Clear History
-                        </button>
-                    )}
                 </div>
             </div>
         </header>

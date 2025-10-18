@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { MIN_MAX_ITEMS, MAX_MAX_ITEMS, DEFAULT_MAX_ITEMS } from '@/lib/constants';
+import { MIN_MAX_ITEMS, MAX_MAX_ITEMS, DEFAULT_MAX_HISTORY_ITEMS } from '@/lib/constants';
 import { clampMaxItems } from '@/lib/utils';
 import { readMaxItems, writeMaxItems } from '@/lib/storage';
 
 const OptionsApp: React.FC = () => {
-  const [value, setValue] = useState<string>(String(DEFAULT_MAX_ITEMS));
+  const [value, setValue] = useState<string>(String(DEFAULT_MAX_HISTORY_ITEMS));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);

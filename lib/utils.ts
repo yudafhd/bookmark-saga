@@ -9,13 +9,11 @@ export function getRuntimeResourceUrl(path: string): string {
     if (typeof chrome !== 'undefined' && chrome.runtime?.getURL) {
       return chrome.runtime.getURL(path);
     }
-  } catch {
-    // no-op: fall back to plain path
-  }
+  } catch { }
   return path;
 }
 
-export function getHost(url: string): string {
+export function getHostName(url: string): string {
   try {
     return new URL(url).hostname;
   } catch {
@@ -23,30 +21,37 @@ export function getHost(url: string): string {
   }
 }
 
-export function formatRelativeTime(epoch: number): string {
-  const now = Date.now();
-  const diff = now - epoch;
-  if (!Number.isFinite(diff) || diff < 0) {
-    return 'just now';
-  }
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(diff / 3_600_000);
-  const days = Math.floor(diff / 86_400_000);
-  if (minutes < 1) return 'just now';
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  return `${days}d ago`;
-}
-
 export function isValidVisitUrl(url: string | undefined | null): url is string {
-  if (!url) return false;
-  if (!url.startsWith('http')) return false;
-  if (url.startsWith('chrome://') || url.startsWith('chrome-extension://')) {
+  // Must be a non-empty string
+  if (typeof url !== "string") return false;
+  let normalizeUrl = url.trim();
+  if (!normalizeUrl) return false;
+
+  // Reject internal/browser pages and blank docs
+  if (
+    normalizeUrl === "about:blank" ||
+    normalizeUrl === "about:srcdoc" ||
+    normalizeUrl.startsWith("chrome://") ||
+    normalizeUrl.startsWith("chrome-extension://") ||
+    normalizeUrl.startsWith("edge://") ||
+    normalizeUrl.startsWith("brave://") ||
+    normalizeUrl.startsWith("vivaldi://") ||
+    normalizeUrl.startsWith("opera://")
+  ) {
     return false;
   }
-  if (url === 'about:blank') return false;
-  return true;
+
+  // Structural validation
+  try {
+    const url = new URL(normalizeUrl);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (!url.hostname) return false;
+    return true;
+  } catch {
+    return false; // Malformed URL
+  }
 }
+
 
 export function isSafeFavicon(candidate: unknown): candidate is string {
   return (
@@ -57,7 +62,7 @@ export function isSafeFavicon(candidate: unknown): candidate is string {
 }
 
 export function externalFaviconUrl(url: string): string {
-  const host = getHost(url);
+  const host = getHostName(url);
   if (!host) {
     return getRuntimeResourceUrl(DEFAULT_FAVICON_PATH);
   }
@@ -66,7 +71,7 @@ export function externalFaviconUrl(url: string): string {
 }
 
 export function hostFaviconUrl(url: string): string {
-  const host = getHost(url);
+  const host = getHostName(url);
   if (!host) {
     return getRuntimeResourceUrl(DEFAULT_FAVICON_PATH);
   }
@@ -80,6 +85,7 @@ export function resolveFavicon(url: string, candidate?: string | null): string {
   return externalFaviconUrl(url);
 }
 
+// for performance, keep max history listed in 50-200 item
 export function clampMaxItems(candidate: number): number {
   if (!Number.isFinite(candidate)) {
     return Math.max(MIN_MAX_ITEMS, Math.min(MAX_MAX_ITEMS, MIN_MAX_ITEMS));

@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
 import type { VisitEntry } from '@/lib/types';
-import { formatRelativeTime, getHost } from '@/lib/utils';
+import { formatRelativeTime } from '@/lib/time';
 import { StarSolid } from '@/shared/icons';
-
-interface OverviewCards {
-    label: string, value: string, hint: string, emphasis?: boolean
-}
+import { getHostName } from '@/lib/utils';
 interface HistorySectionProps {
     loading: boolean;
     filteredVisits: VisitEntry[];
@@ -36,13 +33,16 @@ const HistorySection: React.FC<HistorySectionProps> = ({
         const sorted = [...filteredVisits].sort((a, b) => b.visitTime - a.visitTime);
         const hosts = new Set<string>();
         const now = new Date();
+
         const startOfDay = (date: Date) => {
-            const copy = new Date(date);
-            copy.setHours(0, 0, 0, 0);
-            return copy;
+            const normalizeHours = new Date(date);
+            normalizeHours.setHours(0, 0, 0, 0);
+            return normalizeHours;
         };
         const nowStartOfDay = startOfDay(now).getTime();
         const dayGroups = new Map<number, VisitEntry[]>();
+
+        // date utils for format date
         const dateFormatter = new Intl.DateTimeFormat(undefined, {
             weekday: 'long',
             month: 'short',
@@ -50,7 +50,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
         });
 
         for (const visit of sorted) {
-            hosts.add(getHost(visit.url));
+            hosts.add(getHostName(visit.url));
             const visitDate = new Date(visit.visitTime);
             const visitDay = startOfDay(visitDate).getTime();
             if (!dayGroups.has(visitDay)) {
@@ -164,7 +164,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                         </div>
                         <div className="mt-4 space-y-4">
                             {group.items.map((visit, index) => {
-                                const host = getHost(visit.url);
+                                const host = getHostName(visit.url);
                                 const isSaved = savedUrlSet.has(visit.url);
                                 const key = `${visit.url}-${visit.visitTime}`;
                                 const visitDate = new Date(visit.visitTime);

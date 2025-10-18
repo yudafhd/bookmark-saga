@@ -18,16 +18,21 @@ import {
   getItemsForFolder,
   normalizeHierarchy,
 } from '@/lib/folder-utils';
+import { CONTACT_EMAIL, GITHUB_REPO_URL } from '@/lib/constants';
 import { getThemeById } from '@/lib/themes';
-import type { Folder, FolderItemsMap, ThemeId, VisitEntry } from '@/lib/types';
-import { formatRelativeTime, getHost, resolveFavicon } from '@/lib/utils';
+import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry } from '@/lib/types';
+import { getHostName, resolveFavicon } from '@/lib/utils';
+import { formatRelativeTime } from '@/lib/time';
 import SidebarButton from '@/shared/components/SidebarButton';
 import NewTabHeader from './components/NewTabHeader';
 import HistorySection from './components/HistorySection';
-import SavedSection from './components/SavedSection';
+import BookmarkSection from './components/BookmarkSection';
 import ThemeModal from './components/ThemeModal';
 import FolderModal from './components/FolderModal';
-import { makeTwentyGroupMock } from './mock-history';
+
+// for testing purpose
+// import { makeTwentyGroupMock } from './mock-history';
+// import { makeMockSavedData } from './mock-saved';
 
 type Mode = 'history' | 'saved';
 
@@ -36,6 +41,8 @@ interface PendingSaveVisit {
   title: string;
   faviconUrl: string;
   visitTime: number | null;
+  savedAt?: number;
+  sourceFolderId: string | null;
 }
 
 const DEFAULT_THEME: ThemeId = 'linux';
@@ -67,6 +74,8 @@ const App: React.FC = () => {
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [isThemeModalOpen, setThemeModalOpen] = useState(false);
   const [isFolderModalOpen, setFolderModalOpen] = useState(false);
+  const [isGithubModalOpen, setGithubModalOpen] = useState(false);
+  const [isContactModalOpen, setContactModalOpen] = useState(false);
   const [pendingSaveVisit, setPendingSaveVisit] = useState<PendingSaveVisit | null>(null);
   const [themeId, setThemeId] = useState<ThemeId>(DEFAULT_THEME);
   const [folderModalNewName, setFolderModalNewName] = useState('');
@@ -80,11 +89,24 @@ const App: React.FC = () => {
           readFolderItems(),
           readTheme(),
         ]);
-        // mock for testing
+
+        // mock history for testing
+        // Visits: seed with mock if storage is empty
         // const visitData = makeTwentyGroupMock();
+        // await writeVisits(visitData);
         const visitData = await readVisits();
+
+        // mock folder for testing
+        // let normalizedFolders = normalizeHierarchy(folderData);
+        // let ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
+        // const mock = makeMockSavedData();
+        // normalizedFolders = normalizeHierarchy(mock.folders);
+        // ensuredItems = ensureFolderItemsMap(normalizedFolders, mock.folderItems);
+        // await Promise.all([writeFolders(ensuredItems), writeFolderItems(ensuredItems)]);
         const normalizedFolders = normalizeHierarchy(folderData);
         const ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
+
+        // scafolding data
         setVisits(visitData);
         setFolders(normalizedFolders);
         setFolderItems(ensuredItems);
@@ -118,7 +140,7 @@ const App: React.FC = () => {
     return visits.filter((item) => {
       const title = item.title?.toLowerCase() ?? '';
       const url = item.url.toLowerCase();
-      const host = getHost(item.url).toLowerCase();
+      const host = getHostName(item.url).toLowerCase();
       return title.includes(query) || url.includes(query) || host.includes(query);
     });
   }, [visits, searchQuery]);
@@ -128,12 +150,12 @@ const App: React.FC = () => {
     [folders, folderItems, currentSavedFolderId],
   );
 
-  // Normalize saved items for the SavedSection component shape
+  // Normalize saved items for the BookmarkSection component shape
   const processedSavedItems = useMemo(
     () =>
       savedItems.map((item) => ({
         ...item,
-        host: getHost(item.url),
+        host: getHostName(item.url),
         savedLabel: item.savedAt ? `Saved ${formatRelativeTime(item.savedAt)}` : null,
         visitLabel: item.visitTime ? `Visited ${formatRelativeTime(item.visitTime)}` : null,
       })),
@@ -153,7 +175,7 @@ const App: React.FC = () => {
   const uniqueVisitHosts = useMemo(() => {
     const hosts = new Set<string>();
     for (const visit of visits) {
-      hosts.add(getHost(visit.url));
+      hosts.add(getHostName(visit.url));
     }
     return hosts.size;
   }, [visits]);
@@ -210,11 +232,14 @@ const App: React.FC = () => {
         list?.some((item) => item.url === visit.url),
       );
       const containingFolderId = existingEntry?.[0] ?? null;
+      const existingItem = existingEntry?.[1]?.find((item) => item.url === visit.url) ?? null;
       setPendingSaveVisit({
         url: visit.url,
         title: visit.title,
         faviconUrl: visit.faviconUrl,
         visitTime: visit.visitTime ?? null,
+        savedAt: existingItem?.savedAt,
+        sourceFolderId: containingFolderId,
       });
       if (containingFolderId) {
         setSelectedFolderId(containingFolderId);
@@ -235,6 +260,7 @@ const App: React.FC = () => {
     setFolderModalNewName('');
   }, []);
 
+  // keyboard event for close modal
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -244,11 +270,17 @@ const App: React.FC = () => {
         if (isFolderModalOpen) {
           closeFolderModal();
         }
+        if (isGithubModalOpen) {
+          setGithubModalOpen(false);
+        }
+        if (isContactModalOpen) {
+          setContactModalOpen(false);
+        }
       }
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [isThemeModalOpen, isFolderModalOpen, closeFolderModal]);
+  }, [isThemeModalOpen, isFolderModalOpen, isGithubModalOpen, isContactModalOpen, closeFolderModal]);
 
   const refreshVisits = useCallback(async () => {
     const visitData = await readVisits();
@@ -263,6 +295,252 @@ const App: React.FC = () => {
   const persistFolders = useCallback(
     async (nextFolders: Folder[], nextItems: FolderItemsMap) => {
       await Promise.all([writeFolders(nextFolders), writeFolderItems(nextItems)]);
+    },
+    [],
+  );
+
+  const handleExportFolders = useCallback(() => {
+    try {
+      const serializedFolders = folders.map((folder) => ({
+        id: folder.id,
+        name: folder.name,
+        parentId: folder.parentId,
+      }));
+      const serializedItems: FolderItemsMap = {};
+      for (const [folderId, items] of Object.entries(folderItems)) {
+        serializedItems[folderId] = items.map((item) => ({
+          url: item.url,
+          title: item.title,
+          faviconUrl: item.faviconUrl,
+          savedAt: item.savedAt,
+          visitTime: item.visitTime,
+        }));
+      }
+      const payload = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        folders: serializedFolders,
+        folderItems: serializedItems,
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `bookmark-saga-export-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to export bookmark folders', error);
+      alert('Failed to export bookmarks. Check the console for details.');
+    }
+  }, [folders, folderItems]);
+
+  const handleImportFolders = useCallback(
+    async (file: File) => {
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        const rawFolders: unknown = parsed?.folders ?? [];
+        const rawItems: unknown = parsed?.folderItems ?? {};
+
+        const sanitizedFolders = Array.isArray(rawFolders)
+          ? rawFolders
+            .map((folder): Folder | null => {
+              if (
+                !folder ||
+                typeof folder !== 'object' ||
+                typeof (folder as { id?: unknown }).id !== 'string'
+              ) {
+                return null;
+              }
+              const id = (folder as { id: string }).id;
+              const nameCandidate = (folder as { name?: unknown }).name;
+              const parentCandidate = (folder as { parentId?: unknown }).parentId;
+              const name =
+                typeof nameCandidate === 'string' && nameCandidate.trim().length > 0
+                  ? nameCandidate.trim()
+                  : 'Untitled folder';
+              const parentId =
+                typeof parentCandidate === 'string' && parentCandidate.length > 0
+                  ? parentCandidate
+                  : null;
+              return { id, name, parentId };
+            })
+            .filter((folder): folder is Folder => folder !== null)
+          : [];
+
+        const sanitizedItems: FolderItemsMap = {};
+        for (const folder of sanitizedFolders) {
+          sanitizedItems[folder.id] = [];
+        }
+
+        if (rawItems && typeof rawItems === 'object') {
+          for (const [folderId, entries] of Object.entries(rawItems as Record<string, unknown>)) {
+            if (!sanitizedItems[folderId] || !Array.isArray(entries)) continue;
+            const cleaned = entries
+              .map((entry): FolderItem | null => {
+                if (!entry || typeof entry !== 'object') return null;
+                const item = entry as Partial<FolderItem> & { url?: unknown };
+                if (typeof item.url !== 'string') return null;
+                const title =
+                  typeof item.title === 'string' && item.title.trim().length > 0
+                    ? item.title.trim()
+                    : item.url;
+                const savedAt =
+                  typeof item.savedAt === 'number' && Number.isFinite(item.savedAt)
+                    ? item.savedAt
+                    : Date.now();
+                const visitTime =
+                  typeof item.visitTime === 'number' && Number.isFinite(item.visitTime)
+                    ? item.visitTime
+                    : null;
+                const faviconCandidate =
+                  typeof item.faviconUrl === 'string' ? item.faviconUrl : undefined;
+                return {
+                  url: item.url,
+                  title,
+                  faviconUrl: resolveFavicon(item.url, faviconCandidate),
+                  savedAt,
+                  visitTime,
+                };
+              })
+              .filter((entry): entry is FolderItem => entry !== null);
+            sanitizedItems[folderId] = cleaned;
+          }
+        }
+
+        const normalizedFolders = normalizeHierarchy(sanitizedFolders);
+        const ensuredItems = ensureFolderItemsMap(normalizedFolders, sanitizedItems);
+        setFolders(normalizedFolders);
+        setFolderItems(ensuredItems);
+        setCurrentSavedFolderId(null);
+        setSelectedFolderId(null);
+        await persistFolders(normalizedFolders, ensuredItems);
+        alert('Bookmarks imported successfully!');
+      } catch (error) {
+        console.error('Failed to import bookmark folders', error);
+        alert('Failed to import bookmarks. Make sure the file is a valid Bookmark Saga export.');
+      }
+    },
+    [persistFolders],
+  );
+
+  const handleImportFromChrome = useCallback(async () => {
+    if (typeof chrome === 'undefined' || !chrome.bookmarks?.getTree) {
+      alert('Chrome bookmarks API is not available in this context.');
+      return;
+    }
+    try {
+      const nodes = await new Promise<chrome.bookmarks.BookmarkTreeNode[]>((resolve, reject) => {
+        chrome.bookmarks.getTree((result) => {
+          const error = chrome.runtime.lastError;
+          if (error) {
+            reject(new Error(error.message));
+            return;
+          }
+          resolve(result);
+        });
+      });
+
+      if (!nodes || nodes.length === 0) {
+        alert('No Chrome bookmarks found to import.');
+        return;
+      }
+
+      const nextFolders = [...folders];
+      const nextItems: FolderItemsMap = { ...folderItems };
+
+      const makeUniqueName = (rawName: string, parentId: string | null): string => {
+        const baseName = rawName.trim().length > 0 ? rawName.trim() : 'Untitled folder';
+        let candidate = baseName;
+        let suffix = 2;
+        while (isDuplicateName(nextFolders, candidate, parentId)) {
+          candidate = `${baseName} (${suffix})`;
+          suffix += 1;
+        }
+        return candidate;
+      };
+
+      const createFolder = (name: string, parentId: string | null): Folder => {
+        const folder: Folder = {
+          id: generateFolderId(),
+          name: makeUniqueName(name, parentId),
+          parentId,
+        };
+        nextFolders.push(folder);
+        nextItems[folder.id] = [];
+        return folder;
+      };
+
+      const now = new Date();
+      const importRoot = createFolder(
+        `Chrome import ${now.toLocaleDateString()}`,
+        null,
+      );
+
+      const addItemToFolder = (folderId: string, url: string, title: string) => {
+        const entry: FolderItem = {
+          url,
+          title: title.trim().length > 0 ? title.trim() : url,
+          faviconUrl: resolveFavicon(url, undefined),
+          savedAt: Date.now(),
+          visitTime: null,
+        };
+        const existing = nextItems[folderId] ?? [];
+        nextItems[folderId] = [entry, ...existing];
+      };
+
+      const processNode = (node: chrome.bookmarks.BookmarkTreeNode, parentFolderId: string) => {
+        if (!node) return;
+        if (typeof node.url === 'string' && node.url.length > 0) {
+          addItemToFolder(parentFolderId, node.url, node.title ?? node.url);
+          return;
+        }
+        const childFolder = createFolder(node.title ?? 'Untitled folder', parentFolderId);
+        if (Array.isArray(node.children)) {
+          for (const child of node.children) {
+            processNode(child, childFolder.id);
+          }
+        }
+      };
+
+      const roots = nodes[0]?.children ?? nodes;
+      for (const node of roots) {
+        processNode(node, importRoot.id);
+      }
+
+      const normalizedFolders = normalizeHierarchy(nextFolders);
+      const ensuredItems = ensureFolderItemsMap(normalizedFolders, nextItems);
+      setFolders(normalizedFolders);
+      setFolderItems(ensuredItems);
+      setCurrentSavedFolderId(importRoot.id);
+      setSelectedFolderId(importRoot.id);
+      await persistFolders(normalizedFolders, ensuredItems);
+      alert('Chrome bookmarks imported successfully!');
+    } catch (error) {
+      console.error('Failed to import Chrome bookmarks', error);
+      alert('Failed to import Google Chrome bookmarks. Check the console for details.');
+    }
+  }, [folders, folderItems, persistFolders]);
+
+  const handleManageSavedItem = useCallback(
+    (folderId: string, item: FolderItem) => {
+      setPendingSaveVisit({
+        url: item.url,
+        title: item.title,
+        faviconUrl: item.faviconUrl,
+        visitTime: item.visitTime,
+        savedAt: item.savedAt,
+        sourceFolderId: folderId,
+      });
+      setSelectedFolderId(folderId);
+      setCurrentSavedFolderId(folderId);
+      setFolderModalOpen(true);
+      setFolderModalNewName('');
     },
     [],
   );
@@ -378,22 +656,34 @@ const App: React.FC = () => {
       alert('Create or select a folder first.');
       return;
     }
-    const existing = folderItems[selectedFolderId] ?? [];
-    if (existing.some((item) => item.url === pendingSaveVisit.url)) {
+    const sourceFolderId = pendingSaveVisit.sourceFolderId ?? null;
+    if (sourceFolderId && sourceFolderId === selectedFolderId) {
       alert('This item is already saved in the selected folder.');
       return;
     }
+    const targetExisting = folderItems[selectedFolderId] ?? [];
+    if (targetExisting.some((item) => item.url === pendingSaveVisit.url)) {
+      alert('This item is already saved in the selected folder.');
+      return;
+    }
+
+    const nextItems: FolderItemsMap = { ...folderItems };
+    if (sourceFolderId && nextItems[sourceFolderId]) {
+      nextItems[sourceFolderId] = nextItems[sourceFolderId].filter(
+        (item) => item.url !== pendingSaveVisit.url,
+      );
+    }
+
     const entry = {
       url: pendingSaveVisit.url,
       title: pendingSaveVisit.title,
       faviconUrl: resolveFavicon(pendingSaveVisit.url, pendingSaveVisit.faviconUrl),
-      savedAt: Date.now(),
+      savedAt: pendingSaveVisit.savedAt ?? Date.now(),
       visitTime: pendingSaveVisit.visitTime,
     };
-    const nextItems = {
-      ...folderItems,
-      [selectedFolderId]: [entry, ...existing],
-    };
+    const targetList = nextItems[selectedFolderId] ?? [];
+    nextItems[selectedFolderId] = [entry, ...targetList];
+
     setFolderItems(nextItems);
     setCurrentSavedFolderId(selectedFolderId);
     await writeFolderItems(nextItems);
@@ -415,7 +705,7 @@ const App: React.FC = () => {
   );
 
   const themeModalTitle = pendingSaveVisit
-    ? `Save to Folder — ${getHost(pendingSaveVisit.url)}`
+    ? `${pendingSaveVisit.sourceFolderId ? 'Move bookmark' : 'Save to Folder'} — ${getHostName(pendingSaveVisit.url)}`
     : 'Save to Folder';
 
   const folderTree = useMemo(() => {
@@ -487,6 +777,10 @@ const App: React.FC = () => {
     return 'Pages you saved';
   }, [mode, searchQuery, currentFolder]);
 
+  useEffect(() => {
+    chrome.storage.local.get().then(e => console.log(e));
+  }, [])
+
   return (
     <div className="w-full space-y-8 px-4 pb-10 pt-6 md:px-8 lg:px-12">
       <NewTabHeader
@@ -497,6 +791,8 @@ const App: React.FC = () => {
         onSearchQueryChange={setSearchQuery}
         currentThemeName={currentTheme?.name ?? DEFAULT_THEME}
         onOpenThemeModal={() => setThemeModalOpen(true)}
+        onOpenGithubModal={() => setGithubModalOpen(true)}
+        onOpenContactModal={() => setContactModalOpen(true)}
         isThemeModalOpen={isThemeModalOpen}
         onRefresh={refreshVisits}
         onClearHistory={clearVisits}
@@ -515,7 +811,7 @@ const App: React.FC = () => {
             }}
           />
         ) : (
-          <SavedSection
+          <BookmarkSection
             sidebarNodes={sidebarNodes}
             isEmpty={folders.length === 0 && totalSavedCount === 0}
             currentFolderName={currentFolder ? currentFolder.name : 'All saved pages'}
@@ -544,6 +840,10 @@ const App: React.FC = () => {
               void handleDeleteFolder(currentSavedFolderId);
             }}
             onRemoveSavedItem={(folderId, url) => void handleRemoveSavedItem(folderId, url)}
+            onExportFolders={handleExportFolders}
+            onImportFolders={handleImportFolders}
+            onImportFromChrome={handleImportFromChrome}
+            onManageSavedItem={(folderId, item) => handleManageSavedItem(folderId, item)}
           />
         )}
       </main>
@@ -569,6 +869,87 @@ const App: React.FC = () => {
           onClose={closeFolderModal}
           onSave={() => void handleSavePendingVisit()}
         />
+      ) : null}
+
+      {isGithubModalOpen ? (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex !mt-0 items-center justify-center px-4"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setGithubModalOpen(false)}
+        >
+          <div
+            className="bs-surface w-full max-w-md space-y-4 rounded-lg border border-white/20 p-6"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="space-y-1">
+              <h3 className="text-lg font-semibold">GitHub Repository</h3>
+              <p className="text-sm opacity-70">
+                Find the source code, issue tracker, and documentation of the Bookmark Saga project.
+              </p>
+            </header>
+            <div className="space-y-2 text-sm">
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold"
+              >
+                {GITHUB_REPO_URL}
+              </a>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="bs-btn bs-btn--neutral px-4 py-2 text-sm font-semibold"
+                onClick={() => setGithubModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {isContactModalOpen ? (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex !mt-0 items-center justify-center px-4"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setContactModalOpen(false)}
+        >
+          <div
+            className="bs-surface w-full max-w-md space-y-4 rounded-lg border border-white/20 p-6"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="space-y-1">
+              <h3 className="text-lg font-semibold">Contact Me</h3>
+              <p className="text-sm opacity-70">
+                Send a message via email or contact us directly using the details below.
+              </p>
+            </header>
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="text-xs uppercase tracking-wide opacity-60">Email</p>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="mt-1 inline-flex items-center gap-2 text-blue-600 transition hover:underline dark:text-blue-400"
+                >
+                  {CONTACT_EMAIL}
+                </a>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="bs-btn bs-btn--neutral px-4 py-2 text-sm font-semibold"
+                onClick={() => setContactModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );

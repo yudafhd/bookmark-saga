@@ -1,6 +1,6 @@
 import {
   BOOKMARK_ITEMS_KEY,
-  DEFAULT_MAX_ITEMS,
+  DEFAULT_MAX_HISTORY_ITEMS,
   FOLDERS_KEY,
   MAX_ITEMS_KEY,
   THEME_KEY,
@@ -40,11 +40,12 @@ export async function writeVisits(visits: VisitEntry[]): Promise<void> {
   });
 }
 
+// setting for max history recorded
 export async function readMaxItems(): Promise<number> {
   const result = await chrome.storage.local.get({
-    [MAX_ITEMS_KEY]: DEFAULT_MAX_ITEMS,
+    [MAX_ITEMS_KEY]: DEFAULT_MAX_HISTORY_ITEMS,
   });
-  return clampMaxItems(result[MAX_ITEMS_KEY] ?? DEFAULT_MAX_ITEMS);
+  return clampMaxItems(result[MAX_ITEMS_KEY] ?? DEFAULT_MAX_HISTORY_ITEMS);
 }
 
 export async function writeMaxItems(value: number): Promise<void> {
