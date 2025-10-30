@@ -25,6 +25,7 @@ import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry } from '@/
 import { getHostName, resolveFavicon } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/time';
 import SidebarButton from '@/shared/components/SidebarButton';
+import { BOOKMARK_ITEMS_KEY, FOLDERS_KEY, THEME_KEY, VISITS_KEY } from '@/lib/constants';
 
 type Mode = 'history' | 'saved';
 
@@ -37,7 +38,7 @@ interface PendingSaveVisit {
     sourceFolderId: string | null;
 }
 
-const DEFAULT_THEME: ThemeId = 'linux';
+const DEFAULT_THEME: ThemeId = 'midnight';
 
 function generateFolderId(): string {
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -307,6 +308,65 @@ export default function useHook() {
         await writeVisits([]);
         setVisits([]);
     }, []);
+
+    const refreshFoldersFromStorage = useCallback(async () => {
+        try {
+            const [folderData, folderItemData] = await Promise.all([readFolders(), readFolderItems()]);
+            const normalizedFolders = normalizeHierarchy(folderData);
+            const ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
+
+            setFolders(normalizedFolders);
+            setFolderItems(ensuredItems);
+
+            setCurrentSavedFolderId((prev) => {
+                if (!prev) return prev;
+                return normalizedFolders.some((folder) => folder.id === prev) ? prev : null;
+            });
+
+            setSelectedFolderId((prev) => {
+                if (normalizedFolders.length === 0) return null;
+                if (prev && normalizedFolders.some((folder) => folder.id === prev)) {
+                    return prev;
+                }
+                return normalizedFolders[0].id;
+            });
+        } catch (error) {
+            console.error('Failed to refresh folders from storage', error);
+        }
+    }, []);
+
+    useEffect(() => {
+        const storage = typeof chrome !== 'undefined' ? chrome.storage : undefined;
+        if (!storage?.onChanged?.addListener) {
+            return undefined;
+        }
+
+        const listener = (changes: Record<string, chrome.storage.StorageChange>, areaName: string) => {
+            if (areaName !== 'local') return;
+            const visitChanged = Boolean(changes[VISITS_KEY]);
+            const folderChanged = Boolean(changes[FOLDERS_KEY] || changes[BOOKMARK_ITEMS_KEY]);
+            const themeChange = changes[THEME_KEY];
+
+            if (visitChanged) {
+                void refreshVisits();
+            }
+            if (folderChanged) {
+                void refreshFoldersFromStorage();
+            }
+            if (themeChange && typeof themeChange.newValue === 'string') {
+                setThemeId(themeChange.newValue as ThemeId);
+            }
+        };
+
+        storage.onChanged.addListener(listener);
+        return () => {
+            try {
+                storage.onChanged.removeListener(listener);
+            } catch {
+                // ignore cleanup errors
+            }
+        };
+    }, [refreshVisits, refreshFoldersFromStorage]);
 
     const persistFolders = useCallback(
         async (nextFolders: Folder[], nextItems: FolderItemsMap) => {
@@ -801,7 +861,6 @@ export default function useHook() {
                     count={totalSavedCount}
                     active={!currentSavedFolderId}
                     onClick={() => setCurrentSavedFolderId(null)}
-                    onOpenAll={() => openFolderItems(null)}
                 />
             ),
         ];
@@ -816,7 +875,6 @@ export default function useHook() {
                         count={getAggregateItemCount(folders, folderItems, folder.id)}
                         active={currentSavedFolderId === folder.id}
                         onClick={() => setCurrentSavedFolderId(folder.id)}
-                        onOpenAll={() => openFolderItems(folder.id)}
                     />,
                 );
                 build(folder.id, depth + 1);

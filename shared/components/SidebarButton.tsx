@@ -1,5 +1,6 @@
 import React from 'react';
-import { FolderClosed } from '@/shared/icons';
+import { FaRegFolder } from 'react-icons/fa';
+import { MdFolder } from 'react-icons/md';
 
 export interface SidebarButtonProps {
     label: string;
@@ -7,12 +8,10 @@ export interface SidebarButtonProps {
     count: number;
     active: boolean;
     onClick: () => void;
-    onOpenAll?: () => void;
 }
 
-const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, active, onClick, onOpenAll }) => {
-    const paddingLeft = `${Math.max(0, depth - 1) * 16 + 12}px`;
-    const disableOpenAll = !onOpenAll || count === 0;
+const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, active, onClick }) => {
+    const paddingLeft = `${Math.max(0, depth - 1) * 16}px`;
 
     return (
         <div className="flex w-full items-center gap-2 pr-2" style={{ paddingLeft }}>
@@ -20,13 +19,13 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, acti
                 type="button"
                 onClick={onClick}
                 className={[
-                    'flex-1 flex items-center justify-between gap-2 rounded-sm px-3 py-2 text-left transition',
+                    'flex-1 flex items-center justify-between gap-2 rounded-sm px-2 py-2 text-left transition',
                     active ? 'font-bold' : '',
                 ].join(' ')}
                 aria-current={active ? 'page' : undefined}
             >
                 <span className="flex items-center gap-2 min-w-0">
-                    <FolderClosed className="w-4" />
+                    <FaRegFolder size={16} className="shrink-0" />
                     <span className="truncate">{label}</span>
                 </span>
                 <span className="text-xs">{count}</span>
@@ -36,3 +35,4 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, acti
 };
 
 export default SidebarButton;
+

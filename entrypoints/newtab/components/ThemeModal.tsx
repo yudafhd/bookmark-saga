@@ -1,7 +1,7 @@
 import React from 'react';
 import { THEMES } from '@/lib/themes';
 import type { ThemeId } from '@/lib/types';
-import { XIcon } from '@/shared/icons';
+import { MdClose } from 'react-icons/md';
 
 interface ThemeModalProps {
     open: boolean;
@@ -35,7 +35,7 @@ const ThemeModal: React.FC<ThemeModalProps> = ({ open, currentThemeId, onClose, 
                         className="bs-btn bs-btn--ghost text-sm px-3 py-1.5"
                         onClick={onClose}
                     >
-                        <XIcon className="w-4" />
+                        <MdClose size={16} />
                     </button>
                 </div>
 

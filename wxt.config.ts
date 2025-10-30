@@ -5,7 +5,7 @@ export default defineConfig({
   manifest: {
     name: 'Bookmark Saga',
     description: 'New Tab showcasing your latest browsing history.',
-    version: '1.4.1',
+    version: '1.5.0',
     permissions: ['history', 'storage', 'tabs', 'bookmarks'],
 
     icons: {

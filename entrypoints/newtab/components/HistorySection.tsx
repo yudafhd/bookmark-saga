@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import type { VisitEntry } from '@/lib/types';
 import { formatRelativeTime } from '@/lib/time';
-import { StarSolid } from '@/shared/icons';
+import { MdStar } from 'react-icons/md';
 import { getHostName } from '@/lib/utils';
 interface HistorySectionProps {
     loading: boolean;
@@ -207,7 +207,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                                                         }}
                                                         aria-pressed={isSaved}
                                                     >
-                                                        {isSaved ? <StarSolid className="w-4" /> : 'Save'}
+                                                        {isSaved ? <MdStar size={16} /> : 'Save'}
                                                     </button>
                                                 </div>
                                             </div>

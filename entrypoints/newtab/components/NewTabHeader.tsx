@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { RefreshCw, TrashIcon, Search, GithubIcon, MailIcon, Menu } from '@/shared/icons';
+import { MdCode, MdDelete, MdEmail, MdRefresh, MdSettings } from 'react-icons/md';
 
 interface NewTabHeaderProps {
     subtitle: string;
@@ -80,7 +80,10 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                         <button
                             type="button"
                             className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'history' ? 'mode-toggle--active' : ''}`}
-                            onClick={() => onModeChange('history')}
+                            onClick={() => {
+                                onRefresh()
+                                onModeChange('history')
+                            }}
                             aria-pressed={mode === 'history'}
                         >
                             History
@@ -88,7 +91,10 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                         <button
                             type="button"
                             className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'saved' ? 'mode-toggle--active' : ''}`}
-                            onClick={() => onModeChange('saved')}
+                            onClick={() => {
+                                onRefresh();
+                                onModeChange('saved');
+                            }}
                             aria-pressed={mode === 'saved'}
                         >
                             Bookmarks
@@ -115,7 +121,7 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                             onClick={() => setMenuOpen((v) => !v)}
                             title="Open menu"
                         >
-                            <Menu className="h-3 w-3" />
+                            <MdSettings size={16} />
                         </button>
 
                         {isMenuOpen ? (
@@ -150,7 +156,7 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                                             role="menuitem"
                                             title="Refresh view"
                                         >
-                                            <RefreshCw className="h-3 w-3" /> Refresh
+                                            <MdRefresh size={16} /> Refresh
                                         </button>
 
                                         <button
@@ -163,7 +169,7 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                                             role="menuitem"
                                             title="Clear saved history"
                                         >
-                                            <TrashIcon className="h-3 w-3" /> Clear history
+                                            <MdDelete size={16} /> Clear history
                                         </button>
 
                                     </>
@@ -178,7 +184,7 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                                     }}
                                     role="menuitem"
                                 >
-                                    <GithubIcon className="h-3 w-3" />
+                                    <MdCode size={16} />
                                     GitHub
                                 </button>
                                 <button
@@ -190,7 +196,7 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                                     }}
                                     role="menuitem"
                                 >
-                                    <MailIcon className="h-3 w-3" />
+                                    <MdEmail size={16} />
                                     Contact
                                 </button>
                             </div>

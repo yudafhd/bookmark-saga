@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Menu, StarSolid, EditIcon, Settings, XIcon } from '@/shared/icons';
+import { MdClose, MdEdit, MdMoreVert, MdSettings, MdStar } from 'react-icons/md';
 
 interface ItemActionsMenuProps {
     open: boolean;
@@ -51,7 +51,7 @@ const ItemActionsMenu: React.FC<ItemActionsMenuProps> = ({
                 aria-label="Open actions"
                 title="Open actions"
             >
-                <Menu className="w-4" />
+                <MdMoreVert size={18} />
             </button>
 
             {open ? (
@@ -69,7 +69,7 @@ const ItemActionsMenu: React.FC<ItemActionsMenuProps> = ({
                         }}
                         role="menuitem"
                     >
-                        <StarSolid className="w-4" />
+                        <MdStar size={18} />
                         Manage folders
                     </button>
 
@@ -83,7 +83,7 @@ const ItemActionsMenu: React.FC<ItemActionsMenuProps> = ({
                         }}
                         role="menuitem"
                     >
-                        <EditIcon className="w-4" />
+                        <MdEdit size={18} />
                         Rename URL
                     </button>
 
@@ -97,7 +97,7 @@ const ItemActionsMenu: React.FC<ItemActionsMenuProps> = ({
                         }}
                         role="menuitem"
                     >
-                        <Settings className="w-4" />
+                        <MdSettings size={18} />
                         Rename title
                     </button>
 
@@ -111,7 +111,7 @@ const ItemActionsMenu: React.FC<ItemActionsMenuProps> = ({
                         }}
                         role="menuitem"
                     >
-                        <XIcon className="w-4" />
+                        <MdClose size={18} />
                         Remove
                     </button>
                 </div>

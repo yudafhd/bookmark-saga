@@ -1,5 +1,5 @@
 import React from 'react';
-import { XIcon } from '@/shared/icons';
+import { MdClose } from 'react-icons/md';
 
 interface FirstRunTourProps {
     open: boolean;
@@ -39,7 +39,7 @@ const FirstRunTour: React.FC<FirstRunTourProps> = ({ open, onClose }) => {
                         onClick={onClose}
                         aria-label="Close"
                     >
-                        <XIcon className="w-4" />
+                        <MdClose size={16} />
                     </button>
                 </div>
 

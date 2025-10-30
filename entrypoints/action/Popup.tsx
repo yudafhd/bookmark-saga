@@ -59,6 +59,8 @@ const Popup: React.FC = () => {
     const [feedback, setFeedback] = useState<FeedbackState | null>(null);
     const [saving, setSaving] = useState(false);
     const [creating, setCreating] = useState(false);
+    const folderSelected = folders.find((folder) => folder.id === selectedFolderId)?.name ?? 'folder';
+    const folderName = folderSelected ? `${folderSelected}` : 'Folder';
 
     useEffect(() => {
         const load = async () => {
@@ -185,7 +187,6 @@ const Popup: React.FC = () => {
             };
             await writeFolderItems(nextItems);
             setFolderItems(nextItems);
-            const folderName = folders.find((folder) => folder.id === selectedFolderId)?.name ?? 'folder';
             setFeedback({ type: 'success', message: `Saved to "${folderName}".` });
         } catch (error) {
             console.error('Failed to save bookmark', error);
@@ -203,7 +204,6 @@ const Popup: React.FC = () => {
                 <h1 className="text-base font-semibold">Bookmark Saga</h1>
                 <p className="text-xs opacity-70">Quick save from the extension toolbar.</p>
             </header>
-
             {activeTab ? (
                 <>
                     <label className="flex flex-col gap-1 text-xs font-semibold uppercase tracking-wide opacity-80">
@@ -268,7 +268,7 @@ const Popup: React.FC = () => {
                 }}
                 disabled={saving || !activeTab || !selectedFolderId}
             >
-                {saving ? 'Saving…' : 'Save To Folder'}
+                {saving ? 'Saving…' : `Save To ${folderName}`}
             </button>
 
             {feedback ? (

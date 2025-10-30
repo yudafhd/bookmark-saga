@@ -1,5 +1,5 @@
 import React from 'react';
-import { XIcon, Plus } from '@/shared/icons';
+import { MdAdd, MdClose } from 'react-icons/md';
 
 interface FolderModalProps {
     open: boolean;
@@ -42,7 +42,7 @@ const FolderModal: React.FC<FolderModalProps> = ({
                         <p className="text-sm opacity-70">Choose a destination folder or create a new one.</p>
                     </div>
                     <button type="button" className="bs-btn bs-btn--neutral text-sm px-3 py-1.5" onClick={onClose}>
-                        <XIcon className="w-4" />
+                        <MdClose size={16} />
                     </button>
                 </div>
 
@@ -66,7 +66,7 @@ const FolderModal: React.FC<FolderModalProps> = ({
                             onCreateFolder(newName.trim());
                         }}
                     >
-                        <Plus className="w-4" />
+                        <MdAdd size={18} />
                     </button>
                 </div>
 

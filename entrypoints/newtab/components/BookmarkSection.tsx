@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { FolderItem } from '@/lib/types';
-import { FolderClosed, Plus, EditIcon, TrashIcon, StarSolid, Download, Upload, Menu, ExternalLink } from '@/shared/icons';
+import { MdAdd, MdDelete, MdDownload, MdEdit, MdFolder, MdMoreHoriz, MdMoreVert, MdOpenInNew, MdStar, MdUpload } from 'react-icons/md';
 import ItemActionsMenu from './ItemActionsMenu';
+import { FaRegFolder } from 'react-icons/fa';
 
 interface BookmarkSectionItem extends FolderItem {
     folderId: string;
@@ -109,7 +110,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                 onClick={() => setActionMenuOpen((v) => !v)}
                                 title="Open actions"
                             >
-                                <Menu className="w-4" />
+                                <MdMoreHoriz size={18} />
                             </button>
 
                             {isActionMenuOpen ? (
@@ -120,7 +121,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                 >
                                     <button
                                         type="button"
-                                        className="w-full text-left px-3 py-2 rounded-sm text-sm disabled:opacity-50"
+                                        className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-sm text-sm disabled:opacity-50"
                                         onClick={() => {
                                             onExportFolders();
                                             setActionMenuOpen(false);
@@ -128,30 +129,33 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                         role="menuitem"
                                         disabled={isEmpty}
                                     >
+                                        <MdDownload size={18} />
                                         Export bookmarks
                                     </button>
 
                                     <button
                                         type="button"
-                                        className="w-full text-left px-3 py-2 rounded-sm text-sm"
+                                        className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-sm text-sm"
                                         onClick={() => {
                                             setImportModalOpen(true);
                                             setActionMenuOpen(false);
                                         }}
                                         role="menuitem"
                                     >
+                                        <MdUpload size={18} />
                                         Import bookmarks
                                     </button>
 
                                     <button
                                         type="button"
-                                        className="w-full text-left px-3 py-2 rounded-sm text-sm"
+                                        className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-sm text-sm"
                                         onClick={() => {
                                             onCreateRootFolder();
                                             setActionMenuOpen(false);
                                         }}
                                         role="menuitem"
                                     >
+                                        <MdAdd size={18} />
                                         Create root folder
                                     </button>
                                 </div>
@@ -170,7 +174,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <FolderClosed className="w-5" />
+                                    <FaRegFolder size={20} />
                                     <h2 className="text-xl font-semibold">
                                         {currentFolderName || 'All saved pages'}
                                     </h2>
@@ -187,8 +191,8 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                     disabled={visibleCount === 0}
                                     title="Open all saved items in new tabs"
                                 >
-                                    <ExternalLink className="w-4" />
-                                    Open all link
+                                    <MdOpenInNew size={16} />
+                                    Open all
                                 </button>
                                 {currentFolderName !== 'All saved pages' ? (
                                     <>
@@ -198,7 +202,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                             onClick={onCreateSubfolder}
                                             disabled={!currentSavedFolderId}
                                         >
-                                            <Plus className="w-4" />
+                                            <MdAdd size={16} />
                                             <span className="sr-only">Create subfolder</span>
                                         </button>
                                         <button
@@ -207,16 +211,16 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                             onClick={onRenameFolder}
                                             disabled={!currentSavedFolderId}
                                         >
-                                            <EditIcon className="w-4" />
+                                            <MdEdit size={16} />
                                             <span className="sr-only">Edit subfolder</span>
                                         </button>
                                         <button
                                             type="button"
-                                            className="bs-btn bs-btn--danger flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                            className="bs-btn flex items-center gap-2 px-3 py-2 text-xs font-semibold"
                                             onClick={onDeleteFolder}
                                             disabled={!currentSavedFolderId}
                                         >
-                                            <TrashIcon className="w-4" />
+                                            <MdDelete size={16} />
                                             <span className="sr-only">Delete subfolder</span>
                                         </button>
                                     </>
@@ -261,7 +265,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                                 {item.title || item.host}
                                             </a>
                                             <div className="flex flex-wrap gap-2 text-xs opacity-[0.5]">
-                                                <span className="truncate rounded-full px-2 py-0.5">
+                                                <span className="truncate rounded-full">
                                                     {item.host}
                                                 </span>
                                                 {item.savedLabel ? (
@@ -348,7 +352,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                 }}
                             >
                                 <span>From Bookmark Saga export (.json)</span>
-                                <Upload className="w-4" />
+                                <MdUpload size={18} />
                             </button>
                             <button
                                 type="button"
@@ -358,7 +362,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                 }}
                             >
                                 <span>From Google Chrome bookmarks</span>
-                                <StarSolid className="w-4" />
+                                <MdStar size={18} />
                             </button>
                         </div>
                     </div>
