@@ -4,6 +4,7 @@ export const FOLDERS_KEY = 'bookmarkSagaFolders';
 export const BOOKMARK_ITEMS_KEY = 'bookmarkSagaFolderItems';
 export const THEME_KEY = 'bookmarkSagaTheme';
 
+export const TOUR_SEEN_KEY = 'bookmarkSagaTourSeenV1';
 export const DEFAULT_MAX_HISTORY_ITEMS = 50;
 export const MIN_MAX_ITEMS = 50;
 export const MAX_MAX_ITEMS = 200;

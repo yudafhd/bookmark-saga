@@ -1,0 +1,71 @@
+body[data-theme="retro_futurism"] {
+    --bs-body-bg: radial-gradient(circle at 20% 20%, #11041f 0%, #0a0a0a 45%, #040306 100%);
+    --bs-text-color: #fafafa;
+    --bs-muted-color: rgba(226, 232, 240, 0.75);
+    --bs-surface-bg: rgba(16, 3, 38, 0.82);
+    --bs-surface-border: rgba(154, 230, 255, 0.36);
+    --bs-surface-shadow: 0 46px 110px -62px rgba(255, 110, 199, 0.6);
+    --bs-surface-blur: blur(18px);
+    --bs-button-bg: linear-gradient(135deg, rgba(154, 230, 255, 0.95) 0%, rgba(255, 110, 199, 0.95) 100%);
+    --bs-button-color: #0b0614;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(154, 230, 255, 0.95) 0%, rgba(255, 110, 199, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(110, 231, 183, 1) 0%, rgba(255, 110, 199, 1) 100%);
+    --bs-btn-accent-color: #090417;
+    --bs-btn-shadow: 0 40px 96px -58px rgba(255, 110, 199, 0.55);
+
+    --bs-btn-primary-bg: #9ae6ff;
+    --bs-btn-primary-hover-bg: #5eead4;
+    --bs-btn-primary-color: #031019;
+    --bs-btn-primary-shadow: 0 36px 86px -54px rgba(154, 230, 255, 0.55);
+
+    --bs-btn-success-bg: #22c55e;
+    --bs-btn-success-hover-bg: #16a34a;
+    --bs-btn-success-color: #04180d;
+    --bs-btn-success-shadow: 0 34px 82px -52px rgba(34, 197, 94, 0.5);
+
+    --bs-btn-danger-bg: #f43f5e;
+    --bs-btn-danger-hover-bg: #e11d48;
+    --bs-btn-danger-color: #ffe4ed;
+    --bs-btn-danger-shadow: 0 32px 80px -50px rgba(225, 29, 72, 0.5);
+
+    --bs-btn-neutral-bg: rgba(24, 24, 24, 0.72);
+    --bs-btn-neutral-hover-bg: rgba(24, 24, 24, 0.85);
+    --bs-btn-neutral-color: rgba(241, 245, 249, 0.9);
+    --bs-btn-neutral-shadow: 0 32px 84px -52px rgba(5, 5, 5, 0.7);
+
+    --bs-btn-ghost-bg: rgba(154, 230, 255, 0.24);
+    --bs-btn-ghost-hover-bg: rgba(154, 230, 255, 0.35);
+    --bs-btn-ghost-color: #f0f9ff;
+    --bs-btn-focus-ring: rgba(255, 110, 199, 0.48);
+}
+
+body[data-theme="retro_futurism"] .bs-surface-item {
+    background: rgba(16, 5, 34, 0.82);
+    border-color: rgba(255, 110, 199, 0.3);
+}
+
+body[data-theme="retro_futurism"] .mode-toggle {
+    color: rgba(250, 250, 250, 0.9);
+    background: rgba(9, 4, 15, 0.6);
+    border: 1px solid rgba(255, 110, 199, 0.32);
+    box-shadow: 0 42px 100px -58px rgba(154, 230, 255, 0.5);
+}
+
+body[data-theme="retro_futurism"] .mode-toggle--active {
+    background: linear-gradient(135deg, rgba(154, 230, 255, 0.95) 0%, rgba(255, 110, 199, 0.95) 100%);
+    color: #09020f;
+    box-shadow: 0 46px 110px -62px rgba(255, 110, 199, 0.55);
+}
+
+body[data-theme="retro_futurism"] .theme-option-desc {
+    color: rgba(226, 232, 240, 0.78);
+}
+
+body[data-theme="retro_futurism"] .folder-option:hover {
+    background: rgba(255, 110, 199, 0.26);
+}
+
+body[data-theme="retro_futurism"] .folder-option input {
+    accent-color: #ff6ec7;
+}

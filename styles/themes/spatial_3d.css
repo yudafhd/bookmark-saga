@@ -1,0 +1,71 @@
+body[data-theme="spatial_3d"] {
+    --bs-body-bg: radial-gradient(circle at 20% 20%, #132035 0%, #0b0f17 45%, #05080f 100%);
+    --bs-text-color: #e6edf6;
+    --bs-muted-color: rgba(147, 161, 178, 0.75);
+    --bs-surface-bg: rgba(11, 15, 23, 0.78);
+    --bs-surface-border: rgba(110, 168, 254, 0.32);
+    --bs-surface-shadow: 0 40px 100px -56px rgba(14, 23, 38, 0.85);
+    --bs-surface-blur: blur(18px);
+    --bs-button-bg: linear-gradient(140deg, rgba(110, 168, 254, 0.95) 0%, rgba(94, 234, 255, 0.9) 100%);
+    --bs-button-color: #04101d;
+
+    --bs-btn-accent-bg: linear-gradient(140deg, rgba(110, 168, 254, 0.95) 0%, rgba(14, 165, 233, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(140deg, rgba(110, 168, 254, 1) 0%, rgba(56, 189, 248, 1) 100%);
+    --bs-btn-accent-color: #031422;
+    --bs-btn-shadow: 0 36px 84px -48px rgba(31, 117, 212, 0.58);
+
+    --bs-btn-primary-bg: #6ea8fe;
+    --bs-btn-primary-hover-bg: #4e89eb;
+    --bs-btn-primary-color: #061526;
+    --bs-btn-primary-shadow: 0 34px 80px -48px rgba(78, 123, 199, 0.55);
+
+    --bs-btn-success-bg: #38e0a4;
+    --bs-btn-success-hover-bg: #22c68a;
+    --bs-btn-success-color: #03140d;
+    --bs-btn-success-shadow: 0 34px 78px -46px rgba(43, 198, 145, 0.5);
+
+    --bs-btn-danger-bg: #f97316;
+    --bs-btn-danger-hover-bg: #ea580c;
+    --bs-btn-danger-color: #fff4ed;
+    --bs-btn-danger-shadow: 0 32px 76px -46px rgba(234, 88, 12, 0.5);
+
+    --bs-btn-neutral-bg: rgba(12, 21, 35, 0.72);
+    --bs-btn-neutral-hover-bg: rgba(12, 21, 35, 0.85);
+    --bs-btn-neutral-color: rgba(218, 232, 255, 0.9);
+    --bs-btn-neutral-shadow: 0 32px 76px -48px rgba(8, 13, 23, 0.65);
+
+    --bs-btn-ghost-bg: rgba(110, 168, 254, 0.18);
+    --bs-btn-ghost-hover-bg: rgba(110, 168, 254, 0.28);
+    --bs-btn-ghost-color: #93c5fd;
+    --bs-btn-focus-ring: rgba(110, 168, 254, 0.5);
+}
+
+body[data-theme="spatial_3d"] .bs-surface-item {
+    background: rgba(11, 18, 32, 0.78);
+    border-color: rgba(110, 168, 254, 0.28);
+}
+
+body[data-theme="spatial_3d"] .mode-toggle {
+    color: rgba(226, 236, 247, 0.82);
+    background: rgba(10, 18, 29, 0.6);
+    border: 1px solid rgba(110, 168, 254, 0.3);
+    box-shadow: 0 36px 82px -48px rgba(7, 12, 22, 0.75);
+}
+
+body[data-theme="spatial_3d"] .mode-toggle--active {
+    background: linear-gradient(140deg, rgba(110, 168, 254, 0.95) 0%, rgba(56, 189, 248, 0.95) 100%);
+    color: #041022;
+    box-shadow: 0 40px 90px -52px rgba(56, 189, 248, 0.55);
+}
+
+body[data-theme="spatial_3d"] .theme-option-desc {
+    color: rgba(147, 161, 178, 0.78);
+}
+
+body[data-theme="spatial_3d"] .folder-option:hover {
+    background: rgba(56, 189, 248, 0.22);
+}
+
+body[data-theme="spatial_3d"] .folder-option input {
+    accent-color: #6ea8fe;
+}

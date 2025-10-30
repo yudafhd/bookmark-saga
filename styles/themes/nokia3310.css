@@ -1,0 +1,85 @@
+/* ===== Nokia 3310 — Flat Monochrome ===== */
+body[data-theme="nokia3310"] {
+  /* Latar & teks: hijau LCD klasik */
+  --nk-screen: #d9f3cb;
+  --nk-ink:   #1f331f;
+  --nk-line:  #8fbf8f;
+  --nk-shadow:#9ec79e;
+
+  /* Hal penting: hilangkan gradient/blur, pakai flat */
+  --bs-body-bg: #cfe9c2;                 /* (dulu radial gelap) */
+  --bs-text-color: var(--nk-ink);
+  --bs-muted-color: rgba(31, 51, 31, 0.72);
+
+  --bs-surface-bg: var(--nk-screen);
+  --bs-surface-border: var(--nk-line);
+  --bs-surface-shadow: 0 0 0 1px var(--nk-line), 0 2px 0 var(--nk-shadow);
+  --bs-surface-blur: none;               /* (dulu blur(2px)) */
+
+  /* Tombol: flat + outline tipis, bukan gradient */
+  --bs-button-bg: var(--nk-screen);
+  --bs-button-color: var(--nk-ink);
+  --bs-btn-shadow: inset 0 0 0 1px #b6d9b6;
+
+  --bs-btn-accent-bg: var(--nk-screen);
+  --bs-btn-accent-hover-bg: #cfe6ba;     /* sedikit lebih gelap */
+  --bs-btn-accent-color: var(--nk-ink);
+
+  --bs-btn-primary-bg: var(--nk-screen);
+  --bs-btn-primary-hover-bg: #cfe6ba;
+  --bs-btn-primary-color: var(--nk-ink);
+
+  /* “Success/Danger” tetap 1-bit feel (tanpa merah mencolok) */
+  --bs-btn-success-bg: var(--nk-screen);
+  --bs-btn-success-hover-bg: #cfe6ba;
+  --bs-btn-success-color: var(--nk-ink);
+
+  --bs-btn-danger-bg: var(--nk-screen);
+  --bs-btn-danger-hover-bg: #cfe6ba;
+  --bs-btn-danger-color: var(--nk-ink);
+
+  --bs-btn-neutral-bg: var(--nk-screen);
+  --bs-btn-neutral-hover-bg: #cfe6ba;
+  --bs-btn-neutral-color: var(--nk-ink);
+
+  --bs-btn-ghost-bg: transparent;
+  --bs-btn-ghost-hover-bg: rgba(31, 61, 31, 0.08);
+  --bs-btn-ghost-color: var(--nk-ink);
+  --bs-btn-focus-ring: rgba(46, 106, 46, 0.35);
+}
+
+/* Panel/kartu LCD */
+body[data-theme="nokia3310"] .bs-surface-item {
+  background: var(--nk-screen);
+  border: 2px solid var(--nk-line);
+  box-shadow: var(--bs-surface-shadow);
+  border-radius: 6px;
+}
+
+/* Toggle: flat + border tipis (tanpa glow/gradient) */
+body[data-theme="nokia3310"] .mode-toggle {
+  color: var(--nk-ink);
+  background: var(--nk-screen);
+  border: 1px solid var(--nk-line);
+  box-shadow: inset 0 0 0 1px #b6d9b6;
+}
+body[data-theme="nokia3310"] .mode-toggle--active {
+  background: #cfe6ba; /* hover/active sedikit lebih gelap */
+  color: var(--nk-ink);
+  box-shadow: inset 0 0 0 1px #b6d9b6;
+}
+
+/* Copy & hover */
+body[data-theme="nokia3310"] .theme-option-desc { color: rgba(31,51,31,0.78); }
+body[data-theme="nokia3310"] .folder-option:hover { background: rgba(46,106,46,0.12); }
+body[data-theme="nokia3310"] .folder-option input { accent-color: #2e6a2e; }
+
+/* Tambahan opsional: tekstur dot-matrix sangat halus untuk “layar” */
+body[data-theme="nokia3310"] .bs-surface-item::after {
+  content:""; pointer-events:none; display:block; border-radius:6px;
+  background:
+    radial-gradient(#00000012 1px, transparent 1.5px) 0 0/4px 4px,
+    radial-gradient(#0000000a 1px, transparent 1.5px) 2px 2px/4px 4px;
+  mix-blend-mode:multiply;
+  inset:0; position:absolute;
+}

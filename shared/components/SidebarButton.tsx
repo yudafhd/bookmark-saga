@@ -7,26 +7,31 @@ export interface SidebarButtonProps {
     count: number;
     active: boolean;
     onClick: () => void;
+    onOpenAll?: () => void;
 }
 
-const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, active, onClick }) => {
+const SidebarButton: React.FC<SidebarButtonProps> = ({ label, depth, count, active, onClick, onOpenAll }) => {
+    const paddingLeft = `${Math.max(0, depth - 1) * 16 + 12}px`;
+    const disableOpenAll = !onOpenAll || count === 0;
+
     return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={[
-                'w-full flex items-center justify-between gap-2 px-3 py-2 transition',
-                active ? 'font-bold' : '',
-            ].join(' ')}
-            style={{ paddingLeft: `${Math.max(0, depth - 1) * 16 + 12}px` }}
-            aria-current={active ? 'page' : undefined}
-        >
-            <div className="flex gap-2">
-                <FolderClosed className="w-4" />
-                <span className="truncate">{label}</span>
-            </div>
-            <span className="text-xs">{count}</span>
-        </button>
+        <div className="flex w-full items-center gap-2 pr-2" style={{ paddingLeft }}>
+            <button
+                type="button"
+                onClick={onClick}
+                className={[
+                    'flex-1 flex items-center justify-between gap-2 rounded-sm px-3 py-2 text-left transition',
+                    active ? 'font-bold' : '',
+                ].join(' ')}
+                aria-current={active ? 'page' : undefined}
+            >
+                <span className="flex items-center gap-2 min-w-0">
+                    <FolderClosed className="w-4" />
+                    <span className="truncate">{label}</span>
+                </span>
+                <span className="text-xs">{count}</span>
+            </button>
+        </div>
     );
 };
 

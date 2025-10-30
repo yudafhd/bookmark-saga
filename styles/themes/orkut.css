@@ -1,0 +1,71 @@
+body[data-theme="orkut"] {
+    --bs-body-bg: linear-gradient(150deg, #fff5fb 0%, #f7d6f4 45%, #c084fc 100%);
+    --bs-text-color: #42215a;
+    --bs-muted-color: rgba(76, 29, 149, 0.6);
+    --bs-surface-bg: rgba(255, 255, 255, 0.9);
+    --bs-surface-border: rgba(192, 132, 252, 0.32);
+    --bs-surface-shadow: 0 32px 74px -48px rgba(192, 132, 252, 0.45);
+    --bs-surface-blur: blur(8px);
+    --bs-button-bg: linear-gradient(135deg, rgba(244, 114, 182, 0.95) 0%, rgba(192, 132, 252, 0.95) 100%);
+    --bs-button-color: #3b0a4d;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(244, 136, 212, 0.95) 0%, rgba(168, 85, 247, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(236, 72, 153, 1) 0%, rgba(147, 51, 234, 1) 100%);
+    --bs-btn-accent-color: #fff0f9;
+    --bs-btn-shadow: 0 30px 68px -44px rgba(236, 72, 153, 0.45);
+
+    --bs-btn-primary-bg: #c084fc;
+    --bs-btn-primary-hover-bg: #a855f7;
+    --bs-btn-primary-color: #3b0764;
+    --bs-btn-primary-shadow: 0 30px 68px -44px rgba(168, 85, 247, 0.45);
+
+    --bs-btn-success-bg: #22c55e;
+    --bs-btn-success-hover-bg: #16a34a;
+    --bs-btn-success-color: #052e16;
+    --bs-btn-success-shadow: 0 28px 64px -42px rgba(34, 197, 94, 0.45);
+
+    --bs-btn-danger-bg: #fb7185;
+    --bs-btn-danger-hover-bg: #f43f5e;
+    --bs-btn-danger-color: #fff1f2;
+    --bs-btn-danger-shadow: 0 28px 64px -42px rgba(244, 63, 94, 0.45);
+
+    --bs-btn-neutral-bg: rgba(236, 72, 153, 0.12);
+    --bs-btn-neutral-hover-bg: rgba(236, 72, 153, 0.18);
+    --bs-btn-neutral-color: #6b21a8;
+    --bs-btn-neutral-shadow: 0 26px 58px -40px rgba(168, 85, 247, 0.3);
+
+    --bs-btn-ghost-bg: rgba(192, 132, 252, 0.16);
+    --bs-btn-ghost-hover-bg: rgba(192, 132, 252, 0.26);
+    --bs-btn-ghost-color: #7c3aed;
+    --bs-btn-focus-ring: rgba(232, 121, 249, 0.45);
+}
+
+body[data-theme="orkut"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.82);
+    border-color: rgba(232, 121, 249, 0.28);
+}
+
+body[data-theme="orkut"] .mode-toggle {
+    color: rgba(74, 29, 149, 0.78);
+    background: rgba(255, 255, 255, 0.76);
+    border: 1px solid rgba(168, 85, 247, 0.28);
+    box-shadow: 0 30px 70px -44px rgba(147, 51, 234, 0.35);
+}
+
+body[data-theme="orkut"] .mode-toggle--active {
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.95) 0%, rgba(168, 85, 247, 0.95) 100%);
+    color: #fff1f9;
+    box-shadow: 0 32px 72px -46px rgba(236, 72, 153, 0.45);
+}
+
+body[data-theme="orkut"] .theme-option-desc {
+    color: rgba(91, 33, 182, 0.7);
+}
+
+body[data-theme="orkut"] .folder-option:hover {
+    background: rgba(236, 72, 153, 0.18);
+}
+
+body[data-theme="orkut"] .folder-option input {
+    accent-color: #a855f7;
+}

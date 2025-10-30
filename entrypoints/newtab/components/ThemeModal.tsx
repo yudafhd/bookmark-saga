@@ -24,7 +24,7 @@ const ThemeModal: React.FC<ThemeModalProps> = ({ open, currentThemeId, onClose, 
                 }
             }}
         >
-            <div className="max-h-[80vh] overflow-y-auto bs-surface max-w-md w-full p-6 rounded-2xl border border-white/40 space-y-4">
+            <div className="max-h-[80vh] overflow-y-auto bs-surface max-w-3xl w-full p-6 rounded-2xl border border-white/40 space-y-4">
                 <div className="flex items-start justify-between gap-4">
                     <div>
                         <h2 className="text-xl font-semibold">Choose Theme</h2>
@@ -39,7 +39,7 @@ const ThemeModal: React.FC<ThemeModalProps> = ({ open, currentThemeId, onClose, 
                     </button>
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-4">
                     {THEMES.map((theme) => {
                         const active = theme.id === currentThemeId;
                         return (

@@ -1,0 +1,71 @@
+body[data-theme="dynamic_color"] {
+    --bs-body-bg: linear-gradient(160deg, oklch(22% 0.04 260) 0%, oklch(30% 0.06 260) 35%, oklch(70% 0.15 260) 100%);
+    --bs-text-color: oklch(95% 0.02 260);
+    --bs-muted-color: oklch(85% 0.03 260 / 0.75);
+    --bs-surface-bg: color-mix(in oklch, oklch(22% 0.04 260) 35%, oklch(95% 0.02 260) 65%);
+    --bs-surface-border: oklch(70% 0.15 260 / 0.32);
+    --bs-surface-shadow: 0 34px 78px -50px oklch(22% 0.04 260 / 0.65);
+    --bs-surface-blur: blur(12px);
+    --bs-button-bg: linear-gradient(140deg, oklch(70% 0.15 260) 0%, oklch(55% 0.1 260) 100%);
+    --bs-button-color: oklch(95% 0.02 260);
+
+    --bs-btn-accent-bg: linear-gradient(140deg, oklch(70% 0.15 260) 0%, oklch(55% 0.12 260) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(140deg, oklch(75% 0.18 260) 0%, oklch(60% 0.14 260) 100%);
+    --bs-btn-accent-color: oklch(16% 0.03 260);
+    --bs-btn-shadow: 0 30px 72px -46px oklch(40% 0.08 260 / 0.45);
+
+    --bs-btn-primary-bg: oklch(70% 0.15 260);
+    --bs-btn-primary-hover-bg: oklch(60% 0.12 260);
+    --bs-btn-primary-color: oklch(16% 0.03 260);
+    --bs-btn-primary-shadow: 0 28px 70px -46px oklch(60% 0.12 260 / 0.5);
+
+    --bs-btn-success-bg: oklch(65% 0.13 180);
+    --bs-btn-success-hover-bg: oklch(58% 0.12 180);
+    --bs-btn-success-color: oklch(12% 0.02 260);
+    --bs-btn-success-shadow: 0 28px 68px -46px oklch(58% 0.12 180 / 0.45);
+
+    --bs-btn-danger-bg: oklch(60% 0.18 30);
+    --bs-btn-danger-hover-bg: oklch(52% 0.18 30);
+    --bs-btn-danger-color: oklch(95% 0.02 260);
+    --bs-btn-danger-shadow: 0 28px 68px -46px oklch(52% 0.18 30 / 0.45);
+
+    --bs-btn-neutral-bg: color-mix(in oklch, oklch(22% 0.04 260) 45%, oklch(95% 0.02 260) 55%);
+    --bs-btn-neutral-hover-bg: color-mix(in oklch, oklch(22% 0.04 260) 55%, oklch(95% 0.02 260) 45%);
+    --bs-btn-neutral-color: oklch(95% 0.02 260);
+    --bs-btn-neutral-shadow: 0 26px 60px -42px oklch(22% 0.04 260 / 0.45);
+
+    --bs-btn-ghost-bg: oklch(70% 0.15 260 / 0.18);
+    --bs-btn-ghost-hover-bg: oklch(70% 0.15 260 / 0.28);
+    --bs-btn-ghost-color: oklch(84% 0.05 260);
+    --bs-btn-focus-ring: oklch(70% 0.15 260 / 0.45);
+}
+
+body[data-theme="dynamic_color"] .bs-surface-item {
+    background: color-mix(in oklch, oklch(22% 0.04 260) 28%, oklch(95% 0.02 260) 72%);
+    border-color: oklch(70% 0.15 260 / 0.24);
+}
+
+body[data-theme="dynamic_color"] .mode-toggle {
+    color: oklch(95% 0.02 260 / 0.88);
+    background: color-mix(in oklch, oklch(22% 0.04 260) 35%, oklch(95% 0.02 260) 65%);
+    border: 1px solid oklch(70% 0.15 260 / 0.28);
+    box-shadow: 0 30px 72px -46px oklch(22% 0.04 260 / 0.55);
+}
+
+body[data-theme="dynamic_color"] .mode-toggle--active {
+    background: linear-gradient(140deg, oklch(70% 0.15 260) 0%, oklch(60% 0.12 260) 100%);
+    color: oklch(16% 0.03 260);
+    box-shadow: 0 32px 76px -48px oklch(70% 0.15 260 / 0.5);
+}
+
+body[data-theme="dynamic_color"] .theme-option-desc {
+    color: oklch(85% 0.03 260 / 0.75);
+}
+
+body[data-theme="dynamic_color"] .folder-option:hover {
+    background: oklch(70% 0.15 260 / 0.22);
+}
+
+body[data-theme="dynamic_color"] .folder-option input {
+    accent-color: oklch(70% 0.15 260);
+}

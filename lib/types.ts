@@ -34,7 +34,26 @@ export type ThemeId =
   | 'sunset'
   | 'paper'
   | 'macos'
-  | 'linux';
+  | 'linux'
+  | 'forest'
+  | 'twitter'
+  | 'friendster'
+  | 'oldfacebook'
+  | 'myspace'
+  | 'orkut'
+  | 'spatial_3d'
+  | 'bento_grid'
+  | 'liquid_glass'
+  | 'ai_first'
+  | 'dynamic_color'
+  | 'fluent_refresh'
+  | 'a11y_first'
+  | 'micro_interactions'
+  | 'retro_futurism'
+  | 'bordered_minimal'
+  | 'data_forward'
+  | 'sustainable_perf'
+  | 'nokia3310';
 
 export interface ThemeOption {
   id: ThemeId;

@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { RefreshCw, TrashIcon, Search, GithubIcon, MailIcon } from '@/shared/icons';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { RefreshCw, TrashIcon, Search, GithubIcon, MailIcon, Menu } from '@/shared/icons';
 
 interface NewTabHeaderProps {
     subtitle: string;
@@ -38,9 +38,31 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
         }
         return '/icons/icon48.png';
     }, []);
+
+    const [isMenuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const handleClick = (event: MouseEvent) => {
+            if (!menuRef.current) return;
+            if (!menuRef.current.contains(event.target as Node)) {
+                setMenuOpen(false);
+            }
+        };
+        const handleKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setMenuOpen(false);
+        };
+        document.addEventListener('click', handleClick);
+        document.addEventListener('keydown', handleKey);
+        return () => {
+            document.removeEventListener('click', handleClick);
+            document.removeEventListener('keydown', handleKey);
+        };
+    }, []);
+
     return (
         <header className="space-y-2">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="flex items-start gap-3">
                     <img
                         src={iconSrc}
@@ -51,7 +73,7 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                     <div className="space-y-1">
                         <h1 className="text-2xl font-bold">Bookmark Saga</h1>
                         <p className="text-sm opacity-70" id="headerSubtitle">
-                            {subtitle}
+                            easy bookmark & history manager
                         </p>
                     </div>
                     <div className="flex gap-1 ml-10">
@@ -73,66 +95,107 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <button
-                        type="button"
-                        className="bs-btn bs-btn--accent px-3 py-2 text-xs"
-                        onClick={onOpenThemeModal}
-                        aria-expanded={isThemeModalOpen}
-                    >
-                        <span className="hidden sm:inline">{currentThemeName}</span>
-                        <span className="sm:hidden">{currentThemeName.slice(0, 3)}</span>
-                    </button>
-                    {mode === 'history' && <div className="relative flex-1 lg:max-w-md">
+                <div className="flex items-center gap-2">
+                    <input
+                        id="search"
+                        type="search"
+                        placeholder={mode === 'history' ? 'Search visit history…' : 'Search bookmarks…'}
+                        value={searchQuery}
+                        onChange={(event) => onSearchQueryChange(event.target.value)}
+                        className="w-[15rem] rounded-md border border-gray-300/80 bg-white/90  p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                    />
 
-                        <input
-                            id="search"
-                            type="search"
-                            placeholder="Search visit history…"
-                            value={searchQuery}
-                            onChange={(event) => onSearchQueryChange(event.target.value)}
-                            className="w-full rounded-md border border-gray-300/80 bg-white/90  p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-                        />
-                    </div>}
+                    <div className="relative" ref={menuRef}>
+                        <button
+                            type="button"
+                            className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold"
+                            aria-haspopup="menu"
+                            aria-expanded={isMenuOpen}
+                            aria-controls="header-menu"
+                            onClick={() => setMenuOpen((v) => !v)}
+                            title="Open menu"
+                        >
+                            <Menu className="h-3 w-3" />
+                        </button>
 
-                    {mode === 'history' ? (
-                        <>
-                            <button
-                                type="button"
-                                className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 font-semibold"
-                                onClick={onRefresh}
-                                title="Refresh view"
+                        {isMenuOpen ? (
+                            <div
+                                id="header-menu"
+                                role="menu"
+                                className="absolute right-0 z-20 mt-2 w-56 rounded-md bs-surface p-1 shadow-lg"
                             >
-                                <RefreshCw className="h-3 w-3" />
-                            </button>
-                            {hasHistory ? (
                                 <button
                                     type="button"
-                                    className="bs-btn bs-btn--danger inline-flex items-center gap-2 px-3 py-2 font-semibold"
-                                    onClick={onClearHistory}
-                                    title="Clear saved history"
+                                    className="w-full text-left px-3 py-2 rounded-sm text-sm"
+                                    onClick={() => {
+                                        onOpenThemeModal();
+                                        setMenuOpen(false);
+                                    }}
+                                    role="menuitem"
                                 >
-                                    <TrashIcon className="h-3 w-3" />
+
+                                    <span className="hidden sm:inline">{`Theme - ${currentThemeName}`}</span>
+                                    <span className="sm:hidden">{currentThemeName.slice(0, 3)}</span>
                                 </button>
-                            ) : null}
-                        </>
-                    ) : null}
-                    <button
-                        type="button"
-                        className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold"
-                        onClick={onOpenGithubModal}
-                        title="View project on GitHub"
-                    >
-                        <GithubIcon className="h-3 w-3" />
-                    </button>
-                    <button
-                        type="button"
-                        className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold"
-                        onClick={onOpenContactModal}
-                        title="Contact the author"
-                    >
-                        <MailIcon className="h-3 w-3" />
-                    </button>
+
+                                {mode === 'history' ? (
+                                    <>
+                                        <button
+                                            type="button"
+                                            className="w-full flex items-center gap-2  text-left px-3 py-2 rounded-sm text-sm"
+                                            onClick={() => {
+                                                onRefresh();
+                                                setMenuOpen(false);
+                                            }}
+                                            role="menuitem"
+                                            title="Refresh view"
+                                        >
+                                            <RefreshCw className="h-3 w-3" /> Refresh
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-sm text-sm"
+                                            onClick={() => {
+                                                onClearHistory();
+                                                setMenuOpen(false);
+                                            }}
+                                            role="menuitem"
+                                            title="Clear saved history"
+                                        >
+                                            <TrashIcon className="h-3 w-3" /> Clear history
+                                        </button>
+
+                                    </>
+                                ) : null}
+
+                                <button
+                                    type="button"
+                                    className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-sm text-sm"
+                                    onClick={() => {
+                                        onOpenGithubModal();
+                                        setMenuOpen(false);
+                                    }}
+                                    role="menuitem"
+                                >
+                                    <GithubIcon className="h-3 w-3" />
+                                    GitHub
+                                </button>
+                                <button
+                                    type="button"
+                                    className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-sm text-sm"
+                                    onClick={() => {
+                                        onOpenContactModal();
+                                        setMenuOpen(false);
+                                    }}
+                                    role="menuitem"
+                                >
+                                    <MailIcon className="h-3 w-3" />
+                                    Contact
+                                </button>
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
             </div>
         </header>

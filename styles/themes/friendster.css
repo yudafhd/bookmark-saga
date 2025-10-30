@@ -1,0 +1,71 @@
+body[data-theme="friendster"] {
+    --bs-body-bg: linear-gradient(140deg, #f2f7ff 0%, #d4e9ff 45%, #7fc1ff 100%);
+    --bs-text-color: #0f172a;
+    --bs-muted-color: rgba(51, 65, 85, 0.7);
+    --bs-surface-bg: rgba(255, 255, 255, 0.92);
+    --bs-surface-border: rgba(15, 23, 42, 0.08);
+    --bs-surface-shadow: 0 30px 70px -48px rgba(37, 99, 235, 0.35);
+    --bs-surface-blur: blur(6px);
+    --bs-button-bg: linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+    --bs-button-color: #f8fafc;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(99, 102, 241, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, rgba(37, 99, 235, 1) 0%, rgba(79, 70, 229, 1) 100%);
+    --bs-btn-accent-color: #f8fafc;
+    --bs-btn-shadow: 0 28px 60px -40px rgba(37, 99, 235, 0.4);
+
+    --bs-btn-primary-bg: #2563eb;
+    --bs-btn-primary-hover-bg: #1d4ed8;
+    --bs-btn-primary-color: #f8fafc;
+    --bs-btn-primary-shadow: 0 28px 60px -42px rgba(37, 99, 235, 0.45);
+
+    --bs-btn-success-bg: #10b981;
+    --bs-btn-success-hover-bg: #0f9d68;
+    --bs-btn-success-color: #022c1c;
+    --bs-btn-success-shadow: 0 28px 60px -42px rgba(16, 185, 129, 0.45);
+
+    --bs-btn-danger-bg: #ef4444;
+    --bs-btn-danger-hover-bg: #dc2626;
+    --bs-btn-danger-color: #fff1f2;
+    --bs-btn-danger-shadow: 0 26px 58px -38px rgba(220, 38, 38, 0.45);
+
+    --bs-btn-neutral-bg: rgba(255, 255, 255, 0.75);
+    --bs-btn-neutral-hover-bg: rgba(241, 245, 249, 0.9);
+    --bs-btn-neutral-color: #1f2937;
+    --bs-btn-neutral-shadow: 0 26px 56px -38px rgba(15, 23, 42, 0.25);
+
+    --bs-btn-ghost-bg: rgba(37, 99, 235, 0.12);
+    --bs-btn-ghost-hover-bg: rgba(37, 99, 235, 0.18);
+    --bs-btn-ghost-color: #1d4ed8;
+    --bs-btn-focus-ring: rgba(59, 130, 246, 0.35);
+}
+
+body[data-theme="friendster"] .bs-surface-item {
+    background: rgba(255, 255, 255, 0.86);
+    border-color: rgba(96, 165, 250, 0.26);
+}
+
+body[data-theme="friendster"] .mode-toggle {
+    color: rgba(15, 23, 42, 0.82);
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    box-shadow: 0 28px 62px -40px rgba(15, 23, 42, 0.25);
+}
+
+body[data-theme="friendster"] .mode-toggle--active {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.92) 0%, rgba(79, 70, 229, 0.92) 100%);
+    color: #f8fafc;
+    box-shadow: 0 30px 66px -42px rgba(37, 99, 235, 0.4);
+}
+
+body[data-theme="friendster"] .theme-option-desc {
+    color: rgba(71, 85, 105, 0.75);
+}
+
+body[data-theme="friendster"] .folder-option:hover {
+    background: rgba(96, 165, 250, 0.18);
+}
+
+body[data-theme="friendster"] .folder-option input {
+    accent-color: #2563eb;
+}

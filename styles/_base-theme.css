@@ -178,7 +178,7 @@ body {
 .theme-option {
     width: 100%;
     border-radius: 18px;
-    padding: 16px 18px;
+    padding: 10px 18px;
     border: 1px solid transparent;
     background: var(--bs-surface-bg);
     box-shadow: var(--bs-surface-shadow);
@@ -265,6 +265,82 @@ body {
 
 .theme-option-chip--linux {
     background: linear-gradient(135deg, #16a34a 0%, #0f766e 100%);
+}
+
+.theme-option-chip--forest {
+    background: linear-gradient(135deg, #052011 0%, #0f3d24 45%, #34d399 100%);
+}
+
+.theme-option-chip--twitter {
+    background: linear-gradient(135deg, #0f172a 0%, #1d9bf0 50%, #bae6fd 100%);
+}
+
+.theme-option-chip--friendster {
+    background: linear-gradient(135deg, #e0f2ff 0%, #7fc1ff 45%, #2563eb 100%);
+}
+
+.theme-option-chip--oldfacebook {
+    background: linear-gradient(135deg, #0f1a36 0%, #1f3268 45%, #4267b2 100%);
+}
+
+.theme-option-chip--myspace {
+    background: linear-gradient(135deg, #05070f 0%, #2a2f6b 45%, #c084fc 100%);
+}
+
+.theme-option-chip--orkut {
+    background: linear-gradient(135deg, #fff5fb 0%, #f472b6 45%, #a855f7 100%);
+}
+
+.theme-option-chip--spatial_3d {
+    background: linear-gradient(150deg, #0b0f17 0%, #1b2842 45%, #6ea8fe 100%);
+}
+
+.theme-option-chip--bento_grid {
+    background: linear-gradient(140deg, #0f172a 0%, #1e293b 40%, #22d3ee 100%);
+}
+
+.theme-option-chip--liquid_glass {
+    background: linear-gradient(150deg, rgba(11, 18, 32, 0.95) 0%, rgba(128, 202, 255, 0.35) 60%, rgba(128, 202, 255, 0.65) 100%);
+}
+
+.theme-option-chip--ai_first {
+    background: linear-gradient(135deg, #0b1220 0%, #1f2933 45%, #a78bfa 100%);
+}
+
+.theme-option-chip--dynamic_color {
+    background: linear-gradient(140deg, oklch(22% 0.04 260) 0%, oklch(70% 0.15 260) 60%, oklch(95% 0.02 260) 100%);
+}
+
+.theme-option-chip--fluent_refresh {
+    background: linear-gradient(140deg, #0b1215 0%, #102733 45%, #35c2f1 100%);
+}
+
+.theme-option-chip--a11y_first {
+    background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 45%, #111827 100%);
+}
+
+.theme-option-chip--micro_interactions {
+    background: linear-gradient(140deg, #0f172a 0%, #1f2937 45%, #38bdf8 100%);
+}
+
+.theme-option-chip--retro_futurism {
+    background: linear-gradient(140deg, #0a0a0a 0%, #1f1030 45%, #ff6ec7 70%, #9ae6ff 100%);
+}
+
+.theme-option-chip--bordered_minimal {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 60%, #0ea5e9 100%);
+}
+
+.theme-option-chip--data_forward {
+    background: linear-gradient(140deg, #0b1220 0%, #1f2937 45%, #22c55e 70%, #ef4444 100%);
+}
+
+.theme-option-chip--sustainable_perf {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 60%, #16a34a 100%);
+}
+
+.theme-option-chip--nokia3310 {
+    background: linear-gradient(140deg, #1b2738 0%, #0f1624 35%, #c5e889 100%);
 }
 
 .mode-toggle {

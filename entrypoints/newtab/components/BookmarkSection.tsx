@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { FolderItem } from '@/lib/types';
-import { FolderClosed, Plus, EditIcon, TrashIcon, StarSolid, XIcon, Download, Upload, Settings } from '@/shared/icons';
+import { FolderClosed, Plus, EditIcon, TrashIcon, StarSolid, Download, Upload, Menu, ExternalLink } from '@/shared/icons';
+import ItemActionsMenu from './ItemActionsMenu';
 
 interface BookmarkSectionItem extends FolderItem {
     folderId: string;
@@ -25,7 +26,10 @@ interface BookmarkSectionProps {
     onExportFolders: () => void;
     onImportFolders: (file: File) => void | Promise<void>;
     onImportFromChrome: () => void | Promise<void>;
+    onRenameSavedItem?: (folderId: string, url: string) => void;
+    onRenameSavedTitle?: (folderId: string, url: string, currentTitle: string) => void;
     onManageSavedItem: (folderId: string, item: BookmarkSectionItem) => void;
+    onOpenAllSavedItems: (items: BookmarkSectionItem[]) => void;
 }
 
 const BookmarkSection: React.FC<BookmarkSectionProps> = ({
@@ -44,7 +48,10 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
     onExportFolders,
     onImportFolders,
     onImportFromChrome,
+    onRenameSavedItem,
+    onRenameSavedTitle,
     onManageSavedItem,
+    onOpenAllSavedItems,
 }) => {
     const visibleCount = savedItems.length;
     const emptyFolderMessage = currentSavedFolderId
@@ -53,6 +60,27 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isImportModalOpen, setImportModalOpen] = useState(false);
+    const [openMenuKey, setOpenMenuKey] = useState<string | null>(null);
+    const actionMenuRef = useRef<HTMLDivElement>(null);
+    const [isActionMenuOpen, setActionMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const handleClick = (event: MouseEvent) => {
+            if (!actionMenuRef.current) return;
+            if (!actionMenuRef.current.contains(event.target as Node)) {
+                setActionMenuOpen(false);
+            }
+        };
+        const handleKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setActionMenuOpen(false);
+        };
+        document.addEventListener('click', handleClick);
+        document.addEventListener('keydown', handleKey);
+        return () => {
+            document.removeEventListener('click', handleClick);
+            document.removeEventListener('keydown', handleKey);
+        };
+    }, []);
 
     const openFilePicker = () => {
         const input = fileInputRef.current;
@@ -64,38 +92,70 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
         }
     };
 
+
     return (
         <section className="space-y-8" id="bookmarkSection">
-            <div className="grid gap-6 lg:grid-cols-[280px,1fr]">
+            <div className="grid gap-6 lg:grid-cols-[300px,1fr]">
                 <aside className="bs-surface rounded-md p-4 space-y-4">
                     <div className="flex items-center justify-between gap-3">
                         <h2 className="text-sm font-semibold uppercase tracking-wide">Bookmarks</h2>
-                        <div className="flex gap-1">
+                        <div className="relative" ref={actionMenuRef}>
                             <button
                                 type="button"
-                                className="bs-btn bs-btn--neutral flex items-center gap-2 px-2 py-1 text-xs font-semibold"
-                                onClick={onExportFolders}
-                                disabled={isEmpty}
+                                className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-2 py-1 text-xs font-semibold"
+                                aria-haspopup="menu"
+                                aria-expanded={isActionMenuOpen}
+                                aria-controls="bookmark-actions-menu"
+                                onClick={() => setActionMenuOpen((v) => !v)}
+                                title="Open actions"
                             >
-                                <Download className="w-4" />
-                                <span className="sr-only">Export bookmarks</span>
+                                <Menu className="w-4" />
                             </button>
-                            <button
-                                type="button"
-                                className="bs-btn bs-btn--neutral flex items-center gap-2 px-2 py-1 text-xs font-semibold"
-                                onClick={() => setImportModalOpen(true)}
-                            >
-                                <Upload className="w-4" />
-                                <span className="sr-only">Import bookmarks</span>
-                            </button>
-                            <button
-                                type="button"
-                                className="bs-btn bs-btn--neutral px-2 py-1 text-xs"
-                                onClick={onCreateRootFolder}
-                            >
-                                <Plus className="w-4" />
-                                <span className="sr-only">Create root folder</span>
-                            </button>
+
+                            {isActionMenuOpen ? (
+                                <div
+                                    id="bookmark-actions-menu"
+                                    role="menu"
+                                    className="absolute right-0 z-20 mt-2 w-56 rounded-md bs-surface p-1 shadow-lg"
+                                >
+                                    <button
+                                        type="button"
+                                        className="w-full text-left px-3 py-2 rounded-sm text-sm disabled:opacity-50"
+                                        onClick={() => {
+                                            onExportFolders();
+                                            setActionMenuOpen(false);
+                                        }}
+                                        role="menuitem"
+                                        disabled={isEmpty}
+                                    >
+                                        Export bookmarks
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="w-full text-left px-3 py-2 rounded-sm text-sm"
+                                        onClick={() => {
+                                            setImportModalOpen(true);
+                                            setActionMenuOpen(false);
+                                        }}
+                                        role="menuitem"
+                                    >
+                                        Import bookmarks
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="w-full text-left px-3 py-2 rounded-sm text-sm"
+                                        onClick={() => {
+                                            onCreateRootFolder();
+                                            setActionMenuOpen(false);
+                                        }}
+                                        role="menuitem"
+                                    >
+                                        Create root folder
+                                    </button>
+                                </div>
+                            ) : null}
                         </div>
                     </div>
                     <p className="mt-2 text-xs opacity-70">
@@ -119,37 +179,49 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                     {currentFolderName ? breadcrumb : 'Combined from every folder and subfolder.'}
                                 </p>
                             </div>
-                            {
-                                currentFolderName !== 'All saved pages' && <div className="flex flex-wrap gap-2">
-                                    <button
-                                        type="button"
-                                        className="bs-btn bs-btn--success flex items-center gap-2 px-3 py-2 text-xs font-semibold"
-                                        onClick={onCreateSubfolder}
-                                        disabled={!currentSavedFolderId}
-                                    >
-                                        <Plus className="w-4" />
-                                        <span className="sr-only">Create subfolder</span>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="bs-btn bs-btn--neutral flex items-center gap-2 px-3 py-2 text-xs font-semibold"
-                                        onClick={onRenameFolder}
-                                        disabled={!currentSavedFolderId}
-                                    >
-                                        <EditIcon className="w-4" />
-                                        <span className="sr-only">Edit subfolder</span>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="bs-btn bs-btn--danger flex items-center gap-2 px-3 py-2 text-xs font-semibold"
-                                        onClick={onDeleteFolder}
-                                        disabled={!currentSavedFolderId}
-                                    >
-                                        <TrashIcon className="w-4" />
-                                        <span className="sr-only">Delete subfolder</span>
-                                    </button>
-                                </div>
-                            }
+                            <div className="flex flex-wrap gap-2">
+                                <button
+                                    type="button"
+                                    className="bs-btn bs-btn--primary flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                    onClick={() => onOpenAllSavedItems(savedItems)}
+                                    disabled={visibleCount === 0}
+                                    title="Open all saved items in new tabs"
+                                >
+                                    <ExternalLink className="w-4" />
+                                    Open all link
+                                </button>
+                                {currentFolderName !== 'All saved pages' ? (
+                                    <>
+                                        <button
+                                            type="button"
+                                            className="bs-btn flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                            onClick={onCreateSubfolder}
+                                            disabled={!currentSavedFolderId}
+                                        >
+                                            <Plus className="w-4" />
+                                            <span className="sr-only">Create subfolder</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="bs-btn bs-btn--neutral flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                            onClick={onRenameFolder}
+                                            disabled={!currentSavedFolderId}
+                                        >
+                                            <EditIcon className="w-4" />
+                                            <span className="sr-only">Edit subfolder</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="bs-btn bs-btn--danger flex items-center gap-2 px-3 py-2 text-xs font-semibold"
+                                            onClick={onDeleteFolder}
+                                            disabled={!currentSavedFolderId}
+                                        >
+                                            <TrashIcon className="w-4" />
+                                            <span className="sr-only">Delete subfolder</span>
+                                        </button>
+                                    </>
+                                ) : null}
+                            </div>
 
                         </div>
                     </header>
@@ -170,7 +242,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                             {savedItems.map((item) => (
                                 <li
                                     key={`${item.folderId}-${item.url}`}
-                                    className="rounded-lg bs-surface px-3 py-2"
+                                    className={`rounded-lg bs-surface px-3 py-2 ${openMenuKey === item.folderId + '-' + item.url ? 'relative z-[60]' : ''}`}
                                 >
                                     <div className="flex items-center gap-4">
                                         <img
@@ -209,29 +281,21 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                                 ) : null}
                                             </div>
                                         </div>
-                                        <div>
-                                            <button
-                                                type="button"
-                                                className="px-2"
-                                                aria-label="Manage bookmark folders"
-                                                onClick={(event) => {
-                                                    event.preventDefault();
-                                                    onManageSavedItem(item.folderId, item);
-                                                }}
-                                            >
-                                                <StarSolid className="w-4" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="px-2"
-                                                aria-label="Remove bookmark"
-                                                onClick={(event) => {
-                                                    event.preventDefault();
-                                                    onRemoveSavedItem(item.folderId, item.url);
-                                                }}
-                                            >
-                                                <XIcon className="w-4" />
-                                            </button>
+                                        <div className="relative">
+                                            <ItemActionsMenu
+                                                open={openMenuKey === item.folderId + '-' + item.url}
+                                                onOpenChange={(v) =>
+                                                    setOpenMenuKey(
+                                                        v
+                                                            ? item.folderId + '-' + item.url
+                                                            : (openMenuKey === item.folderId + '-' + item.url ? null : openMenuKey)
+                                                    )
+                                                }
+                                                onManage={() => onManageSavedItem(item.folderId, item)}
+                                                onRenameUrl={() => onRenameSavedItem?.(item.folderId, item.url)}
+                                                onRenameTitle={() => onRenameSavedTitle?.(item.folderId, item.url, item.title || item.host)}
+                                                onRemove={() => onRemoveSavedItem(item.folderId, item.url)}
+                                            />
                                         </div>
                                     </div>
                                 </li>
@@ -260,7 +324,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
 
             {isImportModalOpen ? (
                 <div
-                    className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 px-4"
+                    className="fixed inset-0 z-50 bg-black/50 flex !mt-0 items-center justify-center px-4"
                     role="dialog"
                     aria-modal="true"
                     onClick={() => setImportModalOpen(false)}

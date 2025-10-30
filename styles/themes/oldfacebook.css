@@ -1,0 +1,132 @@
+/* ===== Old Facebook Classic (±2009–2013) ===== */
+body[data-theme="oldfacebook"] {
+  /* Palet inti */
+  --fb-blue: #3b5998;
+  --fb-blue-dark: #2d4373;
+  --fb-line: #dfe3ee;       /* garis/border khas FB lama */
+  --fb-muted: #616770;      /* teks sekunder */
+  --fb-bg: #e9ebee;         /* latar halaman era lama */
+  --fb-surface: #ffffff;    /* kartu/panel putih */
+
+  /* Layout & teks */
+  --bs-body-bg: var(--fb-bg);
+  --bs-text-color: #1d2129;
+  --bs-muted-color: var(--fb-muted);
+
+  /* Kartu/panel */
+  --bs-surface-bg: var(--fb-surface);
+  --bs-surface-border: var(--fb-line);
+  --bs-surface-shadow: 0 1px 0 rgba(0,0,0,0.05); /* tipis, bukan glow */
+  --bs-surface-blur: none; /* hilangkan glass/blur */
+
+  /* Tombol (solid, tanpa gradient/glow) */
+  --bs-button-bg: var(--fb-blue);
+  --bs-button-color: #ffffff;
+
+  --bs-btn-accent-bg: var(--fb-blue);
+  --bs-btn-accent-hover-bg: var(--fb-blue-dark);
+  --bs-btn-accent-color: #ffffff;
+  --bs-btn-shadow: none;
+
+  --bs-btn-primary-bg: var(--fb-blue);
+  --bs-btn-primary-hover-bg: var(--fb-blue-dark);
+  --bs-btn-primary-color: #ffffff;
+  --bs-btn-primary-shadow: none;
+
+  --bs-btn-success-bg: #5b9856;          /* lebih “era lama”: hijau sedikit kusam */
+  --bs-btn-success-hover-bg: #4a7e47;
+  --bs-btn-success-color: #ffffff;
+  --bs-btn-success-shadow: none;
+
+  --bs-btn-danger-bg: #d14836;           /* merah gaya lama (mirip tombol web 2010an) */
+  --bs-btn-danger-hover-bg: #b13b2c;
+  --bs-btn-danger-color: #ffffff;
+  --bs-btn-danger-shadow: none;
+
+  --bs-btn-neutral-bg: #f5f6f7;          /* tombol netral abu terang */
+  --bs-btn-neutral-hover-bg: #eceff5;
+  --bs-btn-neutral-color: #1d2129;
+  --bs-btn-neutral-shadow: none;
+
+  --bs-btn-ghost-bg: transparent;
+  --bs-btn-ghost-hover-bg: #f6f7f9;
+  --bs-btn-ghost-color: var(--fb-blue);
+  --bs-btn-focus-ring: rgba(59, 89, 152, 0.32); /* ring biru samar */
+}
+
+/* Kartu/panel */
+body[data-theme="oldfacebook"] .bs-surface-item {
+  background: var(--fb-surface);
+  border: 1px solid var(--fb-line);
+  box-shadow: var(--bs-surface-shadow);
+}
+
+/* Toggle mode: flat, border tipis, tanpa glow */
+body[data-theme="oldfacebook"] .mode-toggle {
+  color: #1d2129;
+  background: #f5f6f7;
+  border: 1px solid #ccd0d5;
+  box-shadow: none;
+}
+
+/* Toggle aktif: biru solid, tanpa gradient/glow */
+body[data-theme="oldfacebook"] .mode-toggle--active {
+  background: var(--fb-blue);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+/* Tipografi sekunder */
+body[data-theme="oldfacebook"] .theme-option-desc {
+  color: var(--fb-muted);
+}
+
+/* Hover list/option: abu muda khas FB lama */
+body[data-theme="oldfacebook"] .folder-option:hover {
+  background: #f5f6f7;
+}
+
+/* Checkbox / radio */
+body[data-theme="oldfacebook"] .folder-option input {
+  accent-color: var(--fb-blue);
+}
+
+/* ===== Sentuhan visual “era lama” ===== */
+
+/* Sudut kecil & tanpa bevel berlebihan */
+body[data-theme="oldfacebook"] * {
+  border-radius: 2px;
+}
+
+/* Link biru klasik */
+body[data-theme="oldfacebook"] a {
+  color: var(--fb-blue);
+  text-decoration: none;
+}
+body[data-theme="oldfacebook"] a:hover {
+  text-decoration: underline;
+}
+
+/* Header bar opsional (kalau kamu punya .app-header) */
+body[data-theme="oldfacebook"] .app-header {
+  background: var(--fb-blue);
+  color: #fff;
+  border-bottom: 1px solid #2d4373;
+}
+
+/* Input & select: garis tipis, fill putih */
+body[data-theme="oldfacebook"] input,
+body[data-theme="oldfacebook"] select,
+body[data-theme="oldfacebook"] textarea {
+  background: #fff;
+  border: 1px solid var(--fb-line);
+  color: #1d2129;
+  box-shadow: none;
+}
+body[data-theme="oldfacebook"] input:focus,
+body[data-theme="oldfacebook"] select:focus,
+body[data-theme="oldfacebook"] textarea:focus {
+  outline: 0;
+  border-color: #a3b4d3; /* biru-abu lembut */
+  box-shadow: 0 0 0 2px rgba(59,89,152,0.12);
+}

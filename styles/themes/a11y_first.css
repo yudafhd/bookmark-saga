@@ -1,0 +1,71 @@
+body[data-theme="a11y_first"] {
+    --bs-body-bg: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+    --bs-text-color: #111827;
+    --bs-muted-color: rgba(75, 85, 99, 0.82);
+    --bs-surface-bg: #ffffff;
+    --bs-surface-border: rgba(17, 24, 39, 0.12);
+    --bs-surface-shadow: 0 24px 48px -36px rgba(15, 23, 42, 0.25);
+    --bs-surface-blur: blur(0px);
+    --bs-button-bg: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    --bs-button-color: #f8fafc;
+
+    --bs-btn-accent-bg: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+    --bs-btn-accent-color: #f8fafc;
+    --bs-btn-shadow: 0 20px 40px -30px rgba(15, 23, 42, 0.45);
+
+    --bs-btn-primary-bg: #111827;
+    --bs-btn-primary-hover-bg: #0f172a;
+    --bs-btn-primary-color: #f8fafc;
+    --bs-btn-primary-shadow: 0 18px 40px -28px rgba(17, 24, 39, 0.45);
+
+    --bs-btn-success-bg: #047857;
+    --bs-btn-success-hover-bg: #036249;
+    --bs-btn-success-color: #f8fafc;
+    --bs-btn-success-shadow: 0 18px 38px -26px rgba(4, 118, 87, 0.45);
+
+    --bs-btn-danger-bg: #b91c1c;
+    --bs-btn-danger-hover-bg: #991b1b;
+    --bs-btn-danger-color: #fef2f2;
+    --bs-btn-danger-shadow: 0 18px 38px -26px rgba(185, 28, 28, 0.45);
+
+    --bs-btn-neutral-bg: rgba(15, 23, 42, 0.08);
+    --bs-btn-neutral-hover-bg: rgba(15, 23, 42, 0.12);
+    --bs-btn-neutral-color: #111827;
+    --bs-btn-neutral-shadow: 0 16px 32px -26px rgba(15, 23, 42, 0.2);
+
+    --bs-btn-ghost-bg: transparent;
+    --bs-btn-ghost-hover-bg: rgba(17, 24, 39, 0.08);
+    --bs-btn-ghost-color: #111827;
+    --bs-btn-focus-ring: rgba(17, 24, 39, 0.5);
+}
+
+body[data-theme="a11y_first"] .bs-surface-item {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.12);
+}
+
+body[data-theme="a11y_first"] .mode-toggle {
+    color: #111827;
+    background: rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(15, 23, 42, 0.15);
+    box-shadow: 0 20px 36px -28px rgba(15, 23, 42, 0.2);
+}
+
+body[data-theme="a11y_first"] .mode-toggle--active {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    color: #f8fafc;
+    box-shadow: 0 24px 44px -30px rgba(17, 24, 39, 0.45);
+}
+
+body[data-theme="a11y_first"] .theme-option-desc {
+    color: rgba(75, 85, 99, 0.85);
+}
+
+body[data-theme="a11y_first"] .folder-option:hover {
+    background: rgba(15, 23, 42, 0.08);
+}
+
+body[data-theme="a11y_first"] .folder-option input {
+    accent-color: #111827;
+}

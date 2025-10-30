@@ -5,6 +5,7 @@ import {
   MAX_ITEMS_KEY,
   THEME_KEY,
   VISITS_KEY,
+  TOUR_SEEN_KEY,
 } from './constants';
 import { clampMaxItems, externalFaviconUrl, isSafeFavicon } from './utils';
 import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry } from './types';
@@ -132,5 +133,18 @@ export async function readTheme(): Promise<ThemeId> {
 export async function writeTheme(theme: ThemeId): Promise<void> {
   await chrome.storage.local.set({
     [THEME_KEY]: theme,
+  });
+}
+
+export async function readTourSeen(): Promise<boolean> {
+  const result = await chrome.storage.local.get({
+    [TOUR_SEEN_KEY]: false as boolean,
+  });
+  return Boolean(result[TOUR_SEEN_KEY]);
+}
+
+export async function writeTourSeen(seen: boolean): Promise<void> {
+  await chrome.storage.local.set({
+    [TOUR_SEEN_KEY]: !!seen,
   });
 }

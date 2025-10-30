@@ -1,0 +1,71 @@
+body[data-theme="bento_grid"] {
+    --bs-body-bg: linear-gradient(160deg, #0f172a 0%, #101c33 40%, #1e293b 100%);
+    --bs-text-color: #f1f5f9;
+    --bs-muted-color: rgba(148, 163, 184, 0.78);
+    --bs-surface-bg: rgba(15, 23, 42, 0.8);
+    --bs-surface-border: rgba(34, 211, 238, 0.32);
+    --bs-surface-shadow: 0 36px 84px -52px rgba(15, 23, 42, 0.75);
+    --bs-surface-blur: blur(14px);
+    --bs-button-bg: linear-gradient(140deg, rgba(34, 211, 238, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+    --bs-button-color: #062025;
+
+    --bs-btn-accent-bg: linear-gradient(140deg, rgba(34, 211, 238, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+    --bs-btn-accent-hover-bg: linear-gradient(140deg, rgba(20, 184, 166, 1) 0%, rgba(37, 99, 235, 1) 100%);
+    --bs-btn-accent-color: #04171b;
+    --bs-btn-shadow: 0 32px 80px -50px rgba(34, 211, 238, 0.55);
+
+    --bs-btn-primary-bg: #22d3ee;
+    --bs-btn-primary-hover-bg: #0ea5e9;
+    --bs-btn-primary-color: #072227;
+    --bs-btn-primary-shadow: 0 30px 76px -48px rgba(14, 165, 233, 0.5);
+
+    --bs-btn-success-bg: #10b981;
+    --bs-btn-success-hover-bg: #0f9d68;
+    --bs-btn-success-color: #032217;
+    --bs-btn-success-shadow: 0 30px 72px -46px rgba(16, 185, 129, 0.5);
+
+    --bs-btn-danger-bg: #f97316;
+    --bs-btn-danger-hover-bg: #ea580c;
+    --bs-btn-danger-color: #fff4ec;
+    --bs-btn-danger-shadow: 0 30px 72px -46px rgba(234, 88, 12, 0.5);
+
+    --bs-btn-neutral-bg: rgba(15, 23, 42, 0.72);
+    --bs-btn-neutral-hover-bg: rgba(15, 23, 42, 0.85);
+    --bs-btn-neutral-color: rgba(226, 232, 240, 0.9);
+    --bs-btn-neutral-shadow: 0 28px 68px -46px rgba(15, 23, 42, 0.6);
+
+    --bs-btn-ghost-bg: rgba(34, 211, 238, 0.2);
+    --bs-btn-ghost-hover-bg: rgba(34, 211, 238, 0.3);
+    --bs-btn-ghost-color: #bae6fd;
+    --bs-btn-focus-ring: rgba(34, 211, 238, 0.45);
+}
+
+body[data-theme="bento_grid"] .bs-surface-item {
+    background: rgba(17, 24, 39, 0.82);
+    border-color: rgba(34, 211, 238, 0.28);
+}
+
+body[data-theme="bento_grid"] .mode-toggle {
+    color: rgba(226, 232, 240, 0.85);
+    background: rgba(17, 24, 39, 0.62);
+    border: 1px solid rgba(34, 211, 238, 0.28);
+    box-shadow: 0 34px 78px -48px rgba(15, 23, 42, 0.55);
+}
+
+body[data-theme="bento_grid"] .mode-toggle--active {
+    background: linear-gradient(140deg, rgba(34, 211, 238, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+    color: #062127;
+    box-shadow: 0 36px 82px -50px rgba(59, 130, 246, 0.55);
+}
+
+body[data-theme="bento_grid"] .theme-option-desc {
+    color: rgba(148, 163, 184, 0.78);
+}
+
+body[data-theme="bento_grid"] .folder-option:hover {
+    background: rgba(34, 211, 238, 0.22);
+}
+
+body[data-theme="bento_grid"] .folder-option input {
+    accent-color: #22d3ee;
+}

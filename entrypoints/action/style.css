@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans bg-slate-950 text-slate-100 min-w-[320px] max-w-[360px];
+}
+
+.bs-surface {
+  backdrop-filter: var(--bs-surface-blur);
+}
