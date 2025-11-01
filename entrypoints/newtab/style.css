@@ -9,3 +9,8 @@ body {
 .bs-surface {
   backdrop-filter: var(--bs-surface-blur);
 }
+
+/* Elegant title font: Plus Jakarta Sans */
+.title-font {
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}

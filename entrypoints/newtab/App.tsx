@@ -28,6 +28,7 @@ const App: React.FC = () => {
     refreshVisits,
     clearVisits,
     hasHistory,
+    visits,
     loading,
     filteredVisits,
     hasVisits,
@@ -88,6 +89,7 @@ const App: React.FC = () => {
         {mode === 'history' ? (
           <HistorySection
             loading={loading}
+            visits={visits}
             filteredVisits={filteredVisits}
             hasVisits={hasVisits}
             savedUrlSet={savedUrlSet}

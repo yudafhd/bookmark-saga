@@ -963,6 +963,9 @@ export default function useHook() {
         clearVisits,
         hasHistory,
 
+        // Raw visits for hero section
+        visits,
+
         // History section
         loading,
         filteredVisits,

@@ -9,6 +9,7 @@ import {
 import { ensureFolderItemsMap, getFolderChildren, normalizeHierarchy } from '@/lib/folder-utils';
 import type { Folder, FolderItemsMap } from '@/lib/types';
 import { getHostName, isValidVisitUrl, resolveFavicon } from '@/lib/utils';
+import { MdBookmark } from 'react-icons/md';
 
 type FeedbackType = 'success' | 'error' | 'info';
 
@@ -200,8 +201,8 @@ const Popup: React.FC = () => {
 
     return (
         <div className="space-y-4 p-4 text-sm">
-            <header className="space-y-1">
-                <h1 className="text-base font-semibold">Bookmark Saga</h1>
+            <header className="flex gap-3 space-y-1">
+                <MdBookmark className="h-6 w-6 text-blue-400" />
                 <p className="text-xs opacity-70">Quick save from the extension toolbar.</p>
             </header>
             {activeTab ? (

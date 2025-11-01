@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import type { VisitEntry } from '@/lib/types';
-import { formatRelativeTime } from '@/lib/time';
-import { MdStar } from 'react-icons/md';
 import { getHostName } from '@/lib/utils';
+import { formatRelativeTime } from '@/lib/time';
+import { MdBookmark, MdBookmarkAdd, MdSearch } from 'react-icons/md';
+import HistoryGroupList from './HistoryGroupList';
 interface HistorySectionProps {
     loading: boolean;
+    visits: VisitEntry[];
     filteredVisits: VisitEntry[];
     hasVisits: boolean;
     savedUrlSet: Set<string>;
@@ -13,11 +15,117 @@ interface HistorySectionProps {
 
 const HistorySection: React.FC<HistorySectionProps> = ({
     loading,
+    visits,
     filteredVisits,
     hasVisits,
     savedUrlSet,
     onSaveClick,
 }) => {
+    const [query, setQuery] = useState('');
+    const [historyQuery, setHistoryQuery] = useState('');
+
+    const googleLogoUrl = useMemo(() => {
+        try {
+            return new URL('../../assets/google_logo.svg', import.meta.url).toString();
+        } catch {
+            const g: any = globalThis as any;
+            if (g?.chrome?.runtime?.getURL) {
+                try {
+                    return g.chrome.runtime.getURL('assets/google_logo.svg');
+                } catch {
+                    // ignore
+                }
+            }
+            return '/assets/google_logo.svg';
+        }
+    }, []);
+
+    const baseSorted = useMemo(() => {
+        const q = historyQuery.trim().toLowerCase();
+        const src = visits;
+        const filtered = q
+            ? src.filter((item) => {
+                const title = item.title?.toLowerCase() ?? '';
+                const url = item.url.toLowerCase();
+                const host = getHostName(item.url).toLowerCase();
+                return title.includes(q) || url.includes(q) || host.includes(q);
+            })
+            : src;
+        const sorted = [...filtered].sort((a, b) => b.visitTime - a.visitTime);
+        const limit = q ? 10 : 5;
+        return sorted.slice(0, limit);
+    }, [visits, historyQuery]);
+
+    const groupedHero = useMemo(() => {
+        if (baseSorted.length === 0) return [] as Array<{ label: string; items: VisitEntry[] }>;
+        const now = new Date();
+        const startOfDay = (d: Date) => {
+            const x = new Date(d);
+            x.setHours(0, 0, 0, 0);
+            return x;
+        };
+        const nowStart = startOfDay(now).getTime();
+        const dayGroups = new Map<number, VisitEntry[]>();
+        const dateFormatter = new Intl.DateTimeFormat(undefined, {
+            weekday: 'long',
+            month: 'short',
+            day: 'numeric',
+        });
+        for (const v of baseSorted) {
+            const dayKey = startOfDay(new Date(v.visitTime)).getTime();
+            if (!dayGroups.has(dayKey)) dayGroups.set(dayKey, []);
+            dayGroups.get(dayKey)!.push(v);
+        }
+        return Array.from(dayGroups.entries())
+            .sort(([a], [b]) => b - a)
+            .map(([dayKey, items]) => {
+                const daysDiff = Math.round((nowStart - dayKey) / (1000 * 60 * 60 * 24));
+                let label = '';
+                if (daysDiff === 0) label = 'Today';
+                else if (daysDiff === 1) label = 'Yesterday';
+                else label = dateFormatter.format(new Date(dayKey));
+                return { label, items };
+            });
+    }, [baseSorted]);
+
+    const heroTimeFormatter = useMemo(
+        () => new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }),
+        [],
+    );
+
+    function openUrl(url: string) {
+        window.open(url, '_self', 'noopener,noreferrer');
+    }
+
+    function toUrlOrGoogle(qs: string): string {
+        const q = qs.trim();
+        if (!q) return '';
+        try {
+            const u = new URL(q);
+            return u.toString();
+        } catch {
+            // not absolute
+        }
+        const hasSpace = /\s/.test(q);
+        const hasDot = q.includes('.');
+        if (!hasSpace && hasDot) {
+            return `https://${q}`;
+        }
+        return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+    }
+
+    const handleSubmit = useCallback(
+        (e: React.FormEvent) => {
+            e.preventDefault();
+            const target = toUrlOrGoogle(query);
+            if (!target) return;
+            openUrl(target);
+        },
+        [query],
+    );
+
+    const trimmedHistoryQuery = historyQuery.trim();
+    const showCard = baseSorted.length > 0 || trimmedHistoryQuery.length > 0;
     const { summary, groupedVisits } = useMemo(() => {
         if (filteredVisits.length === 0) {
             return {
@@ -84,14 +192,6 @@ const HistorySection: React.FC<HistorySectionProps> = ({
         };
     }, [filteredVisits]);
 
-    const timeFormatter = useMemo(
-        () =>
-            new Intl.DateTimeFormat(undefined, {
-                hour: 'numeric',
-                minute: '2-digit',
-            }),
-        [],
-    );
 
     if (loading) {
         return (
@@ -120,106 +220,148 @@ const HistorySection: React.FC<HistorySectionProps> = ({
         );
     }
 
-    if (!hasVisits) {
-        return (
-            <section className="space-y-6">
-                <div className="rounded-lg border border-dashed border-gray-300 p-10 text-center shadow-sm dark:border-gray-600">
-                    <p className="text-lg font-semibold">No visits captured yet</p>
-                    <p className="mt-2 text-sm opacity-70">
-                        Keep browsing and your recent pages will automatically appear here.
-                    </p>
-                </div>
-            </section>
-        );
-    }
-
-    if (filteredVisits.length === 0) {
-        return (
-            <section className="space-y-6">
-                <div className="rounded-lg border border-dashed border-gray-300 p-10 text-center shadow-sm dark:border-gray-600 ">
-                    <p className="text-lg font-semibold">No visits match your search</p>
-                    <p className="mt-2 text-sm opacity-70">
-                        Try different keywords or clear the search box to review all recent activity.
-                    </p>
-                </div>
-            </section>
-        );
-    }
-
     return (
-        <section className="space-y-8" id="historySection">
-            <div className="space-y-10">
-                {groupedVisits.map((group) => (
-                    <section
-                        key={group.label}
-                        className="transition"
-                    >
-                        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200/80 pb-3 dark:border-gray-700/50">
-                            <h2 className="text-sm font-semibold uppercase tracking-wide opacity-70">
-                                {group.label}
-                            </h2>
-                            <span className="inline-flex items-center rounded-full bg-gray-200/70 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-700/60 dark:text-gray-200">
-                                {group.items.length} {group.items.length === 1 ? 'visit' : 'visits'}
-                            </span>
-                        </div>
-                        <div className="mt-4 space-y-4">
-                            {group.items.map((visit, index) => {
-                                const host = getHostName(visit.url);
-                                const isSaved = savedUrlSet.has(visit.url);
-                                const key = `${visit.url}-${visit.visitTime}`;
-                                const visitDate = new Date(visit.visitTime);
-                                return (
-                                    <div key={key} className="grid grid-cols-1 gap-4">
-                                        <article className="group">
-                                            <div className="flex flex-row items-start justify-between gap-4">
-                                                <div className="flex items-start min-w-0 gap-3">
-                                                    <img
-                                                        src={visit.faviconUrl}
-                                                        alt=""
-                                                        className="h-5 w-5"
-                                                        loading="lazy"
-                                                    />
-                                                    <div className="min-w-0 space-y-2">
-                                                        <a
-                                                            href={visit.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="line-clamp-2 text-base font-semibold hover:underline"
-                                                        >
-                                                            {visit.title || host}
-                                                        </a>
-                                                        <div className="flex flex-wrap items-center gap-2 text-xs">
-                                                            <span className="opacity-[0.5]">
-                                                                {host}
-                                                            </span>
-                                                            <span className='opacity-[0.5]'>{formatRelativeTime(visit.visitTime)}</span>
-                                                            <span className='opacity-[0.5]'>{timeFormatter.format(visitDate)}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <button
-                                                        type="button"
-                                                        className={`bs-btn ${isSaved ? 'bs-btn--success' : 'bs-btn--primary'} p-1 text-xs font-semibold flex items-center gap-2`}
-                                                        onClick={(event) => {
-                                                            event.preventDefault();
-                                                            onSaveClick(visit);
-                                                        }}
-                                                        aria-pressed={isSaved}
-                                                    >
-                                                        {isSaved ? <MdStar size={16} /> : 'Save'}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </div>
-                                );
-                            })}
+        <div className="space-y-8">
+            {/* Hero */}
+            <div className="w-full flex flex-col items-center gap-8">
+                <div className="mt-2 mb-2 select-none">
+                    <img
+                        src={googleLogoUrl}
+                        alt="Google"
+                        className="h-16 sm:h-20 md:h-24"
+                        draggable={false}
+                    />
+                </div>
+                <form onSubmit={handleSubmit} className="w-full flex justify-center">
+                    <div className="relative w-full max-w-3xl">
+                        <MdSearch size={20} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 opacity-70" />
+                        <input
+                            type="text"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder="Search Google or type a URL"
+                            className="w-full rounded-full border border-gray-300/80 bg-white/95 pl-10 pr-4 py-3 text-sm shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800/90 dark:text-gray-100"
+                            aria-label="Search Google or type a URL"
+                        />
+                    </div>
+                </form>
+                {filteredVisits.length === 0 && hasVisits ? (
+                    <section className="space-y-6">
+                        <div className="rounded-lg p-10 text-center shadow-sm dark:border-gray-600">
+                            <p className="text-sm font-semibold">No history items match your search</p>
+                            <p className="mt-1 text-xs opacity-70">
+                                Try different keywords or clear the filter to see recent items.
+                            </p>
+                            <div className="mt-3">
+                                <button
+                                    type="button"
+                                    className="bs-btn bs-btn--neutral px-3 py-1.5 text-xs font-semibold"
+                                    onClick={() => setHistoryQuery('')}
+                                >
+                                    Clear
+                                </button>
+                            </div>
                         </div>
                     </section>
-                ))}
+                ) : null}
+
+                {!hasVisits &&
+                    <section className="space-y-6">
+                        <div className="rounded-lg p-10 text-center shadow-sm dark:border-gray-600">
+                            <p className="text-sm font-semibold">No visits captured yet</p>
+                        </div>
+                    </section>
+                }
+                {showCard ? (
+                    <div className="w-full max-w-4xl rounded-2xl border border-gray-200/70 shadow-sm dark:border-gray-700/60">
+                        <div className="rounded-t-2xl bg-gray-100/60 p-4 dark:bg-gray-700/40 flex items-center justify-between gap-3">
+                            <div className="text-sm font-medium opacity-80">Continue with these tabs</div>
+                            <input
+                                type="search"
+                                value={historyQuery}
+                                onChange={(e) => setHistoryQuery(e.target.value)}
+                                placeholder="Search visit history…"
+                                className="w-48 rounded-md border border-gray-300/80 bg-white/90 p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                                aria-label="Search visit history"
+                            />
+                        </div>
+                        {groupedHero.length === 0 ? (
+                            <div className="px-4 py-10 text-center">
+                                <p className="text-sm font-semibold">No visits match your search</p>
+                                <p className="mt-1 text-xs opacity-70">
+                                    Try different keywords or clear the filter to see recent items.
+                                </p>
+                                <div className="mt-3">
+                                    <button
+                                        type="button"
+                                        className="bs-btn bs-btn--neutral px-3 py-1.5 text-xs font-semibold"
+                                        onClick={() => setHistoryQuery('')}
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-gray-200/60 dark:divide-gray-700/50">
+                                {groupedHero.map((group) => (
+                                    <div key={group.label} className="py-1">
+                                        <div className="px-4 py-2 text-[11px] uppercase tracking-wide opacity-60">{group.label}</div>
+                                        {group.items.map((visit) => {
+                                            const host = getHostName(visit.url);
+                                            const visitDate = new Date(visit.visitTime);
+                                            const key = `${visit.url}-${visit.visitTime}`;
+                                            const isSaved = savedUrlSet.has(visit.url);
+                                            return (
+                                                <a
+                                                    key={key}
+                                                    href={visit.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-start gap-3 px-4 py-3"
+                                                >
+                                                    <div className="h-9 w-9 flex items-center justify-center rounded-md overflow-hidden">
+                                                        {visit.faviconUrl ? (
+                                                            <img src={visit.faviconUrl} alt="" className="h-5 w-5" loading="lazy" />
+                                                        ) : (
+                                                            <span className="text-xs opacity-70">{host[0]?.toUpperCase()}</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="truncate text-sm font-semibold">
+                                                            {visit.title || host}
+                                                        </div>
+                                                        <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs opacity-70">
+                                                            <span className="truncate">{host}</span>
+                                                            <span>•</span>
+                                                            <span>You visited {formatRelativeTime(visit.visitTime)}</span>
+                                                            <span>•</span>
+                                                            <span>{heroTimeFormatter.format(visitDate)}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <button
+                                                            type="button"
+                                                            className={`p-1 text-xs font-semibold flex items-center gap-2`}
+                                                            onClick={(ev) => {
+                                                                ev.preventDefault();
+                                                                onSaveClick(visit);
+                                                            }}
+                                                            aria-pressed={isSaved}
+                                                        >
+                                                            {!isSaved ? <MdBookmarkAdd size={16} /> : 'Saved'}
+                                                        </button>
+                                                    </div>
+                                                </a>
+                                            );
+                                        })}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                ) : null}
             </div>
-        </section>
+        </div>
     );
 };
 

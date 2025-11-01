@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { MdCode, MdDelete, MdEmail, MdRefresh, MdSettings } from 'react-icons/md';
+import { MdApps, MdCode, MdDelete, MdEmail, MdRefresh, MdSettings } from 'react-icons/md';
 
 interface NewTabHeaderProps {
     subtitle: string;
@@ -63,65 +63,54 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
     return (
         <header className="space-y-2">
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div className="flex items-start gap-3">
-                    <img
-                        src={iconSrc}
-                        alt="Bookmark Saga logo"
-                        className="h-12 w-12 rounded-sm shadow-sm"
-                        loading="lazy"
-                    />
-                    <div className="space-y-1">
-                        <h1 className="text-2xl font-bold">Bookmark Saga</h1>
-                        <p className="text-sm opacity-70" id="headerSubtitle">
-                            easy bookmark & history manager
-                        </p>
-                    </div>
-                    <div className="flex gap-1 ml-10">
-                        <button
-                            type="button"
-                            className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'history' ? 'mode-toggle--active' : ''}`}
-                            onClick={() => {
-                                onRefresh()
-                                onModeChange('history')
-                            }}
-                            aria-pressed={mode === 'history'}
-                        >
-                            History
-                        </button>
-                        <button
-                            type="button"
-                            className={`mode-toggle px-3 py-1 text-xs font-medium rounded-sm transition ${mode === 'saved' ? 'mode-toggle--active' : ''}`}
-                            onClick={() => {
-                                onRefresh();
-                                onModeChange('saved');
-                            }}
-                            aria-pressed={mode === 'saved'}
-                        >
-                            Bookmarks
-                        </button>
-                    </div>
+                <div className="flex gap-2">
+                    <button
+                        type="button"
+                        className={`mode-toggle text-xs font-medium rounded-sm transition ${mode === 'history' ? 'mode-toggle--active' : ''}`}
+                        onClick={() => {
+                            onRefresh();
+                            onSearchQueryChange('');
+                            onModeChange('history');
+                        }}
+                        aria-pressed={mode === 'history'}
+                    >
+                        History
+                    </button>
+                    <button
+                        type="button"
+                        className={`mode-toggle text-xs font-medium rounded-sm transition ${mode === 'saved' ? 'mode-toggle--active' : ''}`}
+                        onClick={() => {
+                            onRefresh();
+                            onModeChange('saved');
+                        }}
+                        aria-pressed={mode === 'saved'}
+                    >
+                        Bookmarks
+                    </button>
                 </div>
-                <div className="flex items-center gap-2">
-                    <input
-                        id="search"
-                        type="search"
-                        placeholder={mode === 'history' ? 'Search visit history…' : 'Search bookmarks…'}
-                        value={searchQuery}
-                        onChange={(event) => onSearchQueryChange(event.target.value)}
-                        className="w-[15rem] rounded-md border border-gray-300/80 bg-white/90  p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-                    />
 
+                <div className="flex items-center gap-2">
+                    {mode === 'saved' ? (
+                        <input
+                            id="search"
+                            type="search"
+                            placeholder="Search bookmarks…"
+                            value={searchQuery}
+                            onChange={(event) => onSearchQueryChange(event.target.value)}
+                            className="w-[15rem] rounded-md border border-gray-300/80 bg-white/90 p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                        />
+                    ) : null}
                     <div className="relative" ref={menuRef}>
                         <button
                             type="button"
-                            className="bs-btn bs-btn--neutral inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold"
+                            className="inline-flex items-center gap-2 text-sm font-semibold"
                             aria-haspopup="menu"
                             aria-expanded={isMenuOpen}
                             aria-controls="header-menu"
                             onClick={() => setMenuOpen((v) => !v)}
                             title="Open menu"
                         >
-                            <MdSettings size={16} />
+                            <MdApps size={22} />
                         </button>
 
                         {isMenuOpen ? (
