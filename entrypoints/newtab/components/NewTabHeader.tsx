@@ -97,7 +97,9 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                             placeholder="Search bookmarks…"
                             value={searchQuery}
                             onChange={(event) => onSearchQueryChange(event.target.value)}
-                            className="w-[15rem] rounded-md border border-gray-300/80 bg-white/90 p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                            className="bs-input bs-input--rounded w-[15rem] 
+                            text-xs text-gray-900 transition !p-1 !pl-4
+                             "
                         />
                     ) : null}
                     <div className="relative" ref={menuRef}>

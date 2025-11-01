@@ -2,8 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import type { VisitEntry } from '@/lib/types';
 import { getHostName } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/time';
-import { MdBookmark, MdBookmarkAdd, MdSearch } from 'react-icons/md';
-import HistoryGroupList from './HistoryGroupList';
+import { MdSearch, MdStarBorder } from 'react-icons/md';
 interface HistorySectionProps {
     loading: boolean;
     visits: VisitEntry[];
@@ -224,13 +223,14 @@ const HistorySection: React.FC<HistorySectionProps> = ({
         <div className="space-y-8">
             {/* Hero */}
             <div className="w-full flex flex-col items-center gap-8">
-                <div className="mt-2 mb-2 select-none">
+                <div className="relative mt-2 mb-1 select-none">
                     <img
                         src={googleLogoUrl}
                         alt="Google"
                         className="h-16 sm:h-20 md:h-24"
                         draggable={false}
                     />
+                    <p className='absolute bottom-[-2px] right-[-30px] opacity-30'>bookmark saga</p>
                 </div>
                 <form onSubmit={handleSubmit} className="w-full flex justify-center">
                     <div className="relative w-full max-w-3xl">
@@ -240,9 +240,10 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Search Google or type a URL"
-                            className="w-full rounded-full border border-gray-300/80 bg-white/95 pl-10 pr-4 py-3 text-sm shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800/90 dark:text-gray-100"
+                            className="bs-input bs-input--rounded  !w-full pl-10 pr-4 py-3 !pl-10 text-sm"
                             aria-label="Search Google or type a URL"
                         />
+
                     </div>
                 </form>
                 {filteredVisits.length === 0 && hasVisits ? (
@@ -267,7 +268,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
 
                 {!hasVisits &&
                     <section className="space-y-6">
-                        <div className="rounded-lg p-10 text-center shadow-sm dark:border-gray-600">
+                        <div className="p-10 text-center">
                             <p className="text-sm font-semibold">No visits captured yet</p>
                         </div>
                     </section>
@@ -281,7 +282,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                                 value={historyQuery}
                                 onChange={(e) => setHistoryQuery(e.target.value)}
                                 placeholder="Search visit history…"
-                                className="w-48 rounded-md border border-gray-300/80 bg-white/90 p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                                className="bs-input bs-input--rounded w-48 text-xs"
                                 aria-label="Search visit history"
                             />
                         </div>
@@ -348,7 +349,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                                                             }}
                                                             aria-pressed={isSaved}
                                                         >
-                                                            {!isSaved ? <MdBookmarkAdd size={16} /> : 'Saved'}
+                                                            {!isSaved ? <MdStarBorder size={16} /> : 'Saved'}
                                                         </button>
                                                     </div>
                                                 </a>

@@ -2,7 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import type { VisitEntry } from '@/lib/types';
 import { getHostName } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/time';
-import { MdBookmark, MdSearch, MdStar } from 'react-icons/md';
+import { MdSearch, MdStarBorder } from 'react-icons/md';
 
 interface HistoryHeroProps {
     visits: VisitEntry[];
@@ -135,7 +135,7 @@ const HistoryHero: React.FC<HistoryHeroProps> = ({ visits, savedUrlSet, onSaveCl
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Search Google or type a URL"
-                        className="w-full rounded-full border border-gray-300/80 bg-white/95 pl-10 pr-4 py-3 text-sm shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800/90 dark:text-gray-100"
+                        className="w-full rounded-full border border-gray-300/80 bg-white/95 pr-4 py-3 text-sm !pl-10 shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800/90 dark:text-gray-100"
                         aria-label="Search Google or type a URL"
                     />
                 </div>
@@ -150,7 +150,7 @@ const HistoryHero: React.FC<HistoryHeroProps> = ({ visits, savedUrlSet, onSaveCl
                             value={historyQuery}
                             onChange={(e) => setHistoryQuery(e.target.value)}
                             placeholder="Search visit history…"
-                            className="w-48 rounded-md border border-gray-300/80 bg-white/90 p-2 text-xs text-gray-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                            className="bs-input bs-input--rounded w-48 text-xs"
                             aria-label="Search visit history"
                         />
                     </div>
@@ -217,7 +217,7 @@ const HistoryHero: React.FC<HistoryHeroProps> = ({ visits, savedUrlSet, onSaveCl
                                                         }}
                                                         aria-pressed={isSaved}
                                                     >
-                                                        {!isSaved ? <MdBookmark size={16} /> : 'Saved'}
+                                                        {!isSaved ? <MdStarBorder size={16} /> : 'Saved'}
                                                     </button>
                                                 </div>
                                             </a>

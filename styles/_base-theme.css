@@ -371,3 +371,38 @@ body {
 .bs-surface a:hover {
     opacity: 0.85;
 }
+
+/* Themed input styles */
+.bs-input {
+    appearance: none;
+    width: auto;
+    border: 1px solid var(--bs-surface-border);
+    background: var(--bs-surface-bg);
+    color: inherit;
+    border-radius: 0.375rem; /* md */
+    padding: 0.5rem 0.625rem; /* ~p-2 px-2.5 */
+    line-height: 1.25rem;
+    box-shadow: var(--bs-surface-shadow);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+
+.bs-input::placeholder {
+    color: var(--bs-muted-color);
+    opacity: 0.9;
+}
+
+.bs-input:focus-visible {
+    outline: 2px solid var(--bs-btn-focus-ring);
+    outline-offset: 2px;
+    background: var(--bs-surface-bg);
+}
+
+.bs-input:disabled,
+.bs-input[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bs-input--rounded {
+    border-radius: 9999px;
+}
