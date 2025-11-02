@@ -145,9 +145,9 @@ const App: React.FC = () => {
         />
       ) : null}
 
-      {isTourOpen ? (
+      {/* {isTourOpen ? (
         <FirstRunTour open={isTourOpen} onClose={closeTour} />
-      ) : null}
+      ) : null} */}
 
       {isGithubModalOpen ? (
         <div

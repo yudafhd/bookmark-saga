@@ -3,6 +3,7 @@ import type { VisitEntry } from '@/lib/types';
 import { getHostName } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/time';
 import { MdSearch, MdStarBorder } from 'react-icons/md';
+import { GoogleWordmark } from './GoogleWordmark';
 interface HistorySectionProps {
     loading: boolean;
     visits: VisitEntry[];
@@ -22,22 +23,6 @@ const HistorySection: React.FC<HistorySectionProps> = ({
 }) => {
     const [query, setQuery] = useState('');
     const [historyQuery, setHistoryQuery] = useState('');
-
-    const googleLogoUrl = useMemo(() => {
-        try {
-            return new URL('../../assets/search_logo.png', import.meta.url).toString();
-        } catch {
-            const g: any = globalThis as any;
-            if (g?.chrome?.runtime?.getURL) {
-                try {
-                    return g.chrome.runtime.getURL('assets/search_logo.png');
-                } catch {
-                    // ignore
-                }
-            }
-            return '/assets/search_logo.png';
-        }
-    }, []);
 
     const baseSorted = useMemo(() => {
         const q = historyQuery.trim().toLowerCase();
@@ -224,13 +209,8 @@ const HistorySection: React.FC<HistorySectionProps> = ({
             {/* Hero */}
             <div className="w-full flex flex-col items-center gap-8">
                 <div className="relative mt-2 mb-1 select-none">
-                    <img
-                        src={googleLogoUrl}
-                        alt="Google"
-                        className="h-16 sm:h-20 md:h-24"
-                        draggable={false}
-                    />
-                    <p className='absolute bottom-[-2px] right-[-30px] opacity-30'>bookmark saga</p>
+                    <GoogleWordmark />
+                    <p className='text-xl absolute top-[-10px] right-[-10%] opacity-40'>saga</p>
                 </div>
                 <form onSubmit={handleSubmit} className="w-full flex justify-center">
                     <div className="relative w-full max-w-3xl">
@@ -274,8 +254,8 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                     </section>
                 }
                 {showCard ? (
-                    <div className="w-full max-w-4xl rounded-2xl border border-gray-200/70 shadow-sm dark:border-gray-700/60">
-                        <div className="rounded-t-2xl bg-gray-100/60 p-4 dark:bg-gray-700/40 flex items-center justify-between gap-3">
+                    <div className="w-full max-w-4xl rounded-2xl bs-surface overflow-hidden">
+                        <div className="rounded-t-2xl p-4 flex items-center justify-between gap-3">
                             <div className="text-sm font-medium opacity-80">Continue with these tabs</div>
                             <input
                                 type="search"
@@ -287,7 +267,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                             />
                         </div>
                         {groupedHero.length === 0 ? (
-                            <div className="px-4 py-10 text-center">
+                            <div className="px-4 py-10 text-center bs-surface">
                                 <p className="text-sm font-semibold">No visits match your search</p>
                                 <p className="mt-1 text-xs opacity-70">
                                     Try different keywords or clear the filter to see recent items.
@@ -303,7 +283,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                                 </div>
                             </div>
                         ) : (
-                            <div className="divide-y divide-gray-200/60 dark:divide-gray-700/50">
+                            <div className="divide-y bs-surface ">
                                 {groupedHero.map((group) => (
                                     <div key={group.label} className="py-1">
                                         <div className="px-4 py-2 text-[11px] uppercase tracking-wide opacity-60">{group.label}</div>
@@ -320,7 +300,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                                                     rel="noopener noreferrer"
                                                     className="flex items-start gap-3 px-4 py-3"
                                                 >
-                                                    <div className="h-9 w-9 flex items-center justify-center rounded-md overflow-hidden">
+                                                    <div className="h-9 w-9 bs-surface-item flex items-center justify-center rounded-md overflow-hidden">
                                                         {visit.faviconUrl ? (
                                                             <img src={visit.faviconUrl} alt="" className="h-5 w-5" loading="lazy" />
                                                         ) : (
