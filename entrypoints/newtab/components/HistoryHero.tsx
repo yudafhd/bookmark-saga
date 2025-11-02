@@ -37,17 +37,17 @@ const HistoryHero: React.FC<HistoryHeroProps> = ({ visits, savedUrlSet, onSaveCl
 
     const googleLogoUrl = useMemo(() => {
         try {
-            return new URL('../../assets/google_logo.svg', import.meta.url).toString();
+            return new URL('../../assets/search_logo.png', import.meta.url).toString();
         } catch {
             const g: any = globalThis as any;
             if (g?.chrome?.runtime?.getURL) {
                 try {
-                    return g.chrome.runtime.getURL('assets/google_logo.svg');
+                    return g.chrome.runtime.getURL('assets/search_logo.png');
                 } catch {
                     // ignore
                 }
             }
-            return '/assets/google_logo.svg';
+            return '/assets/search_logo.png';
         }
     }, []);
 
