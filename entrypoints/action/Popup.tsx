@@ -9,6 +9,7 @@ import {
 import { ensureFolderItemsMap, getFolderChildren, normalizeHierarchy } from '@/lib/folder-utils';
 import type { Folder, FolderItemsMap } from '@/lib/types';
 import { getHostName, isValidVisitUrl, resolveFavicon } from '@/lib/utils';
+import { DEFAULT_FOLDER_ID, DEFAULT_FOLDER_NAME } from '@/lib/constants';
 import { MdBookmark } from 'react-icons/md';
 
 type FeedbackType = 'success' | 'error' | 'info';
@@ -75,15 +76,29 @@ const Popup: React.FC = () => {
                 if (theme) {
                     document.body.dataset.theme = theme;
                 }
-                const normalized = normalizeHierarchy(storedFolders);
-                const ensured = ensureFolderItemsMap(normalized, storedItems);
+
+                let normalized = normalizeHierarchy(storedFolders);
+                let ensured = ensureFolderItemsMap(normalized, storedItems);
+
+                // Ensure default 'unsorted' folder exists so user can save without creating a folder
+                if (normalized.length === 0) {
+                    const defaultFolder: Folder = { id: DEFAULT_FOLDER_ID, name: DEFAULT_FOLDER_NAME, parentId: null };
+                    const nextFolders = [defaultFolder];
+                    const nextItems = ensureFolderItemsMap(nextFolders, ensured);
+                    await writeFolders(nextFolders);
+                    await writeFolderItems(nextItems);
+
+                    normalized = nextFolders;
+                    ensured = nextItems;
+                    setSelectedFolderId(DEFAULT_FOLDER_ID);
+                } else {
+                    // Prefer selecting the default folder if available
+                    const preferredId = normalized.find((f) => f.id === DEFAULT_FOLDER_ID)?.id ?? normalized[0].id;
+                    setSelectedFolderId((current) => current ?? preferredId);
+                }
+
                 setFolders(normalized);
                 setFolderItems(ensured);
-                if (normalized.length > 0) {
-                    setSelectedFolderId((current) => current ?? normalized[0].id);
-                } else {
-                    setSelectedFolderId(null);
-                }
             } catch (error) {
                 console.error('Failed to load folders', error);
                 setFeedback({ type: 'error', message: 'Unable to load folders.' });
@@ -125,7 +140,8 @@ const Popup: React.FC = () => {
 
     useEffect(() => {
         if (!selectedFolderId && folderOptions.length > 0) {
-            setSelectedFolderId(folderOptions[0].id);
+            const preferred = folderOptions.find((o) => o.id === DEFAULT_FOLDER_ID)?.id ?? folderOptions[0].id;
+            setSelectedFolderId(preferred);
         }
     }, [folderOptions, selectedFolderId]);
 

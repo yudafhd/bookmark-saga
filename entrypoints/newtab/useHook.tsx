@@ -25,7 +25,7 @@ import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry } from '@/
 import { getHostName, resolveFavicon } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/time';
 import SidebarButton from '@/shared/components/SidebarButton';
-import { BOOKMARK_ITEMS_KEY, FOLDERS_KEY, THEME_KEY, VISITS_KEY } from '@/lib/constants';
+import { BOOKMARK_ITEMS_KEY, FOLDERS_KEY, THEME_KEY, VISITS_KEY, DEFAULT_FOLDER_ID, DEFAULT_FOLDER_NAME } from '@/lib/constants';
 
 type Mode = 'history' | 'saved';
 
@@ -123,8 +123,19 @@ export default function useHook() {
 
                 const visitData = await readVisits();
 
-                const normalizedFolders = normalizeHierarchy(folderData);
-                const ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
+                let normalizedFolders = normalizeHierarchy(folderData);
+                let ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
+
+                // Ensure default 'unsorted' folder on first run
+                if (normalizedFolders.length === 0) {
+                    const defaultFolder: Folder = { id: DEFAULT_FOLDER_ID, name: DEFAULT_FOLDER_NAME, parentId: null };
+                    const nextFolders = [defaultFolder];
+                    const nextItems = ensureFolderItemsMap(nextFolders, ensuredItems);
+                    await Promise.all([writeFolders(nextFolders), writeFolderItems(nextItems)]);
+                    normalizedFolders = nextFolders;
+                    ensuredItems = nextItems;
+                    setSelectedFolderId(DEFAULT_FOLDER_ID);
+                }
 
                 setVisits(visitData);
                 setFolders(normalizedFolders);
@@ -261,7 +272,8 @@ export default function useHook() {
             if (containingFolderId) {
                 setSelectedFolderId(containingFolderId);
             } else if (folders.length > 0) {
-                setSelectedFolderId(folders[0].id);
+                const unsorted = folders.find((f) => f.id === DEFAULT_FOLDER_ID);
+                setSelectedFolderId(unsorted ? unsorted.id : folders[0].id);
             } else {
                 setSelectedFolderId(null);
             }
@@ -312,8 +324,18 @@ export default function useHook() {
     const refreshFoldersFromStorage = useCallback(async () => {
         try {
             const [folderData, folderItemData] = await Promise.all([readFolders(), readFolderItems()]);
-            const normalizedFolders = normalizeHierarchy(folderData);
-            const ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
+            let normalizedFolders = normalizeHierarchy(folderData);
+            let ensuredItems = ensureFolderItemsMap(normalizedFolders, folderItemData);
+
+            // Ensure default folder exists if storage is empty
+            if (normalizedFolders.length === 0) {
+                const defaultFolder: Folder = { id: DEFAULT_FOLDER_ID, name: DEFAULT_FOLDER_NAME, parentId: null };
+                const nextFolders = [defaultFolder];
+                const nextItems = ensureFolderItemsMap(nextFolders, ensuredItems);
+                await Promise.all([writeFolders(nextFolders), writeFolderItems(nextItems)]);
+                normalizedFolders = nextFolders;
+                ensuredItems = nextItems;
+            }
 
             setFolders(normalizedFolders);
             setFolderItems(ensuredItems);
@@ -328,7 +350,8 @@ export default function useHook() {
                 if (prev && normalizedFolders.some((folder) => folder.id === prev)) {
                     return prev;
                 }
-                return normalizedFolders[0].id;
+                const unsorted = normalizedFolders.find((f) => f.id === DEFAULT_FOLDER_ID);
+                return unsorted ? unsorted.id : normalizedFolders[0].id;
             });
         } catch (error) {
             console.error('Failed to refresh folders from storage', error);
@@ -662,6 +685,10 @@ export default function useHook() {
 
     const handleDeleteFolder = useCallback(
         async (folderId: string) => {
+            if (folderId === DEFAULT_FOLDER_ID) {
+                alert('Default folder cannot be deleted.');
+                return;
+            }
             const folder = folders.find((item) => item.id === folderId);
             if (!folder) return;
             const descendants = Array.from(collectDescendantIds(folders, folderId));

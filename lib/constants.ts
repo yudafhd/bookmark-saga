@@ -17,5 +17,8 @@ export const ICON_PATHS = {
 
 export const DEFAULT_FAVICON_PATH = ICON_PATHS[48];
 
+export const DEFAULT_FOLDER_ID = 'unsorted';
+export const DEFAULT_FOLDER_NAME = 'Unsorted';
+
 export const CONTACT_EMAIL = 'ahmadyudafahrudin@gmail.com';
 export const GITHUB_REPO_URL = 'https://github.com/yudafhd/bookmark-saga';
