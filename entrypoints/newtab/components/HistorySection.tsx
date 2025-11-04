@@ -35,9 +35,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                 return title.includes(q) || url.includes(q) || host.includes(q);
             })
             : src;
-        const sorted = [...filtered].sort((a, b) => b.visitTime - a.visitTime);
-        const limit = q ? 10 : 5;
-        return sorted.slice(0, limit);
+        return [...filtered].sort((a, b) => b.visitTime - a.visitTime);
     }, [visits, historyQuery]);
 
     const groupedHero = useMemo(() => {

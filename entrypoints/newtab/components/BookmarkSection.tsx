@@ -165,7 +165,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                     <p className="mt-2 text-xs opacity-70">
                         Organize saved pages by creating folders and nested collections.
                     </p>
-                    <nav className="mt-4 max-h-[360px] space-y-1 overflow-y-auto pr-1 text-sm">
+                    <nav className="mt-4 space-y-1 pr-1 text-sm">
                         {sidebarNodes}
                     </nav>
                 </aside>

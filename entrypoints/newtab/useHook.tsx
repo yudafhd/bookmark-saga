@@ -159,7 +159,6 @@ export default function useHook() {
     useEffect(() => {
         // Safe guard if chrome is unavailable
         try {
-
             chrome?.storage?.local?.get?.().then((e: unknown) => console.log(e));
         } catch {
             // ignore
@@ -446,7 +445,7 @@ export default function useHook() {
                 const rawFolders: unknown = parsed?.folders ?? [];
                 const rawItems: unknown = parsed?.folderItems ?? {};
 
-                const sanitizedFolders = Array.isArray(rawFolders)
+                let sanitizedFolders: Folder[] = Array.isArray(rawFolders)
                     ? rawFolders
                         .map((folder): Folder | null => {
                             if (
@@ -510,6 +509,24 @@ export default function useHook() {
                             .filter((entry): entry is FolderItem => entry !== null);
                         sanitizedItems[folderId] = cleaned;
                     }
+                }
+
+                // Ensure the default "unsorted" folder remains (or is replaced with imported data).
+                const hasDefaultFolder = sanitizedFolders.some((folder) => folder.id === DEFAULT_FOLDER_ID);
+                if (hasDefaultFolder) {
+                    sanitizedFolders = sanitizedFolders.map((folder) =>
+                        folder.id === DEFAULT_FOLDER_ID
+                            ? { ...folder, name: DEFAULT_FOLDER_NAME, parentId: null }
+                            : folder,
+                    );
+                } else {
+                    sanitizedFolders = [
+                        ...sanitizedFolders,
+                        { id: DEFAULT_FOLDER_ID, name: DEFAULT_FOLDER_NAME, parentId: null },
+                    ];
+                }
+                if (!sanitizedItems[DEFAULT_FOLDER_ID]) {
+                    sanitizedItems[DEFAULT_FOLDER_ID] = [];
                 }
 
                 const normalizedFolders = normalizeHierarchy(sanitizedFolders);
