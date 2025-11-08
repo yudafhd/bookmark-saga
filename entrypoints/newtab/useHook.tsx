@@ -27,7 +27,7 @@ import { formatRelativeTime } from '@/lib/time';
 import SidebarButton from '@/shared/components/SidebarButton';
 import { BOOKMARK_ITEMS_KEY, FOLDERS_KEY, THEME_KEY, VISITS_KEY, DEFAULT_FOLDER_ID, DEFAULT_FOLDER_NAME } from '@/lib/constants';
 
-type Mode = 'history' | 'saved';
+type Mode = 'history' | 'saved' | 'sync';
 
 interface PendingSaveVisit {
     url: string;

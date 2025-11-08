@@ -5,8 +5,13 @@ export default defineConfig({
   manifest: {
     name: 'Bookmark Saga',
     description: 'New Tab showcasing your bookmark and latest browsing history.',
-    version: '1.6.5',
-    permissions: ['history', 'storage', 'tabs', 'bookmarks'],
+    version: '1.7.0',
+    permissions: ['history', 'storage', 'tabs', 'bookmarks', 'identity'],
+    host_permissions: [
+      'https://www.googleapis.com/*',
+      'https://accounts.google.com/*',
+      'https://oauth2.googleapis.com/*',
+    ],
 
     icons: {
       16: "icons/icon-16.png",

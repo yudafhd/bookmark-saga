@@ -3,6 +3,13 @@ import type { FolderItem } from '@/lib/types';
 import { MdAdd, MdDelete, MdDownload, MdEdit, MdFolder, MdMoreHoriz, MdMoreVert, MdOpenInNew, MdStar, MdUpload } from 'react-icons/md';
 import ItemActionsMenu from './ItemActionsMenu';
 import { FaRegFolder } from 'react-icons/fa';
+import {
+    getAuthStatus,
+    importFromAppData,
+    uploadToAppData,
+    getRedirectUri,
+    getClientId
+} from '@/lib/drive';
 
 interface BookmarkSectionItem extends FolderItem {
     folderId: string;
@@ -64,6 +71,11 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
     const [openMenuKey, setOpenMenuKey] = useState<string | null>(null);
     const actionMenuRef = useRef<HTMLDivElement>(null);
     const [isActionMenuOpen, setActionMenuOpen] = useState(false);
+    const [auth, setAuth] = useState<{ authorized: boolean; expiresAt?: number }>({ authorized: false });
+    const [syncLoading, setSyncLoading] = useState(false);
+    const [syncMsg, setSyncMsg] = useState<string | null>(null);
+    const [redirectUri, setRedirectUri] = useState<string>(getRedirectUri());
+    const [clientId, setClientId] = useState<string | null>(getClientId());
 
     useEffect(() => {
         const handleClick = (event: MouseEvent) => {
@@ -81,6 +93,17 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
             document.removeEventListener('click', handleClick);
             document.removeEventListener('keydown', handleKey);
         };
+    }, []);
+
+    useEffect(() => {
+        void (async () => {
+            const a = await getAuthStatus();
+            setAuth(a);
+        })();
+    }, []);
+    useEffect(() => {
+        setRedirectUri(getRedirectUri());
+        setClientId(getClientId());
     }, []);
 
     const openFilePicker = () => {
@@ -130,7 +153,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                         disabled={isEmpty}
                                     >
                                         <MdDownload size={18} />
-                                        Export bookmarks
+                                        Download bookmarks
                                     </button>
 
                                     <button
@@ -156,7 +179,7 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                                         role="menuitem"
                                     >
                                         <MdAdd size={18} />
-                                        Create root folder
+                                        Create folder
                                     </button>
                                 </div>
                             ) : null}
@@ -168,6 +191,8 @@ const BookmarkSection: React.FC<BookmarkSectionProps> = ({
                     <nav className="mt-4 space-y-1 pr-1 text-sm">
                         {sidebarNodes}
                     </nav>
+
+                    {/* Google Drive Sync moved to separate Sync tab */}
                 </aside>
                 <div className="space-y-3">
                     <header className="rounded-lg">

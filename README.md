@@ -30,11 +30,25 @@ The project is built with [WXT](https://wxt.dev), React, and TypeScript. Tailwin
 2. Open `chrome://extensions/`, enable Developer Mode, and choose **Load unpacked**.
 3. Select the generated `.output/chrome-mv3` directory.
 
+## Google Drive Sync (AppData)
+
+This extension can sync its data to your Google Drive AppData folder (hidden, app-only). To enable it:
+
+- Create an OAuth 2.0 Client ID in Google Cloud Console (application type: Web application).
+- Add an Authorized redirect URI: `https://<your_extension_id>.chromiumapp.org/`
+  - Find your extension ID after loading the unpacked build in Chrome, or set a fixed ID via a Chrome extension key.
+- Build with the client id set as an env var: `VITE_GOOGLE_CLIENT_ID=<your_client_id>`
+
+Usage:
+
+- Open the Options page and use the Google Drive Sync section to Upload or Download your data. The backup file is named `bookmark-saga-settings.json` and stored under Drive’s hidden AppData space.
+
 ## Permissions
 
 - `history` – capture visit data for the dashboard.
 - `storage` – persist visits, folders, saved items, theme, and settings.
 - `tabs` – open selected history entries in the current tab.
+- `identity` – authenticate with Google for Drive AppData sync.
 
 ## License
 

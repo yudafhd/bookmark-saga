@@ -1,21 +1,15 @@
-import React, { JSX } from "react";
+import React, { useEffect, useRef } from "react";
 
 type GoogleWordmarkProps = {
     size?: number | string;     // px atau unit CSS (default 64)
     weight?: number;            // 300–800 (default 600)
     fontFamily?: string;        // default "Poppins, system-ui, -apple-system, Segoe UI, Roboto, ... "
-    as?: keyof JSX.IntrinsicElements; // span | div | h1 | etc (default: span)
+    as?: React.ElementType; // span | div | h1 | etc (default: span)
     style?: React.CSSProperties;
     title?: string;
 };
 
-const COLORS = {
-    white: "#ffffff",
-    blue: "#4285F4",
-    red: "#EA4335",
-    yellow: "#FBBC05",
-    green: "#34A853",
-};
+
 
 export const GoogleWordmark: React.FC<GoogleWordmarkProps> = ({
     size = 64,

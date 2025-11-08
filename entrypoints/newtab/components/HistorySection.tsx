@@ -202,10 +202,12 @@ const HistorySection: React.FC<HistorySectionProps> = ({
         );
     }
 
+    const hasVisitedList = Boolean(visits.length);
+    const firstimeClass = hasVisitedList ? "" : "flex h-[84vh] items-center justify-center";
+
     return (
-        <div className="space-y-8">
-            {/* Hero */}
-            <div className="w-full flex flex-col items-center gap-8">
+        <div className={`${firstimeClass}`}>
+            <div className="w-full max-w-5xl mx-auto flex flex-col items-center gap-8">
                 <div className="relative mt-2 mb-1 select-none">
                     <GoogleWordmark />
                     <p className='text-xl absolute top-[-10px] right-[-10%] opacity-40'>saga</p>
@@ -281,7 +283,7 @@ const HistorySection: React.FC<HistorySectionProps> = ({
                                 </div>
                             </div>
                         ) : (
-                            <div className="divide-y bs-surface ">
+                            <div className="bs-surface ">
                                 {groupedHero.map((group) => (
                                     <div key={group.label} className="py-1">
                                         <div className="px-4 py-2 text-[11px] uppercase tracking-wide opacity-60">{group.label}</div>

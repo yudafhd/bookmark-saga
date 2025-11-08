@@ -7,6 +7,7 @@ import ThemeModal from './components/ThemeModal';
 import FolderModal from './components/FolderModal';
 import FirstRunTour from './components/FirstRunTour';
 import useHook from './useHook';
+import SyncSection from './components/SyncSection';
 
 const App: React.FC = () => {
   const {
@@ -97,7 +98,7 @@ const App: React.FC = () => {
               openFolderModal(visit);
             }}
           />
-        ) : (
+        ) : mode === 'saved' ? (
           <BookmarkSection
             sidebarNodes={sidebarNodes}
             isEmpty={isSavedEmpty}
@@ -119,6 +120,8 @@ const App: React.FC = () => {
             onManageSavedItem={(folderId, item) => manageSavedItem(folderId, item)}
             onOpenAllSavedItems={(items) => openCurrentFolderItems(items)}
           />
+        ) : (
+          <SyncSection />
         )}
       </main>
 
