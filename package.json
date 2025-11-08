@@ -1,6 +1,6 @@
 {
   "name": "bookmark-saga",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Bookmark Saga browser extension built with WXT, React, and TypeScript.",
   "private": true,
   "type": "module",
