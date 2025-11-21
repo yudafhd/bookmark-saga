@@ -6,9 +6,10 @@ import {
   THEME_KEY,
   VISITS_KEY,
   TOUR_SEEN_KEY,
+  NOTES_KEY,
 } from './constants';
 import { clampMaxItems, externalFaviconUrl, isSafeFavicon } from './utils';
-import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry } from './types';
+import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry, Note, NotesMap } from './types';
 
 export async function readVisits(): Promise<VisitEntry[]> {
   const result = await chrome.storage.local.get({
@@ -146,5 +147,43 @@ export async function readTourSeen(): Promise<boolean> {
 export async function writeTourSeen(seen: boolean): Promise<void> {
   await chrome.storage.local.set({
     [TOUR_SEEN_KEY]: !!seen,
+  });
+}
+
+export async function readNotes(): Promise<NotesMap> {
+  const result = await chrome.storage.local.get({
+    [NOTES_KEY]: {} as NotesMap,
+  });
+  const raw = result[NOTES_KEY];
+  if (!raw || typeof raw !== 'object') {
+    return {};
+  }
+  const normalized: NotesMap = {};
+  for (const [category, notes] of Object.entries(raw)) {
+    if (!Array.isArray(notes)) continue;
+    const cleaned: Note[] = notes
+      .filter((note): note is Note =>
+        !!note &&
+        typeof note.id === 'string' &&
+        typeof note.content === 'string' &&
+        typeof note.color === 'string' &&
+        typeof note.category === 'string'
+      )
+      .map((note) => ({
+        id: note.id,
+        content: note.content,
+        color: note.color as Note['color'],
+        category: note.category,
+        createdAt: typeof note.createdAt === 'number' ? note.createdAt : Date.now(),
+        updatedAt: typeof note.updatedAt === 'number' ? note.updatedAt : Date.now(),
+      }));
+    normalized[category] = cleaned;
+  }
+  return normalized;
+}
+
+export async function writeNotes(notes: NotesMap): Promise<void> {
+  await chrome.storage.local.set({
+    [NOTES_KEY]: notes,
   });
 }

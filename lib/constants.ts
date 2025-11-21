@@ -3,6 +3,7 @@ export const MAX_ITEMS_KEY = 'maxItems';
 export const FOLDERS_KEY = 'bookmarkSagaFolders';
 export const BOOKMARK_ITEMS_KEY = 'bookmarkSagaFolderItems';
 export const THEME_KEY = 'bookmarkSagaTheme';
+export const NOTES_KEY = 'bookmarkSagaNotes';
 
 export const TOUR_SEEN_KEY = 'bookmarkSagaTourSeenV1';
 export const DEFAULT_MAX_HISTORY_ITEMS = 50;
@@ -16,9 +17,9 @@ export const ICON_PATHS = {
 } as const;
 
 export const DEFAULT_FAVICON_PATH = ICON_PATHS[48];
-
 export const DEFAULT_FOLDER_ID = 'unsorted';
 export const DEFAULT_FOLDER_NAME = 'Unsorted';
+export const DEFAULT_NOTE_CATEGORY = 'Unsorted';
 
 export const CONTACT_EMAIL = 'ahmadyudafahrudin@gmail.com';
 export const GITHUB_REPO_URL = 'https://github.com/yudafhd/bookmark-saga';

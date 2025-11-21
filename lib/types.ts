@@ -59,3 +59,21 @@ export interface ThemeOption {
   id: ThemeId;
   name: string;
 }
+
+export interface Note {
+  id: string;
+  content: string;
+  color: NoteColor;
+  category: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type NoteColor =
+  | 'white'
+  | 'yellow'
+  | 'blue'
+  | 'green'
+  | 'red';
+
+export type NotesMap = Record<string, Note[]>;

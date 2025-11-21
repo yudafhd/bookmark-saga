@@ -5,8 +5,9 @@ import {
   THEME_KEY,
   TOUR_SEEN_KEY,
   VISITS_KEY,
+  NOTES_KEY,
 } from './constants';
-import type { Folder, FolderItemsMap, ThemeId, VisitEntry } from './types';
+import type { Folder, FolderItemsMap, ThemeId, VisitEntry, Note } from './types';
 
 export interface SyncPayloadV1 {
   version: 1;
@@ -18,6 +19,7 @@ export interface SyncPayloadV1 {
     [BOOKMARK_ITEMS_KEY]: FolderItemsMap;
     [THEME_KEY]: ThemeId;
     [TOUR_SEEN_KEY]: boolean;
+    [NOTES_KEY]: Note[];
   };
 }
 
@@ -31,7 +33,9 @@ export async function exportAll(): Promise<SyncPayload> {
     [BOOKMARK_ITEMS_KEY]: {} as FolderItemsMap,
     [THEME_KEY]: 'midnight' as ThemeId,
     [TOUR_SEEN_KEY]: false as boolean,
+    [NOTES_KEY]: [] as Note[],
   });
+
   const payload: SyncPayloadV1 = {
     version: 1,
     exportedAt: Date.now(),
@@ -44,6 +48,7 @@ export async function exportAll(): Promise<SyncPayload> {
         : {},
       [THEME_KEY]: (typeof result[THEME_KEY] === 'string' ? result[THEME_KEY] : 'midnight') as ThemeId,
       [TOUR_SEEN_KEY]: Boolean(result[TOUR_SEEN_KEY]),
+      [NOTES_KEY]: Array.isArray(result[NOTES_KEY]) ? result[NOTES_KEY] : [],
     },
   };
   return payload;

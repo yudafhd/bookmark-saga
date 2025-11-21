@@ -1,1 +1,1 @@
-export type Mode = 'history' | 'saved';
+export type Mode = 'history' | 'saved' | 'sync' | 'notes';

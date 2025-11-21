@@ -10,6 +10,8 @@ import {
     writeVisits,
     readTourSeen,
     writeTourSeen,
+    readNotes,
+    writeNotes,
 } from '@/lib/storage';
 import {
     buildBreadcrumb,
@@ -21,13 +23,13 @@ import {
     normalizeHierarchy,
 } from '@/lib/folder-utils';
 import { getThemeById } from '@/lib/themes';
-import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry } from '@/lib/types';
+import type { Folder, FolderItem, FolderItemsMap, ThemeId, VisitEntry, Note, NotesMap, NoteColor } from '@/lib/types';
 import { getHostName, resolveFavicon } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/time';
 import SidebarButton from '@/shared/components/SidebarButton';
-import { BOOKMARK_ITEMS_KEY, FOLDERS_KEY, THEME_KEY, VISITS_KEY, DEFAULT_FOLDER_ID, DEFAULT_FOLDER_NAME } from '@/lib/constants';
+import { BOOKMARK_ITEMS_KEY, FOLDERS_KEY, THEME_KEY, VISITS_KEY, DEFAULT_FOLDER_ID, DEFAULT_FOLDER_NAME, NOTES_KEY, DEFAULT_NOTE_CATEGORY } from '@/lib/constants';
 
-type Mode = 'history' | 'saved' | 'sync';
+type Mode = 'history' | 'saved' | 'sync' | 'notes';
 
 interface PendingSaveVisit {
     url: string;
@@ -108,17 +110,19 @@ export default function useHook() {
     const [pendingSaveVisit, setPendingSaveVisit] = useState<PendingSaveVisit | null>(null);
     const [themeId, setThemeId] = useState<ThemeId>(DEFAULT_THEME);
     const [folderModalNewName, setFolderModalNewName] = useState('');
+    const [notes, setNotes] = useState<NotesMap>({});
 
     // Initial load
     useEffect(() => {
         const load = async () => {
             setLoading(true);
             try {
-                const [folderData, folderItemData, storedTheme, tourSeen] = await Promise.all([
+                const [folderData, folderItemData, storedTheme, tourSeen, notesData] = await Promise.all([
                     readFolders(),
                     readFolderItems(),
                     readTheme(),
                     readTourSeen(),
+                    readNotes(),
                 ]);
 
                 const visitData = await readVisits();
@@ -141,6 +145,7 @@ export default function useHook() {
                 setFolders(normalizedFolders);
                 setFolderItems(ensuredItems);
                 setThemeId(storedTheme);
+                setNotes(notesData);
                 document.body.dataset.theme = storedTheme;
                 setTourOpen(!tourSeen);
             } finally {
@@ -357,6 +362,15 @@ export default function useHook() {
         }
     }, []);
 
+    const refreshNotesFromStorage = useCallback(async () => {
+        try {
+            const notesData = await readNotes();
+            setNotes(notesData);
+        } catch (error) {
+            console.error('Failed to refresh notes from storage', error);
+        }
+    }, []);
+
     useEffect(() => {
         const storage = typeof chrome !== 'undefined' ? chrome.storage : undefined;
         if (!storage?.onChanged?.addListener) {
@@ -368,6 +382,7 @@ export default function useHook() {
             const visitChanged = Boolean(changes[VISITS_KEY]);
             const folderChanged = Boolean(changes[FOLDERS_KEY] || changes[BOOKMARK_ITEMS_KEY]);
             const themeChange = changes[THEME_KEY];
+            const notesChanged = Boolean(changes[NOTES_KEY]);
 
             if (visitChanged) {
                 void refreshVisits();
@@ -377,6 +392,9 @@ export default function useHook() {
             }
             if (themeChange && typeof themeChange.newValue === 'string') {
                 setThemeId(themeChange.newValue as ThemeId);
+            }
+            if (notesChanged) {
+                void refreshNotesFromStorage();
             }
         };
 
@@ -388,7 +406,7 @@ export default function useHook() {
                 // ignore cleanup errors
             }
         };
-    }, [refreshVisits, refreshFoldersFromStorage]);
+    }, [refreshVisits, refreshFoldersFromStorage, refreshNotesFromStorage]);
 
     const persistFolders = useCallback(
         async (nextFolders: Folder[], nextItems: FolderItemsMap) => {
@@ -860,6 +878,139 @@ export default function useHook() {
         [],
     );
 
+    // Notes CRUD operations
+    const generateNoteId = useCallback(() => {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID();
+        }
+        return `note_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    }, []);
+
+    const handleCreateNote = useCallback(
+        async (content: string, color: NoteColor, category: string) => {
+            const trimmedContent = content.trim();
+            const trimmedCategory = category.trim() || DEFAULT_NOTE_CATEGORY;
+            if (!trimmedContent) return;
+
+            const newNote: Note = {
+                id: generateNoteId(),
+                content: trimmedContent,
+                color,
+                category: trimmedCategory,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+            };
+
+            const nextNotes = { ...notes };
+            if (!nextNotes[trimmedCategory]) {
+                nextNotes[trimmedCategory] = [];
+            }
+            nextNotes[trimmedCategory] = [newNote, ...nextNotes[trimmedCategory]];
+
+            setNotes(nextNotes);
+            await writeNotes(nextNotes);
+        },
+        [notes, generateNoteId],
+    );
+
+    const handleUpdateNote = useCallback(
+        async (id: string, content: string, color: NoteColor, category: string) => {
+            const trimmedContent = content.trim();
+            const trimmedCategory = category.trim() || DEFAULT_NOTE_CATEGORY;
+            if (!trimmedContent) return;
+
+            let foundNote: Note | null = null;
+            let oldCategory: string | null = null;
+
+            // Find the note and its current category
+            for (const [cat, notesList] of Object.entries(notes)) {
+                const note = notesList.find(n => n.id === id);
+                if (note) {
+                    foundNote = note;
+                    oldCategory = cat;
+                    break;
+                }
+            }
+
+            if (!foundNote || !oldCategory) return;
+
+            const updatedNote: Note = {
+                ...foundNote,
+                content: trimmedContent,
+                color,
+                category: trimmedCategory,
+                updatedAt: Date.now(),
+            };
+
+            const nextNotes = { ...notes };
+
+            // If category changed, move the note
+            if (oldCategory !== trimmedCategory) {
+                // Remove from old category
+                nextNotes[oldCategory] = nextNotes[oldCategory].filter(n => n.id !== id);
+                if (nextNotes[oldCategory].length === 0) {
+                    delete nextNotes[oldCategory];
+                }
+
+                // Add to new category
+                if (!nextNotes[trimmedCategory]) {
+                    nextNotes[trimmedCategory] = [];
+                }
+                nextNotes[trimmedCategory] = [updatedNote, ...nextNotes[trimmedCategory]];
+            } else {
+                // Update in same category
+                nextNotes[oldCategory] = nextNotes[oldCategory].map(n =>
+                    n.id === id ? updatedNote : n
+                );
+            }
+
+            setNotes(nextNotes);
+            await writeNotes(nextNotes);
+        },
+        [notes],
+    );
+
+    const handleDeleteNote = useCallback(
+        async (id: string, category: string) => {
+            const confirmed = confirm('Delete this note? This action cannot be undone.');
+            if (!confirmed) return;
+
+            const nextNotes = { ...notes };
+            if (nextNotes[category]) {
+                nextNotes[category] = nextNotes[category].filter(n => n.id !== id);
+                if (nextNotes[category].length === 0) {
+                    delete nextNotes[category];
+                }
+            }
+
+            setNotes(nextNotes);
+            await writeNotes(nextNotes);
+        },
+        [notes],
+    );
+
+    const handleDeleteNotes = useCallback(
+        async (noteIds: string[]) => {
+            if (noteIds.length === 0) return;
+            const confirmed = confirm(`Delete ${noteIds.length} notes? This action cannot be undone.`);
+            if (!confirmed) return;
+
+            const nextNotes = { ...notes };
+
+            // Iterate through all categories to find and remove notes
+            for (const category of Object.keys(nextNotes)) {
+                nextNotes[category] = nextNotes[category].filter(n => !noteIds.includes(n.id));
+                if (nextNotes[category].length === 0) {
+                    delete nextNotes[category];
+                }
+            }
+
+            setNotes(nextNotes);
+            await writeNotes(nextNotes);
+        },
+        [notes],
+    );
+
     const currentTheme = useMemo(() => getThemeById(themeId) ?? getThemeById(DEFAULT_THEME), [themeId]);
 
     const folderModalTitle = pendingSaveVisit
@@ -984,6 +1135,23 @@ export default function useHook() {
     const hasVisits = visits.length !== 0;
     const hasHistory = hasVisits;
 
+    // Notes computed values
+    const allNotes = useMemo(() => {
+        const result: Note[] = [];
+        for (const notesList of Object.values(notes)) {
+            result.push(...notesList);
+        }
+        return result.sort((a, b) => b.updatedAt - a.updatedAt);
+    }, [notes]);
+
+    const noteCategories = useMemo(() => {
+        return Object.keys(notes).sort((a, b) => {
+            if (a === DEFAULT_NOTE_CATEGORY) return -1;
+            if (b === DEFAULT_NOTE_CATEGORY) return 1;
+            return a.localeCompare(b);
+        });
+    }, [notes]);
+
     return {
         // Mode + search
         mode,
@@ -1055,5 +1223,13 @@ export default function useHook() {
         // First-run tour
         isTourOpen,
         closeTour,
+
+        // Notes
+        notes: allNotes,
+        noteCategories,
+        createNote: handleCreateNote,
+        updateNote: handleUpdateNote,
+        deleteNote: handleDeleteNote,
+        deleteNotes: handleDeleteNotes,
     };
 }

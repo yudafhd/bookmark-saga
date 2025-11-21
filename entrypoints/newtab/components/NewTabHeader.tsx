@@ -3,8 +3,8 @@ import { MdApps, MdCode, MdDelete, MdEmail, MdRefresh, MdSettings } from 'react-
 
 interface NewTabHeaderProps {
     subtitle: string;
-    mode: 'history' | 'saved' | 'sync';
-    onModeChange: (mode: 'history' | 'saved' | 'sync') => void;
+    mode: 'history' | 'saved' | 'sync' | 'notes';
+    onModeChange: (mode: 'history' | 'saved' | 'sync' | 'notes') => void;
     searchQuery: string;
     onSearchQueryChange: (value: string) => void;
     currentThemeName: string;
@@ -86,6 +86,16 @@ const NewTabHeader: React.FC<NewTabHeaderProps> = ({
                         aria-pressed={mode === 'saved'}
                     >
                         Bookmarks
+                    </button>
+                    <button
+                        type="button"
+                        className={`mode-toggle text-xs font-medium rounded-sm transition ${mode === 'notes' ? 'mode-toggle--active' : ''}`}
+                        onClick={() => {
+                            onModeChange('notes');
+                        }}
+                        aria-pressed={mode === 'notes'}
+                    >
+                        Notes
                     </button>
                     <button
                         type="button"

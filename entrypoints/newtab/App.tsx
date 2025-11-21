@@ -8,6 +8,7 @@ import FolderModal from './components/FolderModal';
 import FirstRunTour from './components/FirstRunTour';
 import useHook from './useHook';
 import SyncSection from './components/SyncSection';
+import NotesSection from './components/NotesSection';
 
 const App: React.FC = () => {
   const {
@@ -66,6 +67,12 @@ const App: React.FC = () => {
     changeTheme,
     isTourOpen,
     closeTour,
+    notes,
+    noteCategories,
+    createNote,
+    updateNote,
+    deleteNote,
+    deleteNotes,
   } = useHook();
 
   return (
@@ -119,6 +126,15 @@ const App: React.FC = () => {
             onRenameSavedTitle={renameSavedTitle}
             onManageSavedItem={(folderId, item) => manageSavedItem(folderId, item)}
             onOpenAllSavedItems={(items) => openCurrentFolderItems(items)}
+          />
+        ) : mode === 'notes' ? (
+          <NotesSection
+            notes={notes}
+            categories={noteCategories}
+            onCreateNote={createNote}
+            onUpdateNote={updateNote}
+            onDeleteNote={deleteNote}
+            onDeleteNotes={deleteNotes}
           />
         ) : (
           <SyncSection />

@@ -16,9 +16,11 @@ const SyncSection: React.FC = () => {
     <section className="space-y-6" id="syncSection">
       <header>
         <h2 className="text-lg font-semibold">Google Drive Sync</h2>
-        {/* <p className="text-sm opacity-70">
-          Sync your Bookmark Saga data to your Google Drive AppData folder. Data is hidden and only accessible to this app.
-        </p> */}
+        <p className="text-sm opacity-70">
+          Backup and restore your Bookmark Saga data using your Google Drive AppData.<br />
+          Your files stay private — we can’t see or read their contents.
+        </p>
+
       </header>
 
       <div className="rounded-md space-y-4">
